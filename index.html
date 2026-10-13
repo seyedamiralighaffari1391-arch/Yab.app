@@ -1,0 +1,3001 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>یاب | v1.0</title>
+  <style>
+
+    @font-face { font-family: 'YabCalibri';   src: url('fonts/Calibri.ttf')   format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'YabIranSans';  src: url('fonts/IRANSansWeb_Black.ttf')  format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'YabVazirmatn'; src: url('fonts/Vazirmatn-Black.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'YabShabnam';   src: url('fonts/Shabnam-Medium.ttf')   format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'YabEstedad';   src: url('fonts/Estedad-Medium.ttf')   format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'YabSahel';     src: url('fonts/Sahel.ttf')     format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'YabSamim';     src: url('fonts/Samim.ttf')     format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'YabYekanBakh'; src: url('fonts/YekanBakh-Black.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'YabDana';      src: url('fonts/dana_2.0-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'YabPeyda';     src: url('fonts/Peyda-Black.ttf')     format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'YabGandom';    src: url('fonts/Gandom.ttf')    format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'YabKalameh';   src: url('fonts/Kalameh-Medium.ttf')   format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+
+    :root {
+      --font-family: 'YabVazirmatn', Tahoma, sans-serif;
+      --gold: #00e5ff; --gold-2: #00b8d4; --gold-rgb: 0, 229, 255;
+      --bg: #0a0618; --card: #150e28; --card-2: #1f173a;
+      --text: #e8e4f5; --muted: #9a94b8; --chip-bg: #1f173a;
+      --error-bg: #2a0e1e; --error-text: #ffb0c8;
+      --overlay-bg: rgba(5, 2, 16, .72);
+      --font-size-multiplier: 1;
+      --radius-lg: 22px; --radius-md: 16px;
+      --glass-blur: 18px; --glass-opacity: 0.10; --glass-image: none;
+    }
+    .light-mode {
+      --gold: #ff7f50; --gold-2: #ff6347; --gold-rgb: 255, 127, 80;
+      --bg: #fff8f3; --card: #ffffff; --card-2: #ffe8dd;
+      --text: #2b1a14; --muted: #9a7a6a; --chip-bg: #ffe8dd;
+      --error-bg: #fff0f3; --error-text: #a51635;
+      --overlay-bg: rgba(43, 26, 20, .35);
+    }
+
+    /* حالت شیشه‌ای — پس‌زمینه کل صفحه عکس میشه و کارت‌ها نیمه‌شفاف */
+    body.glass-mode {
+      background: var(--glass-image, none) center/cover no-repeat fixed;
+      background-size: cover;
+    }
+    body.glass-mode .app-container { background: transparent !important; }
+    body.glass-mode .header,
+    body.glass-mode .search-box,
+    body.glass-mode .root-card,
+    body.glass-mode .modal,
+    body.glass-mode .drawer,
+    body.glass-mode .chip,
+    body.glass-mode .stat-card,
+    body.glass-mode .fav-item,
+    body.glass-mode .top-root-item,
+    body.glass-mode .lp-menu,
+    body.glass-mode .theme-toggle,
+    body.glass-mode .theme-card,
+    body.glass-mode .autocomplete-dropdown,
+    body.glass-mode .multi-root-page,
+    body.glass-mode .proper-noun-page,
+    body.glass-mode .error-page,
+    body.glass-mode .conj-table th,
+    body.glass-mode .gear-icon,
+    body.glass-mode .btn.secondary,
+    body.glass-mode .advanced-bar .adv-btn,
+    body.glass-mode .recent-root-chip,
+    body.glass-mode .glass-options,
+    body.glass-mode .input-wrap input[type="text"],
+    body.glass-mode .mode-toggle,
+    body.glass-mode select,
+    body.glass-mode input[type="number"],
+    body.glass-mode .font-card,
+    body.glass-mode .result-search-wrap input {
+      backdrop-filter: blur(var(--glass-blur, 18px)) saturate(180%) brightness(1.05);
+      -webkit-backdrop-filter: blur(var(--glass-blur, 18px)) saturate(180%) brightness(1.05);
+      background-color: rgba(255, 255, 255, var(--glass-opacity, 0.10)) !important;
+      border-color: rgba(255, 255, 255, 0.28) !important;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+    }
+    body.glass-mode .chip,
+    body.glass-mode .stat-card,
+    body.glass-mode .fav-item,
+    body.glass-mode .top-root-item { background-color: rgba(255, 255, 255, calc(var(--glass-opacity, 0.10) + 0.04)) !important; }
+    body.glass-mode .drawer { background-color: rgba(255, 255, 255, calc(var(--glass-opacity, 0.10) + 0.05)) !important; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
+    html, body { min-height: 100%; }
+    body {
+      background: radial-gradient(circle at 15% 10%, rgba(var(--gold-rgb), .10), transparent 30%),
+                  radial-gradient(circle at 90% 85%, rgba(var(--gold-rgb), .07), transparent 32%), var(--bg);
+      display: flex; justify-content: center; align-items: center;
+      height: 100vh; overflow: hidden;
+      font-size: calc(16px * var(--font-size-multiplier));
+      color: var(--text);
+      transition: background .35s ease, color .35s ease;
+    }
+    .app-container {
+      width: 100%; max-width: 430px; height: 100vh;
+      background: linear-gradient(180deg, rgba(255,255,255,.018), transparent 25%), var(--bg);
+      display: flex; flex-direction: column;
+      border-radius: 18px; box-shadow: 0 18px 55px rgba(0,0,0,.55);
+      overflow: hidden; position: relative; isolation: isolate;
+    }
+    .header {
+      height: 68px; flex: 0 0 68px;
+      background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.01)), var(--card);
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 17px;
+      border-bottom: 1px solid rgba(var(--gold-rgb), .20);
+      box-shadow: 0 5px 22px rgba(0,0,0,.16);
+      position: relative; z-index: 5;
+    }
+    .header > span { transition: transform .18s ease; user-select: none; }
+    .header > span:active { transform: scale(.9); }
+
+    /* منوی کشویی کنار */
+    .drawer {
+      position: absolute; top: 0; right: -88%;
+      width: 86%; height: 100%;
+      background: linear-gradient(180deg, rgba(255,255,255,.035), transparent 30%), var(--card);
+      z-index: 1000; transition: right .32s cubic-bezier(.2,.8,.2,1);
+      padding: 30px 18px;
+      box-shadow: -14px 0 38px rgba(0,0,0,.42);
+      overflow-y: auto;
+      border-left: 1px solid rgba(var(--gold-rgb), .18);
+    }
+    .drawer.open { right: 0; }
+    .drawer h2 { margin: 0 4px 18px; font-size: 1.35em; }
+    .drawer-item {
+      padding: 14px 13px; margin: 7px 0;
+      border: 1px solid rgba(255,255,255,.045);
+      background: rgba(255,255,255,.018);
+      cursor: pointer;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 1.02em; border-radius: 14px;
+      color: var(--text);
+      transition: background .18s ease, transform .18s ease, border-color .18s ease;
+    }
+    .drawer-item:active { transform: scale(.98); }
+    .drawer-item:hover { background: rgba(var(--gold-rgb), .08); border-color: rgba(var(--gold-rgb), .22); }
+    .drawer-item .badge { margin-right: auto; font-size: .78em; background: rgba(var(--gold-rgb), .15); color: var(--gold); padding: 2px 8px; border-radius: 10px; font-weight: 800; }
+
+    .main { flex: 1; padding: 18px 15px 28px; overflow-y: auto; display: flex; flex-direction: column; gap: 17px; scroll-behavior: smooth; transition: padding-bottom .3s cubic-bezier(.2,.8,.2,1); }
+    .main::-webkit-scrollbar, .drawer::-webkit-scrollbar, .modal::-webkit-scrollbar { width: 5px; }
+    .main::-webkit-scrollbar-thumb, .drawer::-webkit-scrollbar-thumb, .modal::-webkit-scrollbar-thumb { background: rgba(var(--gold-rgb), .30); border-radius: 10px; }
+    body.sticky-active .main { padding-bottom: 130px; }
+
+    .search-spacer { display: none; flex: 0 0 auto; }
+    .search-spacer.active { display: block; }
+
+    /* جعبه جستجو — وسط صفحه قبل از اولین تحلیل */
+    .search-box {
+      position: relative;
+      background: linear-gradient(145deg, rgba(var(--gold-rgb), .07), transparent 55%), var(--card);
+      padding: 18px; border-radius: var(--radius-lg);
+      border: 1px solid rgba(var(--gold-rgb), .25);
+      text-align: center;
+      box-shadow: 0 12px 28px rgba(0,0,0,.16);
+      margin-top: auto; margin-bottom: auto;
+      transform: translateY(-12vh);
+      transition: margin .40s cubic-bezier(.2,.8,.2,1), padding .40s cubic-bezier(.2,.8,.2,1), transform .40s cubic-bezier(.2,.8,.2,1), border-radius .28s ease, box-shadow .28s ease;
+    }
+    .search-box::before {
+      content: attr(data-subtitle);
+      display: block; color: var(--muted); font-size: .78em;
+      margin-bottom: 10px; letter-spacing: .2px;
+    }
+    .search-box.search-completed { margin-top: 0; margin-bottom: 0; padding-top: 10px; padding-bottom: 10px; transform: translateY(0); }
+    .search-box.search-completed::before { margin-bottom: 6px; font-size: .72em; }
+
+    /* وقتی اسکرول میکنیم، جعبه میچسبه به پایین صفحه */
+    .search-box.sticky-search {
+      position: fixed; top: auto !important; bottom: 20px;
+      left: 50%; transform: translateX(-50%) !important;
+      width: calc(100% - 24px); max-width: 406px;
+      margin: 0 !important; padding: 8px 12px 8px 8px !important;
+      border-radius: 30px !important; z-index: 200;
+      box-shadow: 0 14px 38px rgba(0,0,0,.42), 0 4px 14px rgba(0,0,0,.22);
+      border: 1px solid rgba(var(--gold-rgb), .45) !important;
+      animation: stickyIn .32s cubic-bezier(.2,.8,.2,1);
+    }
+    .search-box.sticky-search::before { display: none; }
+    .search-box.sticky-search .mode-toggle,
+    .search-box.sticky-search .recent-label,
+    .search-box.sticky-search .recent-roots { display: none !important; }
+    .search-box.sticky-search .input-wrap { margin: 0; padding-left: 52px; }
+    .search-box.sticky-search #analyzeBtn {
+      position: absolute; left: 8px; top: 50%;
+      transform: translateY(-50%);
+      width: 44px; height: 44px; min-width: 0; padding: 0;
+      border-radius: 50%; font-size: 1.15em;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2;
+      box-shadow: 0 6px 16px rgba(var(--gold-rgb), .35);
+    }
+    .search-box.sticky-search #analyzeBtn .btn-text { display: none; }
+    .search-box.sticky-search #analyzeBtn .btn-icon { font-size: 1.15em; line-height: 1; }
+    .search-box.sticky-search .autocomplete-dropdown {
+      position: absolute; bottom: calc(100% + 8px); top: auto;
+      left: 0; right: 0; margin: 0;
+      max-height: 220px; border-radius: 16px;
+      box-shadow: 0 14px 32px rgba(0,0,0,.45);
+    }
+    @keyframes stickyIn { from { transform: translateX(-50%) translateY(50px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+    body.sticky-active .gear-icon { bottom: 108px; }
+
+    /* پیشنهادها (autocomplete) */
+    .input-wrap { position: relative; margin: 7px 0; }
+    .input-wrap input[type="text"] { margin: 0; }
+    .autocomplete-dropdown {
+      display: none; margin-top: 6px; margin-bottom: 4px;
+      background: var(--bg);
+      border: 1px solid rgba(var(--gold-rgb), .30);
+      border-radius: 14px; overflow: hidden;
+      max-height: 240px; overflow-y: auto;
+      text-align: right; animation: slideDown .2s ease;
+    }
+    .ac-item { padding: 11px 14px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 8px; border-bottom: 1px solid rgba(255,255,255,.05); font-size: .94em; transition: background .12s; }
+    .ac-item:last-child { border-bottom: none; }
+    .ac-item:hover, .ac-item.active { background: rgba(var(--gold-rgb), .12); }
+    .ac-word { font-weight: 700; color: var(--text); }
+    .ac-root { color: var(--gold); font-size: .78em; background: rgba(var(--gold-rgb), .10); padding: 2px 7px; border-radius: 7px; border: 1px solid rgba(var(--gold-rgb), .20); }
+
+    /* ریشه‌های اخیر */
+    .recent-label { text-align: right; color: var(--muted); font-size: .72em; margin-top: 12px; margin-bottom: 6px; }
+    .recent-roots { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+    .recent-roots::-webkit-scrollbar { display: none; }
+    .recent-root-chip { flex: 0 0 auto; padding: 6px 12px; background: var(--chip-bg); border: 1px solid rgba(var(--gold-rgb), .25); border-radius: 10px; font-size: .84em; font-weight: 700; cursor: pointer; color: var(--text); transition: all .15s; font-family: var(--font-family); }
+    .recent-root-chip:hover, .recent-root-chip:active { border-color: var(--gold); background: rgba(var(--gold-rgb), .12); color: var(--gold); }
+    .search-box.search-completed .recent-roots, .search-box.search-completed .recent-label { display: none !important; }
+
+    /* کلید کلمه/ریشه */
+    .mode-toggle { display: flex; gap: 6px; margin-bottom: 10px; background: var(--bg); padding: 4px; border-radius: 12px; border: 1px solid rgba(var(--gold-rgb), .18); }
+    .mode-btn { flex: 1; padding: 8px 10px; background: transparent; border: none; border-radius: 9px; color: var(--muted); font-weight: 700; font-size: .82em; cursor: pointer; transition: all .2s ease; font-family: var(--font-family); }
+    .mode-btn.active { background: linear-gradient(135deg, var(--gold), var(--gold-2)); color: #0b0d12; box-shadow: 0 3px 10px rgba(var(--gold-rgb), .25); }
+    .mode-btn:not(.active):hover { color: var(--text); }
+
+    input, select, button { font-family: var(--font-family); }
+    input[type="text"], input[type="number"], select {
+      background: var(--bg); color: var(--text);
+      border: 1px solid rgba(var(--gold-rgb), .30);
+      border-radius: 15px; padding: 13px 12px;
+      margin: 7px 0; width: 100%; outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+    input[type="text"]:focus, input[type="number"]:focus, select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(var(--gold-rgb), .12); }
+    .btn {
+      width: 100%; padding: 13px 15px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-2));
+      border: none; border-radius: 15px;
+      color: #0b0d12; font-weight: 900; font-size: 1em;
+      cursor: pointer;
+      box-shadow: 0 7px 18px rgba(var(--gold-rgb), .22);
+      transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .btn .btn-icon, .btn .btn-text { display: inline; }
+    .btn:hover { filter: brightness(1.05); }
+    .btn:active { transform: scale(.97); }
+
+    .result-box { display: none; }
+    .root-card {
+      position: relative; overflow: hidden;
+      background: radial-gradient(circle at 50% 0%, rgba(var(--gold-rgb), .16), transparent 48%), rgba(var(--gold-rgb), .06);
+      border: 1px solid rgba(var(--gold-rgb), .55);
+      padding: 19px 15px; border-radius: var(--radius-lg);
+      text-align: center; margin-bottom: 14px;
+      box-shadow: 0 10px 28px rgba(0,0,0,.14);
+    }
+    .root-card > div:first-child { color: var(--muted); font-size: .88em; margin-bottom: 5px; }
+    #rootDisplay { font-size: 2.15em; font-weight: 900; color: var(--gold); letter-spacing: 4px; word-break: break-all; text-shadow: 0 0 18px rgba(var(--gold-rgb), .20); }
+
+    /* نوار فیلتر زیر نتایج */
+    .filter-bar {
+      display: flex; gap: 6px; overflow-x: auto;
+      padding: 2px 0 8px;
+      scrollbar-width: none;
+      margin: 0 -2px;
+    }
+    .filter-bar::-webkit-scrollbar { display: none; }
+    .filter-chip {
+      flex: 0 0 auto; padding: 6px 11px;
+      background: var(--card-2);
+      border: 1px solid rgba(var(--gold-rgb), .20);
+      border-radius: 12px;
+      color: var(--muted);
+      font-size: .76em; font-weight: 700;
+      cursor: pointer;
+      transition: all .18s ease;
+      font-family: var(--font-family);
+      white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .filter-chip:hover { border-color: rgba(var(--gold-rgb), .45); color: var(--text); }
+    .filter-chip.active {
+      background: linear-gradient(135deg, var(--gold), var(--gold-2));
+      color: #0b0d12;
+      border-color: transparent;
+      box-shadow: 0 3px 10px rgba(var(--gold-rgb), .25);
+    }
+    .filter-chip .chip-count {
+      font-size: .85em; opacity: .8;
+      background: rgba(0,0,0,.18); padding: 0 5px;
+      border-radius: 8px; min-width: 18px; text-align: center;
+    }
+    .filter-chip.active .chip-count { background: rgba(0,0,0,.20); }
+
+    /* جستجو داخل نتایج */
+    .result-search-wrap {
+      position: relative;
+      margin: 0 0 8px;
+    }
+    .result-search-wrap input {
+      margin: 0; padding: 10px 36px 10px 12px;
+      font-size: .9em; text-align: right;
+      border-radius: 12px;
+    }
+    .result-search-wrap .search-icon {
+      position: absolute; right: 12px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted); font-size: .95em;
+      pointer-events: none;
+    }
+
+    /* صفحه انتخاب ریشه وقتی چند ریشه داریم */
+    .multi-root-page { display: none; flex-direction: column; align-items: center; gap: 14px; padding: 24px 18px 22px; background: linear-gradient(145deg, rgba(var(--gold-rgb), .08), transparent 60%), var(--card); border: 1px solid rgba(var(--gold-rgb), .40); border-radius: var(--radius-lg); text-align: center; box-shadow: 0 12px 28px rgba(0,0,0,.16); }
+    .multi-root-page .mr-icon { font-size: 2.4em; filter: drop-shadow(0 0 12px rgba(var(--gold-rgb), .45)); }
+    .multi-root-page h3 { color: var(--gold); font-size: 1.15em; font-weight: 900; }
+    .multi-root-page .mr-word { color: var(--text); font-size: 1.6em; font-weight: 800; letter-spacing: 3px; margin: 2px 0; }
+    .multi-root-page p { color: var(--muted); font-size: .86em; line-height: 1.8; }
+    .multi-root-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; width: 100%; }
+    .multi-root-option { padding: 16px 10px 12px; background: linear-gradient(145deg, rgba(var(--gold-rgb), .10), transparent), var(--chip-bg); border: 2px solid rgba(var(--gold-rgb), .30); border-radius: 16px; cursor: pointer; color: var(--text); transition: all .18s ease; font-family: var(--font-family); display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .multi-root-option:hover, .multi-root-option:active { border-color: var(--gold); background: rgba(var(--gold-rgb), .18); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(var(--gold-rgb), .25); }
+    .multi-root-option .mro-root { font-size: 1.55em; font-weight: 900; letter-spacing: 4px; color: var(--gold); text-shadow: 0 0 12px rgba(var(--gold-rgb), .30); }
+    .multi-root-option .mro-label { font-size: .72em; color: var(--muted); font-weight: 600; }
+
+    /* صفحه اسم خاص */
+    .proper-noun-page { display: none; flex-direction: column; align-items: center; gap: 12px; padding: 32px 22px 26px; background: linear-gradient(145deg, rgba(var(--gold-rgb), .10), transparent 60%), var(--card); border: 2px solid rgba(var(--gold-rgb), .45); border-radius: var(--radius-lg); text-align: center; box-shadow: 0 12px 28px rgba(0,0,0,.16); position: relative; overflow: hidden; }
+    .proper-noun-page::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity: .7; }
+    .proper-noun-page .pn-icon { font-size: 2.8em; filter: drop-shadow(0 0 14px rgba(var(--gold-rgb), .55)); margin-bottom: 4px; }
+    .proper-noun-page h3 { color: var(--gold); font-size: 1.25em; font-weight: 900; letter-spacing: .5px; }
+    .proper-noun-page .pn-word { color: var(--text); font-size: 1.7em; font-weight: 800; letter-spacing: 4px; margin: 4px 0 6px; text-shadow: 0 0 18px rgba(var(--gold-rgb), .20); }
+    .proper-noun-page p { color: var(--muted); font-size: .92em; line-height: 1.9; max-width: 300px; }
+
+    /* سربرگ نتایج */
+    .family-title { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: .86em; margin: 0 3px 8px; gap: 8px; }
+    .family-title .sort-select { background: var(--card-2); color: var(--text); border: 1px solid rgba(var(--gold-rgb), .25); border-radius: 10px; padding: 5px 8px; font-size: .92em; cursor: pointer; width: auto; margin: 0; outline: none; }
+
+    /* کارت‌های کلمات */
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .chip { min-height: 52px; background: linear-gradient(145deg, rgba(255,255,255,.035), transparent), var(--chip-bg); padding: 9px 10px; border: 1px solid rgba(255,255,255,.045); border-radius: 14px; display: flex; flex-direction: column; gap: 5px; word-break: break-word; color: var(--text); box-shadow: 0 5px 14px rgba(0,0,0,.08); transition: transform .15s ease, border-color .15s ease, background .15s ease; position: relative; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+    .chip:hover { transform: translateY(-1px); border-color: rgba(var(--gold-rgb), .30); background: var(--card-2); }
+    .chip.verb { cursor: pointer; }
+    .chip.verb::after { content: "📜"; position: absolute; top: 6px; left: 6px; font-size: .72em; opacity: .55; }
+    .chip .word-row { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+    .chip .word-text { font-weight: 700; font-size: 1.02em; flex: 1; }
+    .chip .chip-actions { display: flex; gap: 2px; align-items: center; flex: 0 0 auto; }
+    .chip .chip-actions > * { padding: 3px; cursor: pointer; font-size: .92em; opacity: .55; transition: opacity .15s ease, transform .15s ease; user-select: none; line-height: 1; }
+    .chip .chip-actions > *:hover { opacity: 1; transform: scale(1.15); }
+    .chip .fav-star.active { opacity: 1 !important; filter: drop-shadow(0 0 4px gold); }
+    .chip .pattern-badge { font-size: 0.68em; padding: 2px 6px; border-radius: 6px; align-self: flex-start; direction: rtl; font-weight: 600; border: 1px solid transparent; line-height: 1.4; }
+    .pattern-badge[data-family="verb"]    { background: rgba(255, 120, 100, .14); color: #ff7864; border-color: rgba(255, 120, 100, .28); }
+    .pattern-badge[data-family="partic"]  { background: rgba(100, 180, 255, .14); color: #64b4ff; border-color: rgba(100, 180, 255, .28); }
+    .pattern-badge[data-family="masdar"]  { background: rgba(100, 220, 150, .14); color: #64dc96; border-color: rgba(100, 220, 150, .28); }
+    .pattern-badge[data-family="noun"]    { background: rgba(200, 150, 255, .14); color: #c896ff; border-color: rgba(200, 150, 255, .28); }
+    .pattern-badge[data-family="plural"]  { background: rgba(255, 130, 180, .14); color: #ff82b4; border-color: rgba(255, 130, 180, .28); }
+    .pattern-badge[data-family="other"]   { background: rgba(255, 255, 255, .06); color: var(--muted); border-color: rgba(255, 255, 255, .1); }
+    .empty-result { grid-column: 1 / -1; padding: 24px 12px; text-align: center; color: var(--muted); font-size: .9em; }
+
+    /* دکمه‌های کپی/تصویر/لینک و تحلیل پیشرفته */
+    .share-bar { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+    .share-bar .btn { flex: 1; padding: 10px 8px; font-size: .82em; min-width: 0; }
+    .share-bar .btn.secondary { background: linear-gradient(135deg, var(--card-2), var(--card)); color: var(--text); border: 1px solid rgba(var(--gold-rgb), .30); box-shadow: none; }
+    .advanced-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .advanced-bar .adv-btn { padding: 11px 8px; background: linear-gradient(135deg, rgba(var(--gold-rgb), .10), transparent), var(--card-2); color: var(--text); border: 1px solid rgba(var(--gold-rgb), .28); border-radius: 12px; cursor: pointer; font-size: .82em; font-weight: 800; font-family: var(--font-family); transition: all .18s ease; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .advanced-bar .adv-btn:hover, .advanced-bar .adv-btn:active { border-color: var(--gold); background: rgba(var(--gold-rgb), .15); color: var(--gold); transform: translateY(-1px); }
+
+    /* صفحه خطا */
+    .error-page { display: none; flex-direction: column; align-items: center; gap: 12px; padding: 23px 18px; background: var(--error-bg); border: 1px solid rgba(255,100,120,.18); border-radius: var(--radius-lg); color: var(--error-text); text-align: center; }
+    .error-page p { color: var(--muted); line-height: 1.8; }
+    .error-page .similar-box { width: 100%; margin-top: 4px; }
+    .error-page .similar-title { color: var(--muted); font-size: .78em; margin-bottom: 8px; text-align: center; }
+    .error-page .similar-list { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+    .error-page .similar-chip { padding: 6px 12px; background: rgba(var(--gold-rgb), .10); border: 1px solid rgba(var(--gold-rgb), .30); border-radius: 10px; color: var(--gold); font-weight: 700; font-size: .88em; cursor: pointer; transition: all .15s; font-family: var(--font-family); }
+    .error-page .similar-chip:hover, .error-page .similar-chip:active { background: rgba(var(--gold-rgb), .20); border-color: var(--gold); transform: scale(1.05); }
+
+    /* لایه تاریک پشت مودال */
+    .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--overlay-bg); z-index: 500; display: none; backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px); }
+    .modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(180deg, rgba(255,255,255,.035), transparent 28%), var(--card); width: 88%; max-height: 82%; overflow-y: auto; padding: 22px 19px; border-radius: 24px; display: none; z-index: 1100; border: 1px solid rgba(var(--gold-rgb), .38); color: var(--text); box-shadow: 0 20px 55px rgba(0,0,0,.42); }
+    .modal h3 { margin-bottom: 14px; }
+    .modal p { line-height: 1.9; color: var(--muted); margin: 8px 0; }
+
+    /* منوی نگهداشتن طولانی روی کارت */
+    .lp-menu { position: absolute; background: var(--card); border: 1px solid rgba(var(--gold-rgb), .40); border-radius: 14px; padding: 6px; z-index: 1300; display: none; box-shadow: 0 18px 40px rgba(0,0,0,.5); min-width: 190px; animation: lpIn .18s cubic-bezier(.2,.8,.2,1); }
+    @keyframes lpIn { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: scale(1); } }
+    .lp-menu .lp-word { padding: 6px 10px 8px; font-weight: 800; font-size: .95em; color: var(--gold); border-bottom: 1px solid rgba(var(--gold-rgb), .18); text-align: center; direction: rtl; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .lp-menu .lp-item { padding: 10px 12px; border-radius: 9px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: .92em; transition: background .15s ease; white-space: nowrap; }
+    .lp-menu .lp-item:hover { background: rgba(var(--gold-rgb), .12); }
+    .lp-menu .lp-item.danger { color: #ff8080; }
+
+    /* آمار */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+    .stat-card { background: var(--card-2); border: 1px solid rgba(var(--gold-rgb), .18); border-radius: 14px; padding: 14px 8px; text-align: center; }
+    .stat-card .num { font-size: 1.5em; font-weight: 900; color: var(--gold); line-height: 1.1; }
+    .stat-card .lbl { font-size: .72em; color: var(--muted); margin-top: 4px; }
+    .top-roots-list { margin-top: 8px; }
+    .top-root-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: var(--card-2); border-radius: 10px; margin-bottom: 6px; }
+    .top-root-item .rank { font-weight: 900; color: var(--gold); min-width: 22px; text-align: center; }
+    .top-root-item .rw { font-weight: 700; flex: 1; font-size: 1.05em; }
+    .top-root-item .cnt { color: var(--muted); font-size: .85em; }
+    .bar-wrap { height: 6px; background: rgba(var(--gold-rgb), .10); border-radius: 4px; overflow: hidden; flex: 0 0 60px; }
+    .bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-2)); border-radius: 4px; transition: width .5s ease; }
+
+    /* تم‌ها */
+    .theme-toggle { width: 100%; padding: 12px 15px; background: linear-gradient(135deg, var(--card-2), var(--card)); border: 1px solid rgba(var(--gold-rgb), .30); border-radius: 14px; color: var(--text); font-weight: 800; font-size: 1em; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all .2s ease; margin-bottom: 4px; }
+    .theme-toggle:hover { border-color: var(--gold); }
+    .theme-toggle .arrow { font-size: .8em; color: var(--gold); transition: transform .28s cubic-bezier(.2,.8,.2,1); }
+    .theme-toggle.open .arrow { transform: rotate(180deg); }
+    .theme-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; animation: slideDown .28s cubic-bezier(.2,.8,.2,1); }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+    .theme-card { background: var(--card-2); border: 2px solid transparent; border-radius: 12px; padding: 8px 10px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all .18s ease; overflow: hidden; }
+    .theme-card:hover { border-color: rgba(var(--gold-rgb), .45); transform: translateY(-1px); }
+    .theme-card.active { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(var(--gold-rgb), .18); }
+    .theme-preview { display: flex; border-radius: 7px; overflow: hidden; flex: 0 0 auto; width: 40px; height: 26px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+    .theme-preview span { flex: 1; display: block; }
+    .theme-name { font-size: .78em; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+
+    /* فونت‌ها */
+    .font-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; animation: slideDown .28s cubic-bezier(.2,.8,.2,1); }
+    .font-card { background: var(--card-2); border: 2px solid transparent; border-radius: 12px; padding: 10px 12px; cursor: pointer; transition: all .18s ease; overflow: hidden; display: flex; flex-direction: column; gap: 4px; text-align: center; }
+    .font-card:hover { border-color: rgba(var(--gold-rgb), .45); transform: translateY(-1px); }
+    .font-card.active { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(var(--gold-rgb), .18); }
+    .font-card .font-name { font-size: .82em; font-weight: 800; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .font-card .font-sample { font-size: 1.15em; font-weight: 700; color: var(--gold); line-height: 1.3; }
+
+    /* تنظیمات شیشه‌ای */
+    .glass-options { margin-top: 14px; padding: 14px; background: rgba(var(--gold-rgb), .06); border: 1px dashed rgba(var(--gold-rgb), .40); border-radius: 14px; animation: slideDown .25s cubic-bezier(.2,.8,.2,1); }
+    .glass-options .glass-header { display: flex; align-items: center; gap: 8px; color: var(--gold); font-weight: 800; font-size: .95em; margin-bottom: 10px; }
+    .glass-image-picker { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .glass-image-picker label.file-btn { flex: 1; min-width: 140px; padding: 10px 12px; background: linear-gradient(135deg, var(--card-2), var(--card)); border: 1px solid rgba(var(--gold-rgb), .30); border-radius: 12px; cursor: pointer; text-align: center; color: var(--text); font-weight: 700; font-size: .86em; transition: all .18s; margin: 0; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .glass-image-picker label.file-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .glass-image-picker input[type="file"] { display: none; }
+    .glass-image-preview { width: 60px; height: 60px; border-radius: 12px; background: var(--bg) center/cover no-repeat; border: 1px solid rgba(var(--gold-rgb), .30); flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-size: 1.6em; color: var(--muted); }
+    .glass-slider-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+    .glass-slider-row .slider-label { flex: 1; color: var(--text); font-weight: 700; font-size: .85em; }
+    .glass-slider-row .slider-value { color: var(--gold); font-weight: 900; font-size: .88em; min-width: 42px; text-align: left; }
+    .glass-options input[type="range"] { width: 100%; margin-top: 6px; }
+
+    /* علاقه‌مندی‌ها */
+    .fav-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; margin: 6px 0; background: var(--card-2); border: 1px solid rgba(255,255,255,.05); border-radius: 12px; transition: all .18s ease; }
+    .fav-item:hover { border-color: rgba(var(--gold-rgb), .30); }
+    .fav-item .fav-content { flex: 1; min-width: 0; }
+    .fav-item .fav-word { font-weight: 700; font-size: 1.05em; cursor: pointer; }
+    .fav-item .fav-root { font-size: .78em; color: var(--gold); opacity: .8; background: rgba(var(--gold-rgb), .10); padding: 2px 8px; border-radius: 8px; cursor: pointer; margin-right: 6px; }
+    .fav-item .fav-note { font-size: .82em; color: var(--muted); margin-top: 6px; padding: 6px 8px; background: rgba(var(--gold-rgb), .06); border-right: 3px solid rgba(var(--gold-rgb), .40); border-radius: 6px; line-height: 1.6; font-style: italic; word-break: break-word; }
+    .fav-item .fav-actions { display: flex; gap: 2px; align-items: center; flex: 0 0 auto; }
+    .fav-item .fav-actions > * { padding: 4px 6px; cursor: pointer; opacity: .65; font-size: .95em; transition: opacity .15s ease, transform .15s ease; }
+    .fav-item .fav-actions > *:hover { opacity: 1; transform: scale(1.15); }
+    .fav-empty { text-align: center; color: var(--muted); padding: 30px 15px; line-height: 2; }
+    .fav-empty .icon { font-size: 3em; opacity: .3; display: block; margin-bottom: 8px; }
+
+    /* جدول صرف */
+    .conj-section { margin-top: 14px; }
+    .conj-section h4 { color: var(--gold); font-size: .95em; margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid rgba(var(--gold-rgb), .20); }
+    .conj-table { width: 100%; border-collapse: collapse; direction: rtl; font-size: .92em; margin-bottom: 12px; }
+    .conj-table th { background: rgba(var(--gold-rgb), .08); color: var(--gold); padding: 7px; font-size: .82em; border: 1px solid rgba(var(--gold-rgb), .15); font-weight: 700; }
+    .conj-table td { padding: 8px 6px; text-align: center; border: 1px solid rgba(255, 255, 255, .06); }
+    .conj-table td.pronoun { color: var(--muted); font-size: .85em; }
+    .conj-table td.form { font-weight: 700; font-size: 1.02em; }
+
+    /* آیکون چرخ‌دنده پایین چپ */
+    .gear-icon { position: fixed; bottom: 17px; left: 17px; background: linear-gradient(145deg, var(--card), var(--card-2)); border: 1px solid rgba(var(--gold-rgb), .22); border-radius: 50%; width: 49px; height: 49px; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,.28); z-index: 400; color: var(--gold); transition: bottom .3s cubic-bezier(.2,.8,.2,1), transform .18s ease; }
+    .gear-icon:active { transform: rotate(20deg) scale(.93); }
+
+    input[type="range"] { width: 100%; accent-color: var(--gold); }
+    label { display: block; margin: 11px 0 5px; font-weight: 800; color: var(--text); }
+    .checkbox-label { display: flex; align-items: center; gap: 8px; margin: 11px 0; cursor: pointer; color: var(--text); line-height: 1.6; }
+    .checkbox-label input { width: auto; margin: 0; transform: scale(1.15); accent-color: var(--gold); }
+
+    @media (max-width: 400px) {
+      .grid { grid-template-columns: 1fr; }
+      .header { padding: 0 13px; }
+      .main { padding-left: 11px; padding-right: 11px; }
+      .search-box { padding: 15px; }
+      .modal { width: 92%; }
+    }
+    @media (min-width: 431px) { .app-container { height: 96vh; max-height: 900px; border-radius: 22px; } }
+  </style>
+</head>
+<body id="bodyTag" class="dark-mode">
+<div class="app-container">
+  <div class="overlay" id="overlay"></div>
+  <header class="header">
+    <span style="font-size:28px; cursor:pointer; color:var(--gold)" id="openDrawerBtn">☰</span>
+    <span style="font-weight:900; color:var(--gold); font-size:26px;" id="appTitleEl">یاب | v1.0</span>
+    <span style="font-size:24px; cursor:pointer; color:var(--gold)" id="helpBtn">❓</span>
+  </header>
+  <nav class="drawer" id="drawer">
+    <h2 style="color:var(--gold)" data-i18n="menuTitle">📚 منوی اصلی</h2>
+    <div class="drawer-item" data-action="stats"><span data-i18n="menuStats">📊 آمار من</span></div>
+    <div class="drawer-item" data-action="hist"><span data-i18n="menuHist">📜 تاریخچه</span></div>
+    <div class="drawer-item" data-action="fav"><span data-i18n="menuFav">⭐ علاقه‌مندی‌ها</span> <span class="badge" id="favBadge">۰</span></div>
+    <div class="drawer-item" data-action="set"><span data-i18n="menuSet">⚙️ تنظیمات</span></div>
+    <div class="drawer-item" data-action="invite"><span data-i18n="menuInvite">👥 دعوت دوستان</span></div>
+    <div class="drawer-item" data-action="about"><span data-i18n="menuAbout">ℹ️ درباره</span></div>
+    <div class="drawer-item" data-action="clear" style="color:salmon;"><span data-i18n="menuClear">🗑️ حذف حافظه</span></div>
+    <button class="btn" id="closeDrawerBtn" style="margin-top:20px;" data-i18n="closeMenu">بستن منو</button>
+  </nav>
+  <main class="main" id="mainEl">
+    <div class="search-spacer" id="searchSpacer"></div>
+    <div class="search-box" id="searchBoxEl">
+      <div class="mode-toggle">
+        <button class="mode-btn active" data-mode="word" data-i18n="modeWord">🔤 کلمه ← ریشه</button>
+        <button class="mode-btn" data-mode="root" data-i18n="modeRoot">🌱 ریشه ← کلمات</button>
+      </div>
+      <div class="input-wrap">
+        <input type="text" id="wInput" data-i18n-ph="placeholderWord" placeholder="کلمه را وارد کنید ..." style="font-size:1.1em; text-align:center;" autocomplete="off">
+      </div>
+      <div class="autocomplete-dropdown" id="acDropdown"></div>
+      <button class="btn" id="analyzeBtn"><span class="btn-icon">🔍</span><span class="btn-text" data-i18n="analyze">تحلیل</span></button>
+      <div class="recent-label" id="recentLabel" style="display:none;" data-i18n="recentRoots">🕘 ریشه‌های اخیر</div>
+      <div class="recent-roots" id="recentRoots"></div>
+    </div>
+    <div id="multiRootPage" class="multi-root-page">
+      <div class="mr-icon">🌳</div>
+      <h3 data-i18n="multiRootTitle">این کلمه چند ریشه دارد</h3>
+      <div class="mr-word" id="multiRootWord"></div>
+      <p data-i18n="multiRootQuestion">کدام ریشه را می‌خواهید ببینید؟</p>
+      <div class="multi-root-options" id="multiRootOptions"></div>
+      <button class="btn" onclick="window.hideMultiRootPage()" style="margin-top:8px; background:#666; color:#fff;" data-i18n="cancel">انصراف</button>
+    </div>
+    <div id="properNounPage" class="proper-noun-page">
+      <div class="pn-icon">ℹ️</div>
+      <h3 data-i18n="properNounTitle">اسم خاص</h3>
+      <div class="pn-word" id="properNounWord"></div>
+      <p data-i18n="properNounDesc">این کلمه اسم خاص (عَلَم) است و ریشه‌ی عربی قابل استفاده ندارد.</p>
+      <button class="btn" onclick="window.hideProperNounPage()" style="margin-top:10px;" data-i18n="backBtn">بازگشت</button>
+    </div>
+    <div id="resArea" class="result-box">
+      <div class="root-card">
+        <div data-i18n="rootLabel">ریشهٔ کشف‌شده:</div>
+        <div id="rootDisplay"></div>
+      </div>
+      <div class="result-search-wrap">
+        <span class="search-icon">🔎</span>
+        <input type="text" id="resultSearch" data-i18n-ph="searchInResults" placeholder="جستجو در نتایج ..." autocomplete="off">
+      </div>
+      <div class="filter-bar" id="filterBar"></div>
+      <div class="family-title">
+        <span><span data-i18n="familyTitle">هم‌خانواده‌های ریشه</span> <span id="familyCountLabel" style="opacity:.7;">(۰)</span></span>
+        <select class="sort-select" id="sortSelect" title="مرتب‌سازی">
+          <option value="default" data-i18n="sortDefault">پیش‌فرض</option>
+          <option value="alpha" data-i18n="sortAlpha">الفبا</option>
+          <option value="length" data-i18n="sortLength">طول کلمه</option>
+          <option value="pattern" data-i18n="sortPattern">نوع الگو</option>
+        </select>
+      </div>
+      <div class="grid" id="familyGrid"></div>
+      <div class="share-bar">
+        <button class="btn secondary" id="shareTextBtn"><span data-i18n="copyBtn">📋 کپی</span></button>
+        <button class="btn secondary" id="shareImageBtn"><span data-i18n="imageBtn">🖼️ تصویر</span></button>
+        <button class="btn secondary" id="shareLinkBtn"><span data-i18n="linkBtn">📤 لینک</span></button>
+      </div>
+      <div class="advanced-bar">
+        <button class="adv-btn" id="babaBtn"><span data-i18n="babaBtn">📚 نمایش باب‌ها</span></button>
+        <button class="adv-btn" id="chartBtn"><span data-i18n="chartBtn">📊 نمودار توزیع</span></button>
+      </div>
+    </div>
+    <div id="errorPage" class="error-page">
+      <h3 id="errTitle" data-i18n="errTitle">⚠️ ریشه پیدا نشد</h3>
+      <p id="errMsg" data-i18n="errMsg">متأسفانه این کلمه در دیتابیس یافت نشد. لطفاً کلمه دیگری امتحان کنید.</p>
+      <div class="similar-box" id="similarBox" style="display:none;">
+        <div class="similar-title" data-i18n="similarTitle">🔎 کلمات مشابه در دیتابیس:</div>
+        <div class="similar-list" id="similarList"></div>
+      </div>
+      <button class="btn" onclick="window.closeError()" data-i18n="backBtn">بازگشت</button>
+    </div>
+  </main>
+  <div class="gear-icon" id="gearBtn">⚙️</div>
+
+  <div id="modal-help" class="modal">
+    <h3 style="color:var(--gold);" data-i18n="helpTitle">🧭 راهنما</h3>
+    <p data-i18n="helpBody">۱. کلمه مورد نظر را در کادر اصلی بنویسید.<br>
+       ۲. دکمه تحلیل را بزنید تا ریشه ظاهر شود.<br>
+       ۳. حالت «ریشه ← کلمات» برای جستجوی معکوس است.<br>
+       ۴. اگه کلمه چند ریشه داشته باشه، هر دو نشون داده می‌شه.<br>
+       ۵. روی ⭐ هر کلمه بزنید تا ذخیره شود.<br>
+       ۶. 👆 روی هر کلمه نگه دارید تا منوی سریع باز شود.<br>
+       ۷. روی هر کلمه فعل کلیک کنید تا جدول صرفش بیاید.<br>
+       ۸. با «نمایش باب‌ها» و «نمودار توزیع» می‌توانید تحلیل کامل بگیرید.</p>
+    <button class="btn modal-close" style="margin-top:16px;" data-i18n="close">بستن</button>
+  </div>
+
+  <div id="modal-set" class="modal">
+    <h3 style="color:var(--gold);" data-i18n="settingsTitle">⚙️ تنظیمات</h3>
+
+    <label data-i18n="langLabel">🌐 زبان:</label>
+    <div class="mode-toggle" style="margin-bottom: 10px;">
+      <button class="mode-btn active" id="langFaBtn" data-lang="fa">🇮🇷 فارسی</button>
+      <button class="mode-btn" id="langArBtn" data-lang="ar">🇸🇦 العربية</button>
+    </div>
+
+    <label data-i18n="themeLabel">🎨 تم‌ها:</label>
+    <button class="theme-toggle" id="themeToggleBtn">
+      <span id="currentThemeLabel">🌗 خودکار</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="theme-gallery" id="themeGallery" style="display:none;"></div>
+
+    <div id="glassOptions" class="glass-options" style="display:none;">
+      <div class="glass-header" data-i18n="glassHeader">💎 تنظیمات شیشه‌ای</div>
+      <div class="glass-image-picker">
+        <div class="glass-image-preview" id="glassPreview">🖼️</div>
+        <label class="file-btn" for="glassImageInput" data-i18n="glassPickImage">📷 انتخاب تصویر زمینه</label>
+        <input type="file" id="glassImageInput" accept="image/*">
+        <button class="btn" id="removeGlassImage" style="flex:0 0 auto; width:auto; padding:10px 14px; font-size:.82em; background:#555; color:#fff;" data-i18n="glassRemove">🗑️ حذف</button>
+      </div>
+      <div class="glass-slider-row">
+        <span class="slider-label" data-i18n="glassIntensity">💎 شدت شیشه</span>
+        <span class="slider-value" id="glassIntensityValue">55%</span>
+      </div>
+      <input type="range" id="glassIntensity" min="0" max="100" value="55" step="5">
+    </div>
+
+    <div id="customColors" style="display:none; margin-top:15px;">
+      <label data-i18n="customBg">پس‌زمینه:</label><input type="color" id="bgColor" value="#0a0f1e">
+      <label data-i18n="customCard">کارت‌ها:</label><input type="color" id="cardColor" value="#161c2d">
+      <label data-i18n="customText">متن:</label><input type="color" id="textColor" value="#f1f5f9">
+      <label data-i18n="customGold">طلایی:</label><input type="color" id="goldColor" value="#FFD700">
+      <button class="btn" id="applyCustomColors" data-i18n="apply">اعمال</button>
+    </div>
+
+    <label style="margin-top:15px;" data-i18n="fontLabel">🔤 فونت:</label>
+    <button class="theme-toggle" id="fontToggleBtn">
+      <span id="currentFontLabel">وزیرمتن</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="font-gallery" id="fontGallery" style="display:none;"></div>
+
+    <label style="margin-top:10px;" data-i18n="fontSizeLabel">📏 اندازه فونت:</label>
+    <input type="range" id="fontSizeSlider" min="0.8" max="1.5" step="0.05" value="1">
+    <span id="fontSizeValue">1x</span>
+    <label style="margin-top:10px;" data-i18n="familyCountLabel">🔢 تعداد هم‌خانواده‌ها (۱ تا ۲۵۵):</label>
+    <input type="number" id="familyCountInput" min="1" max="255" step="1" value="24" style="font-size:1.05em; text-align:center;">
+    <button class="btn modal-close" style="margin-top:20px;" data-i18n="close">بستن</button>
+  </div>
+
+  <div id="modal-hist" class="modal"><h3 style="color:var(--gold);" data-i18n="histTitle">📜 تاریخچه</h3><div id="histList" style="max-height:250px; overflow-y:auto;"></div><button class="btn modal-close" data-i18n="close">بستن</button></div>
+  <div id="modal-fav" class="modal">
+    <h3 style="color:var(--gold);" data-i18n="favTitle">⭐ علاقه‌مندی‌ها</h3>
+    <div id="favList" style="max-height:400px; overflow-y:auto;"></div>
+    <button class="btn modal-close" style="margin-top:16px;" data-i18n="close">بستن</button>
+  </div>
+  <div id="modal-similar" class="modal">
+    <h3 style="color:var(--gold);" data-i18n="similarModalTitle">🔎 کلمات مشابه</h3>
+    <div id="similarModalList"></div>
+    <button class="btn modal-close" style="margin-top:16px;" data-i18n="close">بستن</button>
+  </div>
+  <div id="modal-stats" class="modal">
+    <h3 style="color:var(--gold);" data-i18n="statsTitle">📊 آمار من</h3>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="num" id="statSearch">۰</div><div class="lbl" data-i18n="statSearchLbl">کل جستجوها</div></div>
+      <div class="stat-card"><div class="num" id="statRoots">۰</div><div class="lbl" data-i18n="statRootsLbl">ریشه‌های مختلف</div></div>
+      <div class="stat-card"><div class="num" id="statFav">۰</div><div class="lbl" data-i18n="statFavLbl">علاقه‌مندی‌ها</div></div>
+    </div>
+    <h4 style="color:var(--gold); font-size:.95em; margin-bottom:8px;" data-i18n="topRootsTitle">🔥 پرتکرارترین ریشه‌ها</h4>
+    <div class="top-roots-list" id="topRootsList"></div>
+    <button class="btn modal-close" style="margin-top:18px;" data-i18n="close">بستن</button>
+  </div>
+  <div id="modal-about" class="modal"><h3 style="color:var(--gold);" data-i18n="aboutTitle">ℹ️ دربارهٔ یاب</h3><p data-i18n="aboutBody"><b>یاب | v1.0</b> – ریشه‌یاب هوشمند عربی</p><p data-i18n="aboutAuthor">طراحی و توسعه: سیدامیرعلی غفاری</p><button class="btn modal-close" data-i18n="close">بستن</button></div>
+  <div id="modal-conj" class="modal">
+    <h3 style="color:var(--gold);" id="conjTitle">📜 جدول صرف</h3>
+    <div id="conjContent"></div>
+    <button class="btn modal-close" style="margin-top:18px;" data-i18n="close">بستن</button>
+  </div>
+  <div class="lp-menu" id="lpMenu"></div>
+</div>
+<script>
+// یاب | v1.0
+(function() {
+
+  // دیکشنری ترجمه‌ها
+  const I18N = {
+    fa: {
+      subtitle: "ریشه‌یاب هوشمند عربی",
+      placeholderWord: "کلمه را وارد کنید ...",
+      placeholderRoot: "ریشه سه‌حرفی وارد کنید ...",
+      modeWord: "🔤 کلمه ← ریشه",
+      modeRoot: "🌱 ریشه ← کلمات",
+      analyze: "تحلیل",
+      recentRoots: "🕘 ریشه‌های اخیر",
+      familyTitle: "هم‌خانواده‌های ریشه",
+      rootLabel: "ریشهٔ کشف‌شده:",
+      copyBtn: "📋 کپی",
+      imageBtn: "🖼️ تصویر",
+      linkBtn: "📤 لینک",
+      babaBtn: "📚 نمایش باب‌ها",
+      chartBtn: "📊 نمودار توزیع",
+      errTitle: "⚠️ ریشه پیدا نشد",
+      errMsg: "متأسفانه این کلمه در دیتابیس یافت نشد. لطفاً کلمه دیگری امتحان کنید.",
+      errNotAnalyze: "ℹ️ این کلمه ریشه ندارد",
+      errNotAnalyzeMsg: "این کلمه از حروف یا ادوات عربیه و ریشه‌یابی روش معنی نداره.",
+      errRootLen: "⚠️ ریشه باید سه‌حرفی باشد",
+      errRootLenMsg: "در حالت «ریشه ← کلمات» باید یک ریشه سه‌حرفی وارد کنی.",
+      backBtn: "بازگشت",
+      cancel: "انصراف",
+      similarTitle: "🔎 کلمات مشابه در دیتابیس:",
+      menuTitle: "📚 منوی اصلی",
+      menuStats: "📊 آمار من",
+      menuHist: "📜 تاریخچه",
+      menuFav: "⭐ علاقه‌مندی‌ها",
+      menuSet: "⚙️ تنظیمات",
+      menuInvite: "👥 دعوت دوستان",
+      menuAbout: "ℹ️ درباره",
+      menuClear: "🗑️ حذف حافظه",
+      closeMenu: "بستن منو",
+      settingsTitle: "⚙️ تنظیمات",
+      langLabel: "🌐 زبان:",
+      themeLabel: "🎨 تم‌ها:",
+      glassHeader: "💎 تنظیمات شیشه‌ای",
+      glassPickImage: "📷 انتخاب تصویر زمینه",
+      glassRemove: "🗑️ حذف",
+      glassIntensity: "💎 شدت شیشه",
+      customBg: "پس‌زمینه:",
+      customCard: "کارت‌ها:",
+      customText: "متن:",
+      customGold: "طلایی:",
+      apply: "اعمال",
+      fontLabel: "🔤 فونت:",
+      fontSizeLabel: "📏 اندازه فونت:",
+      familyCountLabel: "🔢 تعداد هم‌خانواده‌ها (۱ تا ۲۵۵):",
+      close: "بستن",
+      searchInResults: "جستجو در نتایج ...",
+      filterAll: "همه",
+      filterVerbs: "افعال",
+      filterPartic: "اسم فاعل/مفعول",
+      filterMasdar: "مصادر",
+      filterNoun: "اسم‌ها",
+      filterPlural: "جمع‌ها",
+      filterOther: "سایر",
+      sortDefault: "پیش‌فرض",
+      sortAlpha: "الفبا",
+      sortLength: "طول کلمه",
+      sortPattern: "نوع الگو",
+      multiRootTitle: "این کلمه چند ریشه دارد",
+      multiRootQuestion: "کدام ریشه را می‌خواهید ببینید؟",
+      multiRootBtn: "مشاهده هم‌خانواده‌ها",
+      properNounTitle: "اسم خاص",
+      properNounDesc: "این کلمه اسم خاص (عَلَم) است و ریشه‌ی عربی قابل استفاده ندارد.",
+      helpTitle: "🧭 راهنما",
+      helpBody: "۱. کلمه مورد نظر را در کادر اصلی بنویسید.<br>۲. دکمه تحلیل را بزنید تا ریشه ظاهر شود.<br>۳. حالت «ریشه ← کلمات» برای جستجوی معکوس است.<br>۴. اگه کلمه چند ریشه داشته باشه، هر دو نشون داده می‌شه.<br>۵. روی ⭐ هر کلمه بزنید تا ذخیره شود.<br>۶. 👆 روی هر کلمه نگه دارید تا منوی سریع باز شود.<br>۷. روی هر کلمه فعل کلیک کنید تا جدول صرفش بیاید.<br>۸. با فیلتر و جستجو می‌توانید نتایج را محدود کنید.",
+      histTitle: "📜 تاریخچه",
+      favTitle: "⭐ علاقه‌مندی‌ها",
+      similarModalTitle: "🔎 کلمات مشابه",
+      statsTitle: "📊 آمار من",
+      statSearchLbl: "کل جستجوها",
+      statRootsLbl: "ریشه‌های مختلف",
+      statFavLbl: "علاقه‌مندی‌ها",
+      topRootsTitle: "🔥 پرتکرارترین ریشه‌ها",
+      aboutTitle: "ℹ️ دربارهٔ یاب",
+      aboutBody: "<b>یاب | v1.0</b> – ریشه‌یاب هوشمند عربی",
+      aboutAuthor: "طراحی و توسعه: سیدامیرعلی غفاری",
+      lpCopy: "📋 کپی",
+      lpSimilar: "🔎 کلمات مشابه",
+      lpShare: "📤 اشتراک لینک",
+      lpFavAdd: "⭐ افزودن به علاقه‌مندی",
+      lpFavDel: "💔 حذف از علاقه‌مندی",
+      lpRoot: "🌱 جستجوی ریشه",
+      lpConj: "📜 جدول صرف",
+      conjTitle: "📜 صرف فعل",
+      conjPast: "📗 ماضی (گذشته)",
+      conjPresent: "📘 مضارع (حال)",
+      conjFuture: "🔮 مستقبل (آینده)",
+      conjImperative: "📙 امر",
+      conjRoot: "ریشه",
+      conjPattern: "الگو",
+      pron: "ضمیر",
+      verb: "فعل",
+      noFavs: "هنوز کلمه‌ای ذخیره نکردی.<br>روی ستاره‌ی هر کلمه بزن تا اینجا بیاد.",
+      emptyResults: "کلمه‌ای با این فیلتر پیدا نشد.",
+      notifCopied: "✅ کپی شد:",
+      listCopied: "✅ لیست کپی شد",
+      empty: "خالی"
+    },
+    ar: {
+      subtitle: "المُستخرِج الذكي للجذور العربية",
+      placeholderWord: "أدخل الكلمة ...",
+      placeholderRoot: "أدخل الجذر الثلاثي ...",
+      modeWord: "🔤 كلمة ← جذر",
+      modeRoot: "🌱 جذر ← كلمات",
+      analyze: "تحليل",
+      recentRoots: "🕘 الجذور الأخيرة",
+      familyTitle: "المشتقات من نفس الجذر",
+      rootLabel: "الجذر المكتشف:",
+      copyBtn: "📋 نسخ",
+      imageBtn: "🖼️ صورة",
+      linkBtn: "📤 رابط",
+      babaBtn: "📚 عرض الأبواب",
+      chartBtn: "📊 مخطط التوزيع",
+      errTitle: "⚠️ لم يتم العثور على الجذر",
+      errMsg: "للأسف لم يتم العثور على هذه الكلمة في قاعدة البيانات. جرب كلمة أخرى.",
+      errNotAnalyze: "ℹ️ هذه الكلمة لا جذر لها",
+      errNotAnalyzeMsg: "هذه الكلمة من الحروف أو الأدوات العربية ولا معنى لاستخراج الجذر منها.",
+      errRootLen: "⚠️ يجب أن يكون الجذر ثلاثيًا",
+      errRootLenMsg: "في وضع «جذر ← كلمات» يجب إدخال جذر ثلاثي.",
+      backBtn: "رجوع",
+      cancel: "إلغاء",
+      similarTitle: "🔎 كلمات مشابهة في قاعدة البيانات:",
+      menuTitle: "📚 القائمة الرئيسية",
+      menuStats: "📊 إحصائياتي",
+      menuHist: "📜 السجل",
+      menuFav: "⭐ المفضلة",
+      menuSet: "⚙️ الإعدادات",
+      menuInvite: "👥 دعوة الأصدقاء",
+      menuAbout: "ℹ️ حول",
+      menuClear: "🗑️ مسح الذاكرة",
+      closeMenu: "إغلاق القائمة",
+      settingsTitle: "⚙️ الإعدادات",
+      langLabel: "🌐 اللغة:",
+      themeLabel: "🎨 السمات:",
+      glassHeader: "💎 إعدادات زجاجية",
+      glassPickImage: "📷 اختيار صورة الخلفية",
+      glassRemove: "🗑️ حذف",
+      glassIntensity: "💎 شدة الزجاج",
+      customBg: "الخلفية:",
+      customCard: "البطاقات:",
+      customText: "النص:",
+      customGold: "الذهبي:",
+      apply: "تطبيق",
+      fontLabel: "🔤 الخط:",
+      fontSizeLabel: "📏 حجم الخط:",
+      familyCountLabel: "🔢 عدد المشتقات (١ إلى ٢٥٥):",
+      close: "إغلاق",
+      searchInResults: "بحث في النتائج ...",
+      filterAll: "الكل",
+      filterVerbs: "الأفعال",
+      filterPartic: "اسم الفاعل/المفعول",
+      filterMasdar: "المصادر",
+      filterNoun: "الأسماء",
+      filterPlural: "الجموع",
+      filterOther: "أخرى",
+      sortDefault: "افتراضي",
+      sortAlpha: "أبجدي",
+      sortLength: "طول الكلمة",
+      sortPattern: "نوع الوزن",
+      multiRootTitle: "هذه الكلمة لها أكثر من جذر",
+      multiRootQuestion: "أي جذر تريد أن ترى؟",
+      multiRootBtn: "عرض المشتقات",
+      properNounTitle: "اسم علم",
+      properNounDesc: "هذه الكلمة اسم علم ولا جذر عربي قابل للاستخدام لها.",
+      helpTitle: "🧭 دليل الاستخدام",
+      helpBody: "١. اكتب الكلمة في المربع الرئيسي.<br>٢. اضغط زر التحليل ليظهر الجذر.<br>٣. وضع «جذر ← كلمات» للبحث العكسي.<br>٤. إذا كان للكلمة أكثر من جذر، سيظهر الجميع.<br>٥. اضغط على ⭐ بجانب الكلمة لحفظها.<br>٦. اضغط مطوّلاً على الكلمة لفتح القائمة السريعة.<br>٧. اضغط على الفعل لرؤية جدول التصريف.<br>٨. يمكنك تصفية النتائج بالفلتر والبحث.",
+      histTitle: "📜 السجل",
+      favTitle: "⭐ المفضلة",
+      similarModalTitle: "🔎 كلمات مشابهة",
+      statsTitle: "📊 إحصائياتي",
+      statSearchLbl: "إجمالي البحث",
+      statRootsLbl: "جذور مختلفة",
+      statFavLbl: "المفضلة",
+      topRootsTitle: "🔥 أكثر الجذور تكرارًا",
+      aboutTitle: "ℹ️ حول ياب",
+      aboutBody: "<b>ياب | v1.0</b> – مُستخرِج الجذور الذكي",
+      aboutAuthor: "تصميم وتطوير: سيد أمير علي غفاري",
+      lpCopy: "📋 نسخ",
+      lpSimilar: "🔎 كلمات مشابهة",
+      lpShare: "📤 مشاركة الرابط",
+      lpFavAdd: "⭐ أضف إلى المفضلة",
+      lpFavDel: "💔 حذف من المفضلة",
+      lpRoot: "🌱 البحث عن الجذر",
+      lpConj: "📜 جدول التصريف",
+      conjTitle: "📜 تصريف الفعل",
+      conjPast: "📗 الماضي",
+      conjPresent: "📘 المضارع",
+      conjFuture: "🔮 المستقبل",
+      conjImperative: "📙 الأمر",
+      conjRoot: "الجذر",
+      conjPattern: "الوزن",
+      pron: "الضمير",
+      verb: "الفعل",
+      noFavs: "لم تحفظ أي كلمة بعد.<br>اضغط على النجمة لحفظ كلمة.",
+      emptyResults: "لا توجد كلمة مطابقة لهذا الفلتر.",
+      notifCopied: "✅ تم النسخ:",
+      listCopied: "✅ تم نسخ القائمة",
+      empty: "فارغ"
+    }
+  };
+
+  let currentLang = localStorage.getItem('yab_lang') || 'fa';
+  function t(key) { return (I18N[currentLang] && I18N[currentLang][key]) || I18N.fa[key] || key; }
+
+  // رنگ طلایی را به شکل rgba(..., alpha) برمی‌گرداند، مستقل از hex/rgb بودن --gold
+  function goldWithAlpha(alpha) {
+    const cs = getComputedStyle(document.documentElement);
+    let rgb = cs.getPropertyValue('--gold-rgb').trim();
+    if (!rgb) {
+      const hex = (cs.getPropertyValue('--gold').trim() || '#00e5ff').replace('#', '');
+      const r = parseInt(hex.substring(0, 2), 16) || 0;
+      const g = parseInt(hex.substring(2, 4), 16) || 229;
+      const b = parseInt(hex.substring(4, 6), 16) || 255;
+      rgb = `${r}, ${g}, ${b}`;
+    }
+    return `rgba(${rgb}, ${alpha})`;
+  }
+
+  function applyLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('yab_lang', lang);
+    document.documentElement.lang = lang;
+    document.documentElement.dir = 'rtl';
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.dataset.i18n;
+      const val = t(key);
+      if (val !== undefined) el.innerHTML = val;
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+      const key = el.dataset.i18nPh;
+      const val = t(key);
+      if (val !== undefined) el.placeholder = val;
+    });
+
+    const sb = document.getElementById('searchBoxEl');
+    if (sb) sb.setAttribute('data-subtitle', t('subtitle'));
+
+    updatePlaceholder();
+
+    const savedFontKey = localStorage.getItem('yab_font') || 'Vazirmatn';
+    const font = FONTS[savedFontKey];
+    if (font) {
+      const fl = document.getElementById('currentFontLabel');
+      if (fl) fl.textContent = getFontDisplayName(font);
+    }
+    renderFontGallery();
+
+    document.querySelectorAll('#langFaBtn, #langArBtn').forEach(b => {
+      b.classList.toggle('active', b.dataset.lang === lang);
+    });
+
+    renderFilterBar();
+    if (lastFamily.length) renderFamilyGrid(lastFamily);
+  }
+
+  // ریشه‌های ثابت و پرکاربرد
+  const STATIC_VALID_ROOTS = new Set([
+    "أبد","أثر","أجر","أخذ","أدب","أذن","أرض","أمر","أمم","أمن","أهل",
+    "تهم","بهم","سهم","وهم","فهم","رسم","جسم","حسم","قسم","نسم",
+    "صعب","صنع","سمع","منع","نفع","دفع","رفع","جمع","سمح","شرح",
+    "بعد","بعض","بنا","تعب","ثبت","حسن","حفظ","خبر","دخل","ذهب",
+    "رجع","رحم","سلم","شكر","صبر","ضرب","طلب","عمل","علم","عمر","غفر",
+    "فعل","قبل","قلب","كتب","محمد","نصر","نفس","هوى","وجد","وجه","وصل",
+    "وعد","یوم","آفر","دان","بین","ساز","گو","زن","خور","ده","مان","بند",
+    "شکن","خواه","شد","آمد","رفت","گفت","دید","بود","کرد","داد","گرفت",
+    "خواست","توان","دانست","شنید","نوشت","خواند","بست","شست","کشت","دزد",
+    "ریخت","ساخت","پخت","دوید","پرید","ترسید","خندید","گریست","نشست",
+    "برخاست","انداخت","گرفتار","آزاد","بسته","رفته","داده","گفته","دیده",
+    "بوده","کرده","نوشته","خوانده","شسته","کشته","دزده","ریخته",
+    "ساخته","پخته","دویده","پریده","ترسیده","خندیده","گریسته","نشسته"
+  ]);
+
+  // کلماتی که چند ریشه دارند — بعد از تحلیل، از کاربر می‌پرسیم کدام را می‌خواهد
+  const MULTI_ROOT_WORDS = {
+    "اتهام": ["تهم", "وهم"], "توهیم": ["تهم", "وهم"], "متهم": ["تهم", "وهم"],
+    "ابهام": ["بهم", "وهم"], "مبهم": ["بهم", "وهم"], "استبهام": ["بهم", "وهم"],
+    "ابتهاج": ["بهج", "وهج"], "مبتهج": ["بهج", "وهج"],
+    "ارتیاح": ["روح", "ریح"],
+    "استراحت": ["روح", "ریح"], "مستراح": ["روح", "ریح"]
+  };
+
+  let VALID_ROOTS = new Set(STATIC_VALID_ROOTS);
+  let customDB = JSON.parse(localStorage.getItem('yab_morph_custom_v2') || '{}');
+  for (let r of Object.values(customDB)) if(r && r.length===3) VALID_ROOTS.add(r);
+  let history = JSON.parse(localStorage.getItem('yab_morph_hist_v2') || '[]');
+  let customPatternsSet = new Set(JSON.parse(localStorage.getItem('yab_custom_patterns') || '[]'));
+  let favorites = JSON.parse(localStorage.getItem('yab_favorites') || '[]');
+  let stats = JSON.parse(localStorage.getItem('yab_stats') || '{"searches":0,"rootCounts":{},"firstUse":0}');
+  if (!stats.rootCounts) stats.rootCounts = {};
+  if (!stats.searches) stats.searches = 0;
+  if (!stats.firstUse) stats.firstUse = Date.now();
+  let sortMode = localStorage.getItem('yab_sortMode') || 'default';
+  let recentRoots = JSON.parse(localStorage.getItem('yab_recent_roots') || '[]');
+
+  // فونت‌های قابل انتخاب
+  const FONTS = {
+    Vazirmatn: { nameFa: 'وزیرمتن', nameAr: 'وزيرمتن', css: "'YabVazirmatn', sans-serif" },
+    Estedad:   { nameFa: 'استعداد', nameAr: 'استعداد', css: "'YabEstedad', sans-serif" },
+    Sahel:     { nameFa: 'ساحل', nameAr: 'ساحل', css: "'YabSahel', sans-serif" },
+    Samim:     { nameFa: 'صمیم', nameAr: 'صميم', css: "'YabSamim', sans-serif" },
+    YekanBakh: { nameFa: 'یکان‌بخ', nameAr: 'يكان باخ', css: "'YabYekanBakh', sans-serif" },
+    Dana:      { nameFa: 'دانا', nameAr: 'دانا', css: "'YabDana', sans-serif" },
+    Peyda:     { nameFa: 'پیدا', nameAr: 'پيدا', css: "'YabPeyda', sans-serif" },
+    Gandom:    { nameFa: 'گندم', nameAr: 'Gandom', css: "'YabGandom', sans-serif" },
+    Kalameh:   { nameFa: 'کلمه', nameAr: 'كلمة', css: "'YabKalameh', sans-serif" },
+    Shabnam:   { nameFa: 'شبنم', nameAr: 'شبنم', css: "'YabShabnam', sans-serif" },
+    IranSans:  { nameFa: 'ایران‌سنس', nameAr: 'إيران سنس', css: "'YabIranSans', sans-serif" },
+    Tahoma:    { nameFa: 'تاهوما', nameAr: 'تاهوما', css: "Tahoma, sans-serif" },
+    Calibri:   { nameFa: 'کالیبری', nameAr: 'كاليبري', css: "'YabCalibri', Calibri, sans-serif" }
+  };
+
+  function getFontDisplayName(font) {
+    return currentLang === 'ar' ? font.nameAr : font.nameFa;
+  }
+
+  // کلماتی که خودمون قبلاً چک کردیم و ریشه‌شون رو می‌دونیم — ذخیره دائم
+  const PERMANENT_USER_WORDS = {
+    "رز": "رزز","استعمار": "عمر","حق": "حقق","طهورا": "طهر","سلام": "سلم","تحقق": "حقق",
+    "امورات": "مور","فعولات": "فعل","مطهر": "طهر","تفعیل": "فعل","افعل": "فعل","حسنا": "حسن",
+    "امیر": "مور","تجدید": "جدد","تشدید": "شدد","تحلیل": "حلل","حلایل": "حلل","احستلل": "حلل",
+    "یحلل": "حلل","حلل": "حلل","حل": "حلل","احلل": "حلل","تفعل": "فعل","تحلل": "حلل",
+    "فحالل": "حلل","ففاعل": "فعل","تفاعل": "فعل","احنلل": "حلل","محلولة": "حلل","حللات": "حلل",
+    "ماموریت": "امر","مامور": "امر","عجیب": "عجب","تعجب": "عجب","متعجب": "عجب","اعجاب": "عجب",
+    "انقلاب": "قلب","متعلم": "علم","معلم": "علم","فاعل": "فعل","مفعول": "فعل","استقبال": "قبل",
+    "مسلم": "سلم","فعلل": "فعل","شدد": "شدد","انتفاض": "نفض"
+  };
+  const PERMANENT_USER_PATTERNS = ["تفعیل","فعایل","افستعل","ففاعل","مفعولیت","فعیل","افتعال"];
+
+  let PATTERNS_BY_LENGTH = {};
+  (function merge() {
+    for (const [w, r] of Object.entries(PERMANENT_USER_WORDS)) {
+      if (r && r.length === 3) { customDB[w] = r; VALID_ROOTS.add(r); }
+    }
+    for (const p of PERMANENT_USER_PATTERNS) {
+      if (!customPatternsSet.has(p)) { customPatternsSet.add(p); addPattern(p); }
+    }
+    localStorage.setItem('yab_morph_custom_v2', JSON.stringify(customDB));
+    localStorage.setItem('yab_custom_patterns', JSON.stringify([...customPatternsSet]));
+  })();
+
+  // ریشه‌های قطعی برای کلماتی که الگوریتم روشون خطا می‌کنه
+  const FIXED_ROOTS_BY_WORD = {
+    "ایتام": "یتم","یتیم": "یتم","یتیمه": "یتم",
+    "یوم": "یوم","ایام": "یوم","یومی": "یوم",
+    "مال": "مال","اموال": "مال","مالی": "مال","مالک": "مال","تملیک": "مال",
+    "موج": "موج","امواج": "موج","موجی": "موج",
+    "وزن": "وزن","اوزان": "وزن","موزون": "وزن","توازن": "وزن",
+    "وطن": "وطن","اوطان": "وطن","وطنی": "وطن",
+    "دین": "دین","ادیان": "دین","دینی": "دین","دیانت": "دین","متدین": "دین",
+    "ید": "یدی","ایادی": "یدی","ایدی": "یدی","یدین": "یدی",
+    "ارض": "ارض","اراضی": "ارض","ارضی": "ارض",
+    "صوت": "صوت","اصوات": "صوت","صوتی": "صوت",
+    "صحب": "صحب","صاحب": "صحب","اصحاب": "صحب","صحابه": "صحب","مصاحبت": "صحب",
+    "طفل": "طفل","اطفال": "طفل","طفلی": "طفل","طفولیت": "طفل",
+    "سلاح": "سلح","اسلحه": "سلح","مسلح": "سلح","تسلیح": "سلح",
+    "انتظار": "نظر","منتظر": "نظر","ینتظر": "نظر","انتظر": "نظر",
+    "بیع": "بیع","بیعان": "بیع","بیوع": "بیع","مبیع": "بیع",
+    "قول": "قول","اقوال": "قول","مقاله": "قول","مقالات": "قول","مقول": "قول",
+    "بین": "بین","بیان": "بین","بیانات": "بین","مبین": "بین",
+    "اولاد": "ولد","ولد": "ولد","والد": "ولد","والده": "ولد","ولادت": "ولد","مولد": "ولد","تولد": "ولد",
+    "ولی": "ولی","اولیا": "ولی","ولایت": "ولی","مولی": "ولی",
+    "وقت": "وقت","اوقات": "وقت","وقتی": "وقت","موقت": "وقت",
+    "وضع": "وضع","اوضاع": "وضع","وضعیت": "وضع","موضع": "وضع","واضع": "وضع","موضوع": "وضع",
+    "وصف": "وصف","اوصاف": "وصف","واصف": "وصف","موصوف": "وصف","توصیف": "وصف",
+    "نبی": "نبا","انبیا": "نبا","انبیاء": "نبا","نبوت": "نبا",
+    "یقین": "یقن","ایقان": "یقن","یقینی": "یقن","متیقن": "یقن","موقن": "یقن",
+    "یاس": "یأس","ایاس": "یأس","یائس": "یأس","مایوس": "یأس",
+    "یسر": "یسر","ایسار": "یسر","یسیر": "یسر","میسور": "یسر",
+    "دعا": "دعو","دعاء": "دعو","دعوة": "دعو","داعی": "دعو","مدعو": "دعو",
+    "رمی": "رمی","رماء": "رمی","رامی": "رمی","مرمی": "رمی",
+    "جری": "جری","جاری": "جری","مجری": "جری",
+    "بکی": "بکی","بکاء": "بکی","باکی": "بکی",
+    "مشی": "مشی","ماشی": "مشی",
+    "نسی": "نسی","نسیان": "نسی","ناس": "نسی",
+    "اشتری": "شری","شری": "شری","شراء": "شری","شاری": "شری","مشتری": "شری",
+    "لقی": "لقی","لقاء": "لقی","لاقی": "لقی","ملاقی": "لقی","ملاقات": "لقی",
+    "سمی": "سمو","سماء": "سمو","سامی": "سمو","مسمی": "سمو",
+    "بنی": "بنی","بناء": "بنی","بانی": "بنی","مبنی": "بنی","بنیان": "بنی",
+    "نوی": "نوی","ناوی": "نوی","منوی": "نوی",
+    "طوی": "طوی","طی": "طوی","طاوی": "طوی","مطوی": "طوی",
+    "هدی": "هدی","هدایة": "هدی","هادی": "هدی","مهدی": "هدی","هدیة": "هدی",
+    "رضی": "رضو","رضا": "رضو","راض": "رضو","مرضی": "رضو","رضوان": "رضو",
+    "قوی": "قوی","قوة": "قوی","مقوی": "قوی",
+    "نجی": "نجو","نجاء": "نجو","ناج": "نجو","منجی": "نجو","نجاة": "نجو",
+    "صحی": "صحو","صحو": "صحو","صاح": "صحو",
+    "عفی": "عفو","عفو": "عفو","عافی": "عفو","معفو": "عفو","عافیة": "عفو",
+    "کفی": "کفی","کفایة": "کفی","کافی": "کفی","مکفی": "کفی",
+    "شفی": "شفی","شفاء": "شفی","شافی": "شفی",
+    "دنا": "دنو","دنیا": "دنو","دان": "دنو","ادنی": "دنو",
+    "علا": "علو","علو": "علو","عالی": "علو","اعلی": "علو","تعالی": "علو",
+    "سما": "سمو",
+    "غنا": "غنو","غناء": "غنو","غانی": "غنو",
+    "روی": "روی","رواء": "روی","راوی": "روی","مروی": "روی","روایة": "روی",
+    "سوی": "سوی","سواء": "سوی",
+    "لوی": "لوی","لواء": "لوی","لاوی": "لوی",
+    "طغی": "طغو","طغیان": "طغو","طاغی": "طغو",
+    "غوی": "غوی","غوایة": "غوی","غاوی": "غوی",
+    "نهی": "نهی","ناهی": "نهی","منهی": "نهی",
+    "شقی": "شقی","شقاء": "شقی","شاقی": "شقی",
+    "عمی": "عمی","عماء": "عمی","اعمی": "عمی",
+    "وفی": "وفی","وفاء": "وفی","وافی": "وفی",
+    "صلی": "صلو","صلاة": "صلو","مصلی": "صلو","صلیب": "صلب",
+    "زنا": "زنی","زان": "زنی","زانیة": "زنی",
+    "قال": "قول","قائل": "قول","مقول": "قول",
+    "باع": "بیع","بائع": "بیع","بیاعة": "بیع",
+    "نام": "نوم","نائم": "نوم","منام": "نوم",
+    "صام": "صوم","صائم": "صوم","صیام": "صوم",
+    "خاف": "خوف","خائف": "خوف","مخوف": "خوف",
+    "مات": "موت","مائت": "موت","ممات": "موت",
+    "راح": "روح","رائح": "روح","مراح": "روح","راحة": "روح",
+    "دار": "دور","دائر": "دور","مدور": "دور","دائرة": "دور",
+    "کان": "کون","کائن": "کون","مکون": "کون",
+    "صار": "صیر","صائر": "صیر","مصیر": "صیر",
+    "عاد": "عود","عائد": "عود","معاد": "عود","عودة": "عود",
+    "زال": "زول","زوال": "زول","زائل": "زول",
+    "طاف": "طوف","طائف": "طوف","طواف": "طوف",
+    "حان": "حین","حائن": "حین",
+    "نال": "نول","نوال": "نول","نائل": "نول",
+    "فاز": "فوز","فائز": "فوز","مفاز": "فوز",
+    "جال": "جول","جائل": "جول","مجال": "جول","جولة": "جول",
+    "سال": "سیل","سائل": "سیل","سیلة": "سیل",
+    "لام": "لوم","لائم": "لوم","لومة": "لوم",
+    "صان": "صون","صائن": "صون","مصون": "صون","صیانة": "صون",
+    "بان": "بین","بائن": "بین",
+    "لان": "لین","لائن": "لین","لیونة": "لین",
+    "هان": "هون","هائن": "هون","مهین": "هون",
+    "ضاق": "ضیق","ضائق": "ضیق","مضیق": "ضیق",
+    "طاب": "طیب","طائب": "طیب","طیبة": "طیب",
+    "زار": "زور","زائر": "زور","مزار": "زور","زیارة": "زور",
+    "شاب": "شیب","شائب": "شیب",
+    "ذاب": "ذوب","ذائب": "ذوب",
+    "تاب": "توب","تائب": "توب","توبة": "توب",
+    "ثاب": "ثوب","ثائب": "ثوب",
+    "جاب": "جوب","جائب": "جوب","جواب": "جوب",
+    "صاب": "صوب","صائب": "صوب","مصاب": "صوب",
+    "غاب": "غیب","غائب": "غیب","غیبة": "غیب",
+    "فات": "فوت","فائت": "فوت",
+    "قاد": "قود","قائد": "قود","قیادة": "قود",
+    "کاد": "کید","کائد": "کید",
+    "ناد": "نود","نائد": "نود","نداء": "نود",
+    "واحد": "وحد","اثنان": "ثنی","ثلاثة": "ثلث","اربعة": "ربع",
+    "خمسة": "خمس","ستة": "ستت","سبعة": "سبع","ثمانیة": "ثمن","تسعة": "تسع",
+    "عشرة": "عشر","عشرون": "عشر","مائة": "مأی","مئة": "مأی",
+    "الف": "الف","الفان": "الف","الاف": "الف","ملیون": "ملن","ملايين": "ملن",
+    "احمر": "حمر","اخضر": "خضر","ازرق": "زرق","اصفر": "صفر","ابیض": "بیض",
+    "اسود": "سود","بنی": "بنن","وردی": "ورد","ذهبی": "ذهب","فضی": "فضض",
+    "راس": "روس","روس": "روس","رؤوس": "روس","عین": "عین","عیون": "عین",
+    "انف": "انف","انوف": "انف","فم": "فوه","افواه": "فوه",
+    "رجل": "رجل","ارجل": "رجل","قلب": "قلب","قلوب": "قلب",
+    "کبد": "کبد","اکباد": "کبد","معده": "معد","ریه": "ریه","کلیة": "کلی",
+    "ظهر": "ظهر","صدر": "صدر","بطن": "بطن","رقبة": "رقب","اصبع": "صبع",
+    "کف": "کفف","کفوف": "کفف","قدم": "قدم","اقدام": "قدم",
+    "اب": "ابو","ابو": "ابو","اباء": "ابو",
+    "ام": "امم","امهات": "امم",
+    "اخ": "اخو","اخو": "اخو","اخوان": "اخو","اخت": "اخو","اخوات": "اخو",
+    "ابن": "بنو","ابناء": "بنو","بنت": "بنو","بنات": "بنو",
+    "جد": "جدد","جده": "جدد","اجداد": "جدد",
+    "عم": "عمم","اعمام": "عمم","عمة": "عمم",
+    "خال": "خول","اخوال": "خول","خالة": "خول",
+    "زوج": "زوج","زوجة": "زوج","ازواج": "زوج"
+  };
+
+  // کلماتی که ریشه‌یابی براشون بی‌معنیه (حرف، ادات و...)
+  const NON_ANALYZABLE_WORDS = new Set([
+    "فی","من","الی","علی","عن","مع","عند","لدی","حتی","منذ","خلا","عدا","حاشا","مذ","رب",
+    "ان","لیت","لعل","لکن","لکنّ","لا","ما","لم","لن","هل","قد","سوف","لما",
+    "بل","او","ام","ثم","اذا","کیف","این","متی","لماذا","ماذا","کیفما",
+    "و","ف","ب","ل","ک","س","ال","یا","ها","وا","هنا","هناک","ثمّ","ثمّت"
+  ]);
+
+  // اسم‌های خاص — ریشه‌یابی روشون معنی نداره
+  const PROPER_NOUNS = new Set([
+    "ابراهیم","اسماعیل","اسحاق","یعقوب","یوسف","موسی","عیسی","هارون",
+    "داوود","داود","سلیمان","زکریا","یحیی","ایوب","یونس","لوط","نوح",
+    "آدم","ادم","شعیب","هود","صالح","الیاس","الیسع","ادریس",
+    "محمد","احمد","محمود","علی","حسن","حسین","عباس","حمزه","جعفر",
+    "کاظم","رضا","مهدی","سجاد","باقر","صادق","جواد","زکی","نقی","تقی",
+    "ابوبکر","عمر","عثمان","طلحه","زبیر","خالد","عمرو","زید","انس",
+    "فاطمه","زهرا","مریم","خدیجه","عایشه","زینب","رقیه","سکینه",
+    "حفصه","صفیه","میمونه","جویریه",
+    "مکه","مدینه","کربلا","نجف","قدس","شام","یمن","مصر","حجاز","عراق",
+    "بغداد","کوفه","بصره","دمشق","طوس","حلب","صنعا","قاهره","ایران","تهران"
+  ]);
+
+  (function mergeFixed() {
+    for (const [w, r] of Object.entries(FIXED_ROOTS_BY_WORD)) {
+      if (r && r.length === 3) { customDB[w] = r; VALID_ROOTS.add(r); }
+    }
+    localStorage.setItem('yab_morph_custom_v2', JSON.stringify(customDB));
+  })();
+
+  // تشدید رو باز می‌کنه (مثلاً محمّد → محمد)
+  function expandShadda(s) {
+    let r = "";
+    for (let i = 0; i < s.length; i++) {
+      if (s[i] === '\u0651') { if (r.length) r += r[r.length - 1]; }
+      else r += s[i];
+    }
+    return r;
+  }
+
+  // نرمال‌سازی حروف عربی/فارسی
+  function normalize(s) {
+    return expandShadda(s).replace(/[\u064B-\u0652\u0670]/g, '').replace(/[ـ\u200C]/g, '')
+      .replace(/[أإ]/g, 'ا').replace(/ؤ/g, 'و').replace(/ئ/g, 'ی').replace(/ي/g, 'ی').replace(/ء/g, 'ا').trim();
+  }
+
+  // الگوها رو بر اساس طول دسته‌بندی می‌کنه
+  function addPattern(p) {
+    // همان نرمال‌سازی واژهٔ ورودی را روی الگو هم اعمال می‌کنیم تا ي/ی و اعراب ناسازگار نشوند.
+    let clean = normalize(p);
+    let len = clean.length;
+    if (!PATTERNS_BY_LENGTH[len]) PATTERNS_BY_LENGTH[len] = [];
+    if (!PATTERNS_BY_LENGTH[len].includes(clean)) PATTERNS_BY_LENGTH[len].push(clean);
+  }
+  const ALL_PATTERNS = [
+    "فَعَل","فَعِل","فَعُل","فَعْل","فِعْل","فُعْل","فَعَلَة","فِعَلَة","فُعَلَة","فَعِلَة",
+    "أَفْعَل","فَعَّل","فَاعَل","تَفَعَّل","تَفَاعَل","اِنْفَعَل","اِفْتَعَل","اِفْعَلَّ","اِسْتَفْعَل",
+    "إِفْعَال","تَفْعِيل","مُفَاعَلَة","تَفَعُّل","تَفَاعُل","اِنْفِعَال","اِفْتِعَال","اِفْعِلَال","اِسْتِفْعَال",
+    "فِعَال","فُعُول","فَعَال","فُعَال","فَاعِل","فَاعِلَة","مَفْعُول","مَفْعُولَة","فَعِيل","فَعُول",
+    "فَعَّال","فَعَّالَة","مُفَعِّل","مُفَعَّل","مُفَاعِل","مُفَاعَل","مُفْعِل","مُفْعَل","مُتَفَعِّل",
+    "مُتَفَعَّل","مُتَفَاعِل","مُتَفَاعَل","مُنْفَعِل","مُنْفَعَل","مُفْتَعِل","مُفْتَعَل","مُفْعَلّ",
+    "مُسْتَفْعِل","مُسْتَفْعَل","مَفْعَل","مَفْعِل","مَفْعَلَة","مَفَاعِل","مَفَاعِيل","فَوَاعِل",
+    "فَعَالِيل","فَعَائِل","فُعَّال","أَفْعَال","أَفَاعِل","فَعْلَل","فِعْلَل","فُعْلَل","فَعْلَلَة"
+  ];
+  ALL_PATTERNS.forEach(addPattern);
+  customPatternsSet.forEach(p => addPattern(p));
+
+  // یه الگو رو روی کلمه امتحان می‌کنه — اگه ف،ع،ل یکسان دربیاد یعنی ریشه پیدا شده
+  function tryPattern(pat, word) {
+    if (pat.length !== word.length) return null;
+    let f = null, a = null, l = null;
+    for (let i = 0; i < pat.length; i++) {
+      let p = pat[i], w = word[i];
+      if (p === 'ف') { if (f === null) f = w; else if (f !== w) return null; }
+      else if (p === 'ع') { if (a === null) a = w; else if (a !== w) return null; }
+      else if (p === 'ل') { if (l === null) l = w; else if (l !== w) return null; }
+      else if (p !== w) return null;
+    }
+    return (f && a && l) ? f + a + l : null;
+  }
+
+  // از ریشه‌ی بدون پیشوند/پسوند، ریشه‌ی سه‌حرفی درمیاره
+  function extractRootFromStem(stem) {
+    if (stem.length < 3) return null;
+    let candidates = [];
+    (PATTERNS_BY_LENGTH[stem.length] || []).forEach(pat => {
+      let r = tryPattern(pat, stem);
+      if (r && r.length === 3) candidates.push(r);
+    });
+    let best = candidates.find(r => VALID_ROOTS.has(r));
+    if (!best && candidates.length) best = candidates.find(r => r[0] === stem[0]) || candidates[0];
+    return best || null;
+  }
+
+  // اگه ریشه با حرف ضعیف اشتباه درومده باشه، اصلاحش می‌کنه (و/ی/ا)
+  function correctWeakRoot(r) {
+    if (VALID_ROOTS.has(r)) return r;
+    let weaks = ['و', 'ي', 'ی', 'ا'];
+    let chars = r.split('');
+    for (let i = 0; i < chars.length; i++) {
+      if (weaks.includes(chars[i])) {
+        for (let sub of weaks) {
+          if (sub === chars[i]) continue;
+          let tmp = [...chars]; tmp[i] = sub;
+          let nr = tmp.join('');
+          if (VALID_ROOTS.has(nr)) return nr;
+        }
+      }
+    }
+    return r;
+  }
+
+  // پیشوندها و پسوندهای رایج عربی
+  const PREFIXES = ['ال','لل','كال','فال','بال','وال','است','مست','تست','يست','نست','ست','سأ','سن','سي','س','ف','و','ي','ل','ب','ك','ت','ن','ا','أ','إ','م','مت','مس','ت','ی'].sort((a,b)=>b.length-a.length);
+  const SUFFIXES = ['هايي','هاي','ها','ان','ات','ون','ين','ان','ين','ة','ه','ي','نا','هم','هن','كما','هما','يها','تها','تم','تن','ت','كن','كم','ها','ی','یها','ا'].sort((a,b)=>b.length-a.length);
+
+  // تحلیل صرفی کامل — اول خود کلمه، بعد با حذف پیشوند، بعد پسوند، بعد هر دو
+  function morphologicalAnalysis(word) {
+    let n = normalize(word);
+    if (!n || n.length < 2) return null;
+    let r = extractRootFromStem(n);
+    if (r) return correctWeakRoot(r);
+    let candidates = [];
+    for (let p of PREFIXES) if (n.startsWith(p)) { let s = n.slice(p.length); if (s.length>=3) { let rr = extractRootFromStem(s); if (rr) candidates.push(rr); } }
+    for (let s of SUFFIXES) if (n.endsWith(s)) { let stem = n.slice(0, -s.length); if (stem.length>=3) { let rr = extractRootFromStem(stem); if (rr) candidates.push(rr); } }
+    for (let p of PREFIXES) if (n.startsWith(p)) { let after = n.slice(p.length); for (let s of SUFFIXES) if (after.endsWith(s)) { let stem = after.slice(0, -s.length); if (stem.length>=3) { let rr = extractRootFromStem(stem); if (rr) candidates.push(rr); } } }
+    if (candidates.length) { let best = candidates.find(rr => VALID_ROOTS.has(rr)); if (!best) best = correctWeakRoot(candidates[0]); return best; }
+    if (n.length===2 && /^[\u0600-\u06FF]+$/.test(n)) { let d = n[0]+n[1]+n[1]; return d; }
+    return null;
+  }
+
+  // تابع اصلی پیدا کردن ریشه
+  function findRoot(word) {
+    let n = normalize(word);
+    if (!n || n.length < 2) return null;
+    if (customDB[n] && VALID_ROOTS.has(customDB[n]) && customDB[n].length===3) return customDB[n];
+    let r = morphologicalAnalysis(n);
+    if (r && r.length===3) { if (VALID_ROOTS.has(r)) { customDB[n] = r; localStorage.setItem('yab_morph_custom_v2', JSON.stringify(customDB)); } return r; }
+    return null;
+  }
+
+  function findMultiRoots(word) {
+    const n = normalize(word);
+    if (!MULTI_ROOT_WORDS[n]) return null;
+    const unique = [...new Set(MULTI_ROOT_WORDS[n].filter(r => r && r.length === 3))];
+    return unique.length ? unique : null;
+  }
+
+  // فاصله لِوِنشتاین — برای پیدا کردن کلمات مشابه
+  function levenshtein(a, b) {
+    const m = a.length, n = b.length;
+    if (!m) return n; if (!n) return m;
+    let prev = new Array(n+1);
+    for (let j = 0; j <= n; j++) prev[j] = j;
+    for (let i = 1; i <= m; i++) {
+      const cur = new Array(n+1); cur[0] = i;
+      for (let j = 1; j <= n; j++) {
+        const cost = a[i-1] === b[j-1] ? 0 : 1;
+        cur[j] = Math.min(prev[j] + 1, cur[j-1] + 1, prev[j-1] + cost);
+      }
+      prev = cur;
+    }
+    return prev[n];
+  }
+
+  function findSimilarWords(word, limit = 6) {
+    const n = normalize(word);
+    if (!n) return [];
+    const candidates = new Set();
+    for (const h of history) if (h && normalize(h) !== n) candidates.add(h);
+    for (const w of Object.keys(customDB)) if (w && normalize(w) !== n) candidates.add(w);
+    const arr = [...candidates].map(c => ({ word: c, dist: levenshtein(n, normalize(c)) }));
+    const maxD = Math.max(2, Math.floor(n.length / 2));
+    arr.sort((a, b) => a.dist - b.dist);
+    const result = [];
+    for (const x of arr) { if (x.dist > maxD) break; result.push(x.word); if (result.length >= limit) break; }
+    return result;
+  }
+
+  // ادغام حروف هم‌جنس (مثلاً ا + ا → آ)
+  function applyIdgham(word) {
+    const SKIP = /[\u064B-\u0650\u0652\u0670]/;
+    const SHADDA = '\u0651';
+    const ALEF = 'اأإآٱ', WAW = 'وؤ', YEH = 'يىی';
+    const getBase = c => { if (ALEF.includes(c)) return 'alef'; if (WAW.includes(c)) return 'waw'; if (YEH.includes(c)) return 'yeh'; return null; };
+    let result = '', i = 0;
+    while (i < word.length) {
+      const ch = word[i];
+      if (SKIP.test(ch) || ch === SHADDA) { result += ch; i++; continue; }
+      let j = i + 1;
+      while (j < word.length && SKIP.test(word[j])) j++;
+      if (j < word.length) {
+        const b1 = getBase(ch), b2 = getBase(word[j]);
+        if (b1 && b1 === b2) {
+          if (b1 === 'alef') result += 'آ';
+          else if (b1 === 'waw') result += 'و';
+          else if (b1 === 'yeh') result += 'ي';
+          i = j + 1; continue;
+        }
+      }
+      result += ch; i++;
+    }
+    return result;
+  }
+
+  // اصلاح افعال معتل (مثل قال → قول)
+  function correctWeakForm(root, form) {
+    const weakLetters = new Set(['و', 'ی', 'ي', 'ا', 'أ', 'إ', 'آ', 'ٱ']);
+    const isWeakChar = c => weakLetters.has(c);
+    const norm = c => { if (c === 'أ' || c === 'إ' || c === 'آ' || c === 'ٱ') return 'ا'; if (c === 'ی') return 'ي'; return c; };
+    const [f, a, l] = root.split('').map(norm);
+    const firstW = isWeakChar(f), midW = isWeakChar(a), lastW = isWeakChar(l);
+    if (!firstW && !midW && !lastW) return form;
+    let result = form;
+    const DIA = '[\\u064B-\\u065F\\u0670]';
+    if (firstW && !midW && !lastW) {
+      const wk = f;
+      try { const re1 = new RegExp('^([یتنأ])(' + DIA + '*)' + wk + 'ْ([\\u0621-\\u064A])(' + DIA + '?)(.*)$'); if (re1.test(result)) result = result.replace(re1, '$1$2$3ِ$5'); } catch(e){}
+      try { const re2 = new RegExp('^ا(' + DIA + '*)' + wk + 'ْ([\\u0621-\\u064A])(' + DIA + '*)(.*)$'); if (re2.test(result)) result = result.replace(re2, '$2ِ$4'); } catch(e){}
+    }
+    if (!firstW && !midW && lastW) {
+      if (result.length >= 2) { const last = result[result.length - 1]; const prev = result[result.length - 2]; if (/[\u064B-\u065F]/.test(last) && isWeakChar(prev)) result = result.slice(0, -1); }
+      if (result.length >= 2) { const last = result[result.length - 1]; const prev = result[result.length - 2]; if (last === prev && isWeakChar(last)) result = result.slice(0, -1); }
+    }
+    return result;
+  }
+
+  // کلمات رایج برای هر ریشه — به‌صورت دستی اضافه شده
+  const COMMON_WORDS_BY_ROOT = {
+    "سلم": ["مُسْلِم","مُسْلِمَة","مُسْلِمُون","مُسْلِمِين","مُسْلِمَات","تَسْلِيم","إِسْلَام","إِسْلَامِيّ","إِسْلَامِيَّة","مُسَالَمَة","مُسَالِم","سَلَام","سَلَامَة","سَلَامِيّ","سَلِيم","سَلِيمَة","سَالِم","سَالِمَة","أَسْلَمَ","يُسْلِمُ","سَلَّمَ","يُسَلِّمُ","تَسَلَّمَ","اِسْتِسْلَام","مُسْتَسْلِم","سِلْم","سِلْمِيّ","سَلَم","سُلَّم","سَلَالِم"],
+    "علم": ["عِلْم","عِلْمِيّ","عِلْمِيَّة","عُلُوم","عَالِم","عَالِمَة","عَالِمُون","عُلَمَاء","عَلِيم","عَلَّام","مُعَلِّم","مُعَلِّمَة","مُتَعَلِّم","تَعْلِيم","تَعْلِيمِيّ","تَعَلُّم","مَعْلُوم","مَعْلُومَة","مَعْلُومَات","أَعْلَام","عَلَامَة","عَلَّمَ","يُعَلِّمُ","تَعَلَّمَ","اِسْتِعْلَام","مُسْتَعْلِم","مَعْلَم","مَعَالِم"],
+    "كتب": ["كِتَاب","كِتَابَة","كِتَابِيّ","كُتُب","كَاتِب","كَاتِبَة","كُتَّاب","مَكْتُوب","مَكْتُوبَة","مَكْتَب","مَكْتَبَة","كَتَبَ","يَكْتُبُ","اُكْتُبْ","مُكَاتَبَة","اِسْتِكْتَاب","كُتَيِّب"],
+    "درس": ["دَرْس","دُرُوس","دَرَسَ","يَدْرُسُ","دَارِس","دَارِسَة","مَدْرُوس","مَدْرَسَة","مَدَارِس","دِرَاسَة","دِرَاسِيّ","مُدَرِّس","مُدَرِّسَة","تَدْرِيس"],
+    "فتح": ["فَتْح","فُتُوح","فَاتِح","فَاتِحَة","مَفْتُوح","مَفْتُوحَة","مَفَاتِيح","مِفْتَاح","فَتَحَ","يَفْتَحُ","اِفْتَحْ","فَتَّاح","تَفْتِيح","اِفْتِتَاح","اِسْتِفْتَاح"],
+    "تهم": ["تُهْمَة","تُهَم","تُهْمَات","تُهْمِيّ","مُتَّهَم","مُتَّهَمَة","اِتِّهَام","اِتِّهَامَات","اِتِّهَامِيّ"],
+    "وهم": ["وَهْم","وُهُوم","أَوْهَام","وَهْمِيّ","وَاهِم","مَوْهُوم","تَوْهِيم","اِتِّهَام","مُتَّهَم","تَوْهُّم","مُتَوَهِّم"]
+  };
+
+  // از روی کلمه و ریشه، الگوش رو حساب می‌کنه (مثلاً مَفعول)
+  function computePattern(word, root) {
+    const diacriticRe = /[\u064B-\u065F\u0670]/;
+    const letters = [];
+    let i = 0;
+    while (i < word.length) {
+      if (diacriticRe.test(word[i])) { i++; continue; }
+      const c = word[i]; let dia = ''; i++;
+      while (i < word.length && diacriticRe.test(word[i])) { dia += word[i]; i++; }
+      letters.push({ char: c, dia });
+    }
+    const normCh = c => c.replace(/[أإآٱ]/, 'ا').replace(/[ئيىی]/, 'ي').replace(/[ؤ]/, 'و').replace(/ة/, 'ه').replace(/ک/, 'ك');
+    const rNorm = root.split('').map(normCh);
+    const positions = []; let ri = 0;
+    for (let k = 0; k < letters.length && ri < 3; k++) {
+      if (normCh(letters[k].char) === rNorm[ri]) { positions.push(k); ri++; }
+    }
+    if (positions.length !== 3) return null;
+    let pat = '';
+    for (let k = 0; k < letters.length; k++) {
+      const idx = positions.indexOf(k);
+      pat += (idx === 0 ? 'ف' : idx === 1 ? 'ع' : idx === 2 ? 'ل' : letters[k].char) + letters[k].dia;
+    }
+    return pat;
+  }
+
+  // دسته‌بندی الگو: فعل / اسم فاعل-مفعول / مصدر / اسم / جمع / سایر
+  function patternFamily(pat) {
+    if (!pat) return 'other';
+    const s = pat.replace(/[\u064B-\u065F\u0670]/g, '');
+    if (/^(مفاعیل|مفاعل|فواعل|فعائل|فعالیل|أفاعل|فُعَّال|فُعَلَاء|أَفْعَال)/.test(s)) return 'plural';
+    if (/^(است|افت|انف|تفا|تفع|افتع|انفع|تفعل|تفاعل|افعال|تفعیل|مفاعلة|افتعا)/.test(s)) return 'masdar';
+    if (/^(مف|مُف|مِف)/.test(s)) return 'partic';
+    if (/^(فاع|فَعَّا|فعیل|فعول)/.test(s)) return 'partic';
+    if (/^[يتأن]/.test(s)) return 'verb';
+    if (/^(فعل|فَعَل|فَعَّل|فاعل|أفعل|تفعل|تفاعل)/.test(s)) return 'verb';
+    if (/^(فعل|فِعْل|فُعْل|فَعْل|فَعَل|فَعِل|فَعُل)/.test(s)) return 'noun';
+    return 'other';
+  }
+
+  // جدول‌های صرف برای ۶ باب پرکاربرد
+  const CONJ_FAMILIES = {
+    "فَعَلَ": {
+      labelFa: "ثلاثی مجرد — فَعَلَ / يَفْعُلُ", labelAr: "الثلاثي المجرد — فَعَلَ / يَفْعُلُ",
+      past: { "هُوَ":"فَعَلَ","هُمَا":"فَعَلَا","هُمْ":"فَعَلُوا","هِيَ":"فَعَلَتْ","هُمَا (مؤ)":"فَعَلَتَا","هُنَّ":"فَعَلْنَ","أَنْتَ":"فَعَلْتَ","أَنْتُمَا":"فَعَلْتُمَا","أَنْتُمْ":"فَعَلْتُمْ","أَنْتِ":"فَعَلْتِ","أَنْتُنَّ":"فَعَلْتُنَّ","أَنَا":"فَعَلْتُ","نَحْنُ":"فَعَلْنَا" },
+      present: { "هُوَ":"يَفْعُلُ","هُمَا":"يَفْعُلَانِ","هُمْ":"يَفْعُلُونَ","هِيَ":"تَفْعُلُ","هُمَا (مؤ)":"تَفْعُلَانِ","هُنَّ":"يَفْعُلْنَ","أَنْتَ":"تَفْعُلُ","أَنْتُمَا":"تَفْعُلَانِ","أَنْتُمْ":"تَفْعُلُونَ","أَنْتِ":"تَفْعُلِينَ","أَنْتُنَّ":"تَفْعُلْنَ","أَنَا":"أَفْعُلُ","نَحْنُ":"نَفْعُلُ" },
+      future: { "هُوَ":"سَيَفْعُلُ","هُمَا":"سَيَفْعُلَانِ","هُمْ":"سَيَفْعُلُونَ","هِيَ":"سَتَفْعُلُ","هُمَا (مؤ)":"سَتَفْعُلَانِ","هُنَّ":"سَيَفْعُلْنَ","أَنْتَ":"سَتَفْعُلُ","أَنْتُمَا":"سَتَفْعُلَانِ","أَنْتُمْ":"سَتَفْعُلُونَ","أَنْتِ":"سَتَفْعُلِينَ","أَنْتُنَّ":"سَتَفْعُلْنَ","أَنَا":"سَأَفْعُلُ","نَحْنُ":"سَنَفْعُلُ" },
+      imperative: { "أَنْتَ":"اِفْعَلْ","أَنْتُمَا":"اِفْعَلَا","أَنْتُمْ":"اِفْعَلُوا","أَنْتِ":"اِفْعَلِي","أَنْتُنَّ":"اِفْعَلْنَ" }
+    },
+    "فَعَّلَ": {
+      labelFa: "تفعیل — فَعَّلَ / يُفَعِّلُ", labelAr: "التفعيل — فَعَّلَ / يُفَعِّلُ",
+      past: { "هُوَ":"فَعَّلَ","هُمَا":"فَعَّلَا","هُمْ":"فَعَّلُوا","هِيَ":"فَعَّلَتْ","هُمَا (مؤ)":"فَعَّلَتَا","هُنَّ":"فَعَّلْنَ","أَنْتَ":"فَعَّلْتَ","أَنْتُمَا":"فَعَّلْتُمَا","أَنْتُمْ":"فَعَّلْتُمْ","أَنْتِ":"فَعَّلْتِ","أَنْتُنَّ":"فَعَّلْتُنَّ","أَنَا":"فَعَّلْتُ","نَحْنُ":"فَعَّلْنَا" },
+      present: { "هُوَ":"يُفَعِّلُ","هُمَا":"يُفَعِّلَانِ","هُمْ":"يُفَعِّلُونَ","هِيَ":"تُفَعِّلُ","هُمَا (مؤ)":"تُفَعِّلَانِ","هُنَّ":"يُفَعِّلْنَ","أَنْتَ":"تُفَعِّلُ","أَنْتُمَا":"تُفَعِّلَانِ","أَنْتُمْ":"تُفَعِّلُونَ","أَنْتِ":"تُفَعِّلِينَ","أَنْتُنَّ":"تُفَعِّلْنَ","أَنَا":"أُفَعِّلُ","نَحْنُ":"نُفَعِّلُ" },
+      future: { "هُوَ":"سَيُفَعِّلُ","هُمَا":"سَيُفَعِّلَانِ","هُمْ":"سَيُفَعِّلُونَ","هِيَ":"سَتُفَعِّلُ","هُمَا (مؤ)":"سَتُفَعِّلَانِ","هُنَّ":"سَيُفَعِّلْنَ","أَنْتَ":"سَتُفَعِّلُ","أَنْتُمَا":"سَتُفَعِّلَانِ","أَنْتُمْ":"سَتُفَعِّلُونَ","أَنْتِ":"سَتُفَعِّلِينَ","أَنْتُنَّ":"سَتُفَعِّلْنَ","أَنَا":"سَأُفَعِّلُ","نَحْنُ":"سَنُفَعِّلُ" },
+      imperative: { "أَنْتَ":"فَعِّلْ","أَنْتُمَا":"فَعِّلَا","أَنْتُمْ":"فَعِّلُوا","أَنْتِ":"فَعِّلِي","أَنْتُنَّ":"فَعِّلْنَ" }
+    },
+    "فَاعَلَ": {
+      labelFa: "مفاعله — فَاعَلَ / يُفَاعِلُ", labelAr: "المفاعلة — فَاعَلَ / يُفَاعِلُ",
+      past: { "هُوَ":"فَاعَلَ","هُمَا":"فَاعَلَا","هُمْ":"فَاعَلُوا","هِيَ":"فَاعَلَتْ","هُمَا (مؤ)":"فَاعَلَتَا","هُنَّ":"فَاعَلْنَ","أَنْتَ":"فَاعَلْتَ","أَنْتُمَا":"فَاعَلْتُمَا","أَنْتُمْ":"فَاعَلْتُمْ","أَنْتِ":"فَاعَلْتِ","أَنْتُنَّ":"فَاعَلْتُنَّ","أَنَا":"فَاعَلْتُ","نَحْنُ":"فَاعَلْنَا" },
+      present: { "هُوَ":"يُفَاعِلُ","هُمَا":"يُفَاعِلَانِ","هُمْ":"يُفَاعِلُونَ","هِيَ":"تُفَاعِلُ","هُمَا (مؤ)":"تُفَاعِلَانِ","هُنَّ":"يُفَاعِلْنَ","أَنْتَ":"تُفَاعِلُ","أَنْتُمَا":"تُفَاعِلَانِ","أَنْتُمْ":"تُفَاعِلُونَ","أَنْتِ":"تُفَاعِلِينَ","أَنْتُنَّ":"تُفَاعِلْنَ","أَنَا":"أُفَاعِلُ","نَحْنُ":"نُفَاعِلُ" },
+      future: { "هُوَ":"سَيُفَاعِلُ","هُمَا":"سَيُفَاعِلَانِ","هُمْ":"سَيُفَاعِلُونَ","هِيَ":"سَتُفَاعِلُ","هُمَا (مؤ)":"سَتُفَاعِلَانِ","هُنَّ":"سَيُفَاعِلْنَ","أَنْتَ":"سَتُفَاعِلُ","أَنْتُمَا":"سَتُفَاعِلَانِ","أَنْتُمْ":"سَتُفَاعِلُونَ","أَنْتِ":"سَتُفَاعِلِينَ","أَنْتُنَّ":"سَتُفَاعِلْنَ","أَنَا":"سَأُفَاعِلُ","نَحْنُ":"سَنُفَاعِلُ" },
+      imperative: { "أَنْتَ":"فَاعِلْ","أَنْتُمَا":"فَاعِلَا","أَنْتُمْ":"فَاعِلُوا","أَنْتِ":"فَاعِلِي","أَنْتُنَّ":"فَاعِلْنَ" }
+    },
+    "أَفْعَلَ": {
+      labelFa: "افعال — أَفْعَلَ / يُفْعِلُ", labelAr: "الإفعال — أَفْعَلَ / يُفْعِلُ",
+      past: { "هُوَ":"أَفْعَلَ","هُمَا":"أَفْعَلَا","هُمْ":"أَفْعَلُوا","هِيَ":"أَفْعَلَتْ","هُمَا (مؤ)":"أَفْعَلَتَا","هُنَّ":"أَفْعَلْنَ","أَنْتَ":"أَفْعَلْتَ","أَنْتُمَا":"أَفْعَلْتُمَا","أَنْتُمْ":"أَفْعَلْتُمْ","أَنْتِ":"أَفْعَلْتِ","أَنْتُنَّ":"أَفْعَلْتُنَّ","أَنَا":"أَفْعَلْتُ","نَحْنُ":"أَفْعَلْنَا" },
+      present: { "هُوَ":"يُفْعِلُ","هُمَا":"يُفْعِلَانِ","هُمْ":"يُفْعِلُونَ","هِيَ":"تُفْعِلُ","هُمَا (مؤ)":"تُفْعِلَانِ","هُنَّ":"يُفْعِلْنَ","أَنْتَ":"تُفْعِلُ","أَنْتُمَا":"تُفْعِلَانِ","أَنْتُمْ":"تُفْعِلُونَ","أَنْتِ":"تُفْعِلِينَ","أَنْتُنَّ":"تُفْعِلْنَ","أَنَا":"أُفْعِلُ","نَحْنُ":"نُفْعِلُ" },
+      future: { "هُوَ":"سَيُفْعِلُ","هُمَا":"سَيُفْعِلَانِ","هُمْ":"سَيُفْعِلُونَ","هِيَ":"سَتُفْعِلُ","هُمَا (مؤ)":"سَتُفْعِلَانِ","هُنَّ":"سَيُفْعِلْنَ","أَنْتَ":"سَتُفْعِلُ","أَنْتُمَا":"سَتُفْعِلَانِ","أَنْتُمْ":"سَتُفْعِلُونَ","أَنْتِ":"سَتُفْعِلِينَ","أَنْتُنَّ":"سَتُفْعِلْنَ","أَنَا":"سَأُفْعِلُ","نَحْنُ":"سَنُفْعِلُ" },
+      imperative: { "أَنْتَ":"أَفْعِلْ","أَنْتُمَا":"أَفْعِلَا","أَنْتُمْ":"أَفْعِلُوا","أَنْتِ":"أَفْعِلِي","أَنْتُنَّ":"أَفْعِلْنَ" }
+    },
+    "تَفَاعَلَ": {
+      labelFa: "تفاعل — تَفَاعَلَ / يَتَفَاعَلُ", labelAr: "التفاعل — تَفَاعَلَ / يَتَفَاعَلُ",
+      past: { "هُوَ":"تَفَاعَلَ","هُمَا":"تَفَاعَلَا","هُمْ":"تَفَاعَلُوا","هِيَ":"تَفَاعَلَتْ","هُمَا (مؤ)":"تَفَاعَلَتَا","هُنَّ":"تَفَاعَلْنَ","أَنْتَ":"تَفَاعَلْتَ","أَنْتُمَا":"تَفَاعَلْتُمَا","أَنْتُمْ":"تَفَاعَلْتُمْ","أَنْتِ":"تَفَاعَلْتِ","أَنْتُنَّ":"تَفَاعَلْتُنَّ","أَنَا":"تَفَاعَلْتُ","نَحْنُ":"تَفَاعَلْنَا" },
+      present: { "هُوَ":"يَتَفَاعَلُ","هُمَا":"يَتَفَاعَلَانِ","هُمْ":"يَتَفَاعَلُونَ","هِيَ":"تَتَفَاعَلُ","هُمَا (مؤ)":"تَتَفَاعَلَانِ","هُنَّ":"يَتَفَاعَلْنَ","أَنْتَ":"تَتَفَاعَلُ","أَنْتُمَا":"تَتَفَاعَلَانِ","أَنْتُمْ":"تَتَفَاعَلُونَ","أَنْتِ":"تَتَفَاعَلِينَ","أَنْتُنَّ":"تَتَفَاعَلْنَ","أَنَا":"أَتَفَاعَلُ","نَحْنُ":"نَتَفَاعَلُ" },
+      future: { "هُوَ":"سَيَتَفَاعَلُ","هُمَا":"سَيَتَفَاعَلَانِ","هُمْ":"سَيَتَفَاعَلُونَ","هِيَ":"سَتَتَفَاعَلُ","هُمَا (مؤ)":"سَتَتَفَاعَلَانِ","هُنَّ":"سَيَتَفَاعَلْنَ","أَنْتَ":"سَتَتَفَاعَلُ","أَنْتُمَا":"سَتَتَفَاعَلَانِ","أَنْتُمْ":"سَتَتَفَاعَلُونَ","أَنْتِ":"سَتَتَفَاعَلِينَ","أَنْتُنَّ":"سَتَتَفَاعَلْنَ","أَنَا":"سَأَتَفَاعَلُ","نَحْنُ":"سَنَتَفَاعَلُ" },
+      imperative: { "أَنْتَ":"تَفَاعَلْ","أَنْتُمَا":"تَفَاعَلَا","أَنْتُمْ":"تَفَاعَلُوا","أَنْتِ":"تَفَاعَلِي","أَنْتُنَّ":"تَفَاعَلْنَ" }
+    },
+    "اِسْتَفْعَلَ": {
+      labelFa: "استفعال — اِسْتَفْعَلَ / يَسْتَفْعِلُ", labelAr: "الاستفعال — اِسْتَفْعَلَ / يَسْتَفْعِلُ",
+      past: { "هُوَ":"اِسْتَفْعَلَ","هُمَا":"اِسْتَفْعَلَا","هُمْ":"اِسْتَفْعَلُوا","هِيَ":"اِسْتَفْعَلَتْ","هُمَا (مؤ)":"اِسْتَفْعَلَتَا","هُنَّ":"اِسْتَفْعَلْنَ","أَنْتَ":"اِسْتَفْعَلْتَ","أَنْتُمَا":"اِسْتَفْعَلْتُمَا","أَنْتُمْ":"اِسْتَفْعَلْتُمْ","أَنْتِ":"اِسْتَفْعَلْتِ","أَنْتُنَّ":"اِسْتَفْعَلْتُنَّ","أَنَا":"اِسْتَفْعَلْتُ","نَحْنُ":"اِسْتَفْعَلْنَا" },
+      present: { "هُوَ":"يَسْتَفْعِلُ","هُمَا":"يَسْتَفْعِلَانِ","هُمْ":"يَسْتَفْعِلُونَ","هِيَ":"تَسْتَفْعِلُ","هُمَا (مؤ)":"تَسْتَفْعِلَانِ","هُنَّ":"يَسْتَفْعِلْنَ","أَنْتَ":"تَسْتَفْعِلُ","أَنْتُمَا":"تَسْتَفْعِلَانِ","أَنْتُمْ":"تَسْتَفْعِلُونَ","أَنْتِ":"تَسْتَفْعِلِينَ","أَنْتُنَّ":"تَسْتَفْعِلْنَ","أَنَا":"أَسْتَفْعِلُ","نَحْنُ":"نَسْتَفْعِلُ" },
+      future: { "هُوَ":"سَيَسْتَفْعِلُ","هُمَا":"سَيَسْتَفْعِلَانِ","هُمْ":"سَيَسْتَفْعِلُونَ","هِيَ":"سَتَسْتَفْعِلُ","هُمَا (مؤ)":"سَتَسْتَفْعِلَانِ","هُنَّ":"سَيَسْتَفْعِلْنَ","أَنْتَ":"سَتَسْتَفْعِلُ","أَنْتُمَا":"سَتَسْتَفْعِلَانِ","أَنْتُمْ":"سَتَسْتَفْعِلُونَ","أَنْتِ":"سَتَسْتَفْعِلِينَ","أَنْتُنَّ":"سَتَسْتَفْعِلْنَ","أَنَا":"سَأَسْتَفْعِلُ","نَحْنُ":"سَنَسْتَفْعِلُ" },
+      imperative: { "أَنْتَ":"اِسْتَفْعِلْ","أَنْتُمَا":"اِسْتَفْعِلَا","أَنْتُمْ":"اِسْتَفْعِلُوا","أَنْتِ":"اِسْتَفْعِلِي","أَنْتُنَّ":"اِسْتَفْعِلْنَ" }
+    }
+  };
+
+  function substituteRoot(pattern, root) {
+    const [f, a, l] = root.split('');
+    let out = '';
+    for (const ch of pattern) {
+      if (ch === 'ف') out += f;
+      else if (ch === 'ع') out += a;
+      else if (ch === 'ل') out += l;
+      else out += ch;
+    }
+    return out;
+  }
+
+  // ساخت لیست هم‌خانواده‌ها با جایگزینی ریشه در الگوها
+  function generateFamily(root, cnt=24) {
+    if (!root || root.length !== 3) return [];
+    cnt = Math.max(1, Math.min(255, parseInt(cnt) || 24));
+    const [f, a, l] = root.split('');
+
+    const ARABIC_FAMILY_PATTERNS = [
+      "فَعَلَ","فَعِلَ","فَعُلَ","فَعَّلَ","فَاعَلَ","أَفْعَلَ","تَفَعَّلَ","تَفَاعَلَ",
+      "اِنْفَعَلَ","اِفْتَعَلَ","اِفْعَلَّ","اِسْتَفْعَلَ",
+      "فَعَلَتْ","فَعَلَتَا","فَعَلُوا","فَعَلْنَ","فَعَلْتُ","فَعَلْنَا","فَعَلْتَ","فَعَلْتِ","فَعَلْتُمَا","فَعَلْتُمْ","فَعَلْتُنَّ",
+      "فَعَّلَتْ","فَعَّلُوا","فَعَّلْتُ","فَعَّلْنَا","فَعَّلْتَ","فَعَّلْتِ",
+      "فَاعَلَتْ","فَاعَلُوا","فَاعَلْتُ","فَاعَلْنَا",
+      "أَفْعَلَتْ","أَفْعَلُوا","أَفْعَلْتُ","أَفْعَلْنَا",
+      "تَفَعَّلَتْ","تَفَعَّلُوا","تَفَعَّلْتُ","تَفَعَّلْنَا",
+      "تَفَاعَلَتْ","تَفَاعَلُوا","تَفَاعَلْتُ","تَفَاعَلْنَا",
+      "اِنْفَعَلَتْ","اِنْفَعَلُوا","اِنْفَعَلْتُ",
+      "اِفْتَعَلَتْ","اِفْتَعَلُوا","اِفْتَعَلْتُ",
+      "اِسْتَفْعَلَتْ","اِسْتَفْعَلُوا","اِسْتَفْعَلْتُ","اِسْتَفْعَلْنَا",
+      "يَفْعُلُ","يَفْعِلُ","يَفْعَلُ","يُفَعِّلُ","يُفَاعِلُ","يُفْعِلُ",
+      "يَتَفَعَّلُ","يَتَفَاعَلُ","يَنْفَعِلُ","يَفْتَعِلُ","يَفْعَلُّ","يَسْتَفْعِلُ",
+      "يَفْعُلَانِ","يَفْعُلُونَ","يَفْعُلْنَ","تَفْعُلُ","تَفْعُلَانِ","تَفْعُلُونَ","تَفْعُلِينَ","تَفْعُلْنَ",
+      "أَفْعُلُ","نَفْعُلُ",
+      "يُفَعِّلُونَ","تُفَعِّلُ","تُفَعِّلِينَ","أُفَعِّلُ","نُفَعِّلُ",
+      "يُفَاعِلُونَ","تُفَاعِلُ","أُفَاعِلُ","نُفَاعِلُ",
+      "يُفْعِلُونَ","تُفْعِلُ","أُفْعِلُ","نُفْعِلُ",
+      "يَتَفَعَّلُونَ","تَتَفَعَّلُ","أَتَفَعَّلُ","نَتَفَعَّلُ",
+      "يَتَفَاعَلُونَ","تَتَفَاعَلُ","أَتَفَاعَلُ","نَتَفَاعَلُ",
+      "يَنْفَعِلُونَ","تَنْفَعِلُ","أَنْفَعِلُ","نَنْفَعِلُ",
+      "يَفْتَعِلُونَ","تَفْتَعِلُ","أَفْتَعِلُ","نَفْتَعِلُ",
+      "يَسْتَفْعِلُونَ","تَسْتَفْعِلُ","أَسْتَفْعِلُ","نَسْتَفْعِلُ",
+      "سَيَفْعُلُ","سَيَفْعِلُ","سَيَفْعَلُ","سَيُفَعِّلُ","سَيُفَاعِلُ","سَيُفْعِلُ",
+      "سَيَتَفَعَّلُ","سَيَتَفَاعَلُ","سَيَنْفَعِلُ","سَيَفْتَعِلُ","سَيَسْتَفْعِلُ",
+      "سَتَفْعُلُ","سَتَفْعُلِينَ","سَتَفْعُلُونَ","سَأَفْعُلُ","سَنَفْعُلُ",
+      "سَيُفَعِّلُونَ","سَتُفَعِّلُ","سَأُفَعِّلُ","سَنُفَعِّلُ",
+      "سَيُفَاعِلُونَ","سَتُفَاعِلُ","سَأُفَاعِلُ","سَنُفَاعِلُ",
+      "سَيُفْعِلُونَ","سَتُفْعِلُ","سَأُفْعِلُ","سَنُفْعِلُ",
+      "سَيَتَفَعَّلُونَ","سَتَتَفَعَّلُ","سَأَتَفَعَّلُ","سَنَتَفَعَّلُ",
+      "سَيَتَفَاعَلُونَ","سَتَتَفَاعَلُ","سَأَتَفَاعَلُ","سَنَتَفَاعَلُ",
+      "سَيَسْتَفْعِلُونَ","سَتَسْتَفْعِلُ","سَأَسْتَفْعِلُ","سَنَسْتَفْعِلُ",
+      "فَاعِل","فَاعِلَة","فَاعِلَان","فَاعِلَتَان","فَاعِلَات","فَاعِلُون","فَاعِلِين",
+      "مُفَعِّل","مُفَعِّلَة","مُفَعِّلُون","مُفَعِّلِين","مُفَعِّلَات",
+      "مُفَاعِل","مُفَاعِلَة","مُفَاعِلُون","مُفَاعِلِين",
+      "مُفْعِل","مُفْعِلَة",
+      "مُتَفَعِّل","مُتَفَعِّلَة","مُتَفَعِّلُون","مُتَفَعِّلِين",
+      "مُتَفَاعِل","مُتَفَاعِلَة","مُتَفَاعِلُون","مُتَفَاعِلِين",
+      "مُنْفَعِل","مُنْفَعِلَة","مُنْفَعِلُون","مُنْفَعِلِين",
+      "مُفْتَعِل","مُفْتَعِلَة","مُفْتَعِلُون","مُفْتَعِلِين",
+      "مُسْتَفْعِل","مُسْتَفْعِلَة","مُسْتَفْعِلُون","مُسْتَفْعِلِين",
+      "مَفْعُول","مَفْعُولَة","مَفْعُولَان","مَفْعُولَتَان","مَفْعُولَات","مَفْعُولُون","مَفْعُولِين",
+      "مُفَعَّل","مُفَعَّلَة","مُفَعَّلُون","مُفَعَّلِين",
+      "مُفَاعَل","مُفَاعَلَة",
+      "مُفْعَل","مُفْعَلَة",
+      "مُتَفَعَّل","مُتَفَعَّلَة",
+      "مُتَفَاعَل","مُتَفَاعَلَة",
+      "مُنْفَعَل","مُنْفَعَلَة",
+      "مُفْتَعَل","مُفْتَعَلَة",
+      "مُسْتَفْعَل","مُسْتَفْعَلَة",
+      "فَعَّال","فَعَّالَة","فَعَّالَان","فَعَّالَات","فَعَّالُون","فَعَّالِين",
+      "فَعِيل","فَعِيلَة","فَعِيلَان","فَعِيلَتَان","فَعِيلَات","فَعِيلُون","فَعِيلِين",
+      "فَعُول","فَعُولَة","فَعُولَان","فَعُولَات",
+      "أَفْعَل","فَعْلَاء","فُعْلَى","فَعْلَى",
+      "فَعْل","فِعْل","فُعْل","فَعَل",
+      "فِعَالَة","فَعَالَة","فُعُولَة","فَعُولَة","فَعِيلَة",
+      "تَفْعِيل","تَفْعِيلَة","تَفْعِيلَات",
+      "تَفَعُّل","تَفَعُّلَات",
+      "تَفَاعُل","تَفَاعُلَات",
+      "إِفْعَال","إِفْعَالَات","إِفْعَالِيَّة",
+      "مُفَاعَلَة","مُفَاعَلَات",
+      "اِنْفِعَال","اِنْفِعَالَات",
+      "اِفْتِعَال","اِفْتِعَالَات",
+      "اِفْعِلَال",
+      "اِسْتِفْعَال","اِسْتِفْعَالَات",
+      "فَعَال","فِعَال","فُعَال","فُعُول",
+      "أَفْعَال","أَفَاعِل",
+      "فُعَّال","فُعَّالَة","فُعَلَاء",
+      "فَعَلَة","فَعْلَة","فِعْلَة","فُعْلَة",
+      "فَعَلَات","فَعْلَات","فِعْلَات","فُعْلَات",
+      "مَفْعَل","مَفْعِل","مَفْعَلَة",
+      "مِفْعَل","مِفْعَال","مِفْعَلَة",
+      "مَفَاعِل","مَفَاعِيل","فَوَاعِل",
+      "فَعَائِل","فَعَالِيل",
+      "فُعْلَان","فِعْلَان","فَعَلَان","فَعْلَان",
+      "فُعْلَانَة","فَعْلَانَة",
+      "فِعْلِيّ","فَعْلِيّ","فَعَلِيّ","فَعَّالِيّ","فُعْلَوِيّ",
+      "فِعْلِيَّة","فَعْلِيَّة","فَعَلِيَّة","فَعَّالِيَّة",
+      "فِعْلِيَّات","فَعْلِيَّات","فَعَلِيَّات",
+      "فِعْلِيّون","فِعْلِيّين","فَعْلِيّون","فَعْلِيّين",
+      "فُعَيْل","فُعَيِّل","فُعَيِّلَة","فُعَيِّلَات",
+      "فُعَيْعِل","فُعَيْعِيل",
+      "مَفْعَلَة","مَفْعِلَة","مَفْعَلِيَّة",
+      "مِفْعَال","مِفْعَالَة",
+      "الْفَاعِل","الْمَفْعُول","الْفَعْل","الْفِعْل","الْفُعْل",
+      "الْفَعَّال","الْفَعِيل","الْفَعُول","الْفَاعِلَة","الْمَفْعُولَة",
+      "الْمُفَعِّل","الْمُفَاعِل","الْمُفْعِل","الْمُتَفَعِّل","الْمُتَفَاعِل",
+      "الْمُسْتَفْعِل","الْمُنْفَعِل","الْمُفْتَعِل","الْمَفْعَل","الْمَفْعِل",
+      "الْفُعُول","الْفِعَال","الْفَعَال","الْفُعَّال","الْفُعَلَاء","الْأَفْعَال",
+      "الْفِعْلِيّ","الْفَعْلِيّ","الْفَعَلِيّ","الْفِعْلِيَّة","الْفَعْلِيَّة","الْفَعَلِيَّة",
+      "فُعْلُل","فُعْلُلَة","فُعْلَل","فُعْلَلَة",
+      "فِعْلِل","فِعْلِلَة","فَعْلَل","فَعْلَلَة",
+      "فِعْلِيل","فِعْلِيلَة","فُعْلُول","فُعْلُولَة",
+      "فَعُولَاء","فَعِيلَاء"
+    ];
+
+    function normalizeSkeleton(s) {
+      return s.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g, '')
+        .replace(/[أإآٱٲٳٵ]/g, 'ا').replace(/[ئيىی]/g, 'ي')
+        .replace(/[ؤ]/g, 'و').replace(/ة/g, 'ه').replace(/ک/g, 'ك');
+    }
+
+    const result = [];
+    // هدف، تولید صورت‌های صرفی تا تعداد درخواستی است؛ صحت لغت‌نامه‌ای شرط نیست.
+    // پس صورت‌های مشابه یا تکراری را حذف نمی‌کنیم و تعداد دقیق قابل تولید می‌ماند.
+    const addWord = (w, pat) => {
+      if (!w) return;
+      const wCorrected = correctWeakForm(root, w);
+      const w2 = applyIdgham(wCorrected);
+      result.push({ word: w2, pattern: pat || computePattern(w2, root) });
+    };
+
+    const commonList = COMMON_WORDS_BY_ROOT[root] || [];
+    for (const w of commonList) { addWord(w, null); if (result.length >= cnt) return result.slice(0, cnt); }
+    for (const [w, r] of Object.entries(customDB)) { if (r === root) addWord(w, null); if (result.length >= cnt) return result.slice(0, cnt); }
+
+    function applyPattern(pattern) {
+      let out = '';
+      for (const ch of pattern) {
+        if (ch === 'ف') out += f;
+        else if (ch === 'ع') out += a;
+        else if (ch === 'ل') out += l;
+        else out += ch;
+      }
+      return out;
+    }
+
+    for (const pat of ARABIC_FAMILY_PATTERNS) { addWord(applyPattern(pat), pat); if (result.length >= cnt) return result.slice(0, cnt); }
+    return result.slice(0, cnt);
+  }
+
+  function getFamilyCount() {
+    const saved = parseInt(localStorage.getItem('yab_familyCount') || '24', 10);
+    return Math.max(1, Math.min(255, Number.isFinite(saved) ? saved : 24));
+  }
+
+  const wInputEl = document.getElementById('wInput');
+  const acDropdown = document.getElementById('acDropdown');
+  const searchBoxEl = document.getElementById('searchBoxEl');
+  const searchSpacer = document.getElementById('searchSpacer');
+  const mainEl = document.getElementById('mainEl');
+  let acSuggestions = [], acActiveIndex = -1;
+  let isSticky = false;
+
+  let currentFilter = 'all';
+  let currentSearch = '';
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  // پیشنهادها برای autocomplete
+  function getSuggestions(str) {
+    if (!str) return [];
+    const n = normalize(str);
+    const seen = new Set();
+    const result = [];
+    for (const h of history) {
+      if (result.length >= 8) break;
+      const nh = normalize(h);
+      if ((nh.startsWith(n) || nh.includes(n)) && !seen.has(h)) { seen.add(h); result.push({ word: h, root: null }); }
+    }
+    for (const [w, r] of Object.entries(customDB)) {
+      if (result.length >= 8) break;
+      const nw = normalize(w);
+      if (nw.startsWith(n) && !seen.has(w)) { seen.add(w); result.push({ word: w, root: r }); }
+    }
+    for (const r of recentRoots) {
+      if (result.length >= 8) break;
+      if (r.startsWith(n) && !seen.has(r)) { seen.add(r); result.push({ word: r, root: null }); }
+    }
+    return result;
+  }
+
+  function renderAutocomplete(items) {
+    acSuggestions = items; acActiveIndex = -1;
+    if (!items.length) { acDropdown.style.display = 'none'; return; }
+    acDropdown.innerHTML = items.map((s, i) => `
+      <div class="ac-item" data-ac-i="${i}">
+        <span class="ac-word">${escapeHtml(s.word)}</span>
+        ${s.root ? `<span class="ac-root">${escapeHtml(s.root)}</span>` : ''}
+      </div>
+    `).join('');
+    acDropdown.style.display = 'block';
+    acDropdown.querySelectorAll('.ac-item').forEach(el => {
+      el.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        const i = parseInt(el.dataset.acI);
+        wInputEl.value = items[i].word;
+        hideAutocomplete();
+        smartAnalyze();
+      });
+    });
+  }
+
+  function hideAutocomplete() { acDropdown.style.display = 'none'; acSuggestions = []; acActiveIndex = -1; }
+  function updateAcActive() { acDropdown.querySelectorAll('.ac-item').forEach((el, i) => el.classList.toggle('active', i === acActiveIndex)); }
+
+  // چسبیدن جعبه جستجو به پایین هنگام اسکرول
+  function setSticky(on) {
+    if (on && !isSticky) {
+      isSticky = true;
+      searchSpacer.style.height = searchBoxEl.offsetHeight + 'px';
+      searchSpacer.classList.add('active');
+      searchBoxEl.classList.add('sticky-search');
+      document.body.classList.add('sticky-active');
+    } else if (!on && isSticky) {
+      isSticky = false;
+      searchSpacer.classList.remove('active');
+      searchBoxEl.classList.remove('sticky-search');
+      document.body.classList.remove('sticky-active');
+    }
+  }
+  mainEl.addEventListener('scroll', () => {
+    if (!searchBoxEl.classList.contains('search-completed')) { if (isSticky) setSticky(false); return; }
+    if (isSticky) { if (mainEl.scrollTop < 60) setSticky(false); }
+    else { if (mainEl.scrollTop > 100) setSticky(true); }
+  });
+
+  function addRecentRoot(root) {
+    if (!root) return;
+    recentRoots = recentRoots.filter(r => r !== root);
+    recentRoots.unshift(root);
+    if (recentRoots.length > 5) recentRoots = recentRoots.slice(0, 5);
+    localStorage.setItem('yab_recent_roots', JSON.stringify(recentRoots));
+    renderRecentRoots();
+  }
+
+  function renderRecentRoots() {
+    const cont = document.getElementById('recentRoots');
+    const lbl = document.getElementById('recentLabel');
+    if (!cont) return;
+    if (!recentRoots.length) { cont.innerHTML = ''; if (lbl) lbl.style.display = 'none'; return; }
+    if (lbl) lbl.style.display = 'block';
+    cont.innerHTML = recentRoots.map(r => {
+      const rEsc = escapeHtml(r);
+      return `<button class="recent-root-chip" data-recent-root="${rEsc}">${rEsc}</button>`;
+    }).join('');
+    cont.querySelectorAll('[data-recent-root]').forEach(el => {
+      el.addEventListener('click', () => {
+        const r = el.dataset.recentRoot;
+        searchMode = 'root';
+        document.querySelectorAll('.mode-btn[data-mode]').forEach(b => b.classList.toggle('active', b.dataset.mode === 'root'));
+        updatePlaceholder();
+        wInputEl.value = r;
+        hideAutocomplete();
+        smartAnalyze();
+      });
+    });
+  }
+
+  function recordSearch(root) {
+    stats.searches++;
+    stats.rootCounts[root] = (stats.rootCounts[root] || 0) + 1;
+    localStorage.setItem('yab_stats', JSON.stringify(stats));
+  }
+
+  function renderStatsModal() {
+    document.getElementById('statSearch').textContent = stats.searches.toLocaleString('fa-IR');
+    document.getElementById('statRoots').textContent = Object.keys(stats.rootCounts).length.toLocaleString('fa-IR');
+    document.getElementById('statFav').textContent = favorites.length.toLocaleString('fa-IR');
+    const entries = Object.entries(stats.rootCounts).sort((a,b) => b[1] - a[1]).slice(0, 8);
+    const maxCnt = entries.length ? entries[0][1] : 1;
+    const list = document.getElementById('topRootsList');
+    if (!entries.length) { list.innerHTML = `<p style="text-align:center; color:var(--muted); padding:15px;">${t('empty')}</p>`; return; }
+    list.innerHTML = entries.map(([root, cnt], i) => `
+      <div class="top-root-item">
+        <span class="rank">${(i+1).toLocaleString('fa-IR')}</span>
+        <span class="rw">${escapeHtml(root)}</span>
+        <div class="bar-wrap"><div class="bar-fill" style="width:${(cnt/maxCnt*100).toFixed(0)}%"></div></div>
+        <span class="cnt">${cnt.toLocaleString('fa-IR')}×</span>
+      </div>
+    `).join('');
+  }
+
+  function sortFamily(arr) {
+    if (sortMode === 'default' || !arr.length) return arr;
+    const copy = [...arr];
+    const pOrder = { verb:0, partic:1, masdar:2, noun:3, plural:4, other:5 };
+    if (sortMode === 'alpha') copy.sort((a,b) => a.word.localeCompare(b.word, 'fa'));
+    else if (sortMode === 'length') copy.sort((a,b) => a.word.replace(/[\u064B-\u065F\u0670]/g,'').length - b.word.replace(/[\u064B-\u065F\u0670]/g,'').length || a.word.localeCompare(b.word, 'fa'));
+    else if (sortMode === 'pattern') copy.sort((a,b) => {
+      const pa = pOrder[patternFamily(a.pattern)] ?? 5;
+      const pb = pOrder[patternFamily(b.pattern)] ?? 5;
+      return pa - pb || a.word.localeCompare(b.word, 'fa');
+    });
+    return copy;
+  }
+
+  function saveFavorites() { localStorage.setItem('yab_favorites', JSON.stringify(favorites)); updateFavBadge(); }
+  function isFavorite(word) { return favorites.some(f => f.word === word); }
+  function toggleFavorite(word, root, pattern) {
+    const idx = favorites.findIndex(f => f.word === word);
+    if (idx >= 0) favorites.splice(idx, 1);
+    else favorites.unshift({ word, root, pattern: pattern || '', note: '' });
+    saveFavorites();
+    return isFavorite(word);
+  }
+  function updateFavBadge() {
+    const badge = document.getElementById('favBadge');
+    if (badge) badge.textContent = favorites.length ? favorites.length.toLocaleString('fa-IR') : '۰';
+  }
+
+  function renderFavorites() {
+    const list = document.getElementById('favList');
+    if (!list) return;
+    if (!favorites.length) {
+      list.innerHTML = `<div class="fav-empty"><span class="icon">⭐</span>${t('noFavs')}</div>`;
+      return;
+    }
+    list.innerHTML = favorites.map((f, i) => `
+      <div class="fav-item">
+        <div class="fav-content">
+          <div>
+            <span class="fav-word" data-fav-word="${escapeHtml(f.word)}">${escapeHtml(f.word)}</span>
+            ${f.pattern
+              ? `<span class="fav-root" data-fav-root="${escapeHtml(f.root)}">${escapeHtml(f.pattern)}</span>`
+              : `<span class="fav-root" data-fav-root="${escapeHtml(f.root)}">${escapeHtml(f.root)}</span>`}
+          </div>
+          ${f.note ? `<div class="fav-note">📝 ${escapeHtml(f.note)}</div>` : ''}
+        </div>
+        <div class="fav-actions">
+          <span data-fav-note="${i}" title="یادداشت">📝</span>
+          <span data-fav-remove="${i}" title="حذف">🗑️</span>
+        </div>
+      </div>
+    `).join('');
+    list.querySelectorAll('[data-fav-word]').forEach(el => el.addEventListener('click', () => {
+      wInputEl.value = el.dataset.favWord;
+      searchMode = 'word';
+      document.querySelectorAll('.mode-btn[data-mode]').forEach(b => b.classList.toggle('active', b.dataset.mode === 'word'));
+      updatePlaceholder(); closeAllModals(); smartAnalyze();
+    }));
+    list.querySelectorAll('[data-fav-root]').forEach(el => el.addEventListener('click', () => {
+      wInputEl.value = el.dataset.favRoot;
+      searchMode = 'root';
+      document.querySelectorAll('.mode-btn[data-mode]').forEach(b => b.classList.toggle('active', b.dataset.mode === 'root'));
+      updatePlaceholder(); closeAllModals(); smartAnalyze();
+    }));
+    list.querySelectorAll('[data-fav-note]').forEach(el => el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const i = parseInt(el.dataset.favNote);
+      const f = favorites[i];
+      const note = prompt('یادداشت / ملاحظة:', f.note || '');
+      if (note === null) return;
+      f.note = note.trim();
+      saveFavorites();
+      renderFavorites();
+    }));
+    list.querySelectorAll('[data-fav-remove]').forEach(el => el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      favorites.splice(parseInt(el.dataset.favRemove), 1);
+      saveFavorites(); renderFavorites(); refreshStarsInGrid();
+    }));
+  }
+
+  function refreshStarsInGrid() {
+    document.querySelectorAll('.fav-star').forEach(el => {
+      const w = el.dataset.fav;
+      const active = isFavorite(w);
+      el.classList.toggle('active', active);
+      el.textContent = active ? '⭐' : '☆';
+    });
+  }
+
+  const resArea = document.getElementById('resArea'), errorPage = document.getElementById('errorPage'), overlay = document.getElementById('overlay'), drawer = document.getElementById('drawer');
+  let lastRoot = null, lastFamily = [];
+  let searchMode = 'word';
+
+  function updatePlaceholder() {
+    if (searchMode === 'root') wInputEl.placeholder = t('placeholderRoot');
+    else wInputEl.placeholder = t('placeholderWord');
+  }
+
+  function showError(titleKey, msgKey, similarWords) {
+    document.getElementById('errTitle').textContent = t(titleKey);
+    document.getElementById('errMsg').textContent = t(msgKey);
+    searchBoxEl.classList.add('search-completed');
+    resArea.style.display = 'none';
+    document.getElementById('multiRootPage').style.display = 'none';
+    document.getElementById('properNounPage').style.display = 'none';
+    errorPage.style.display = 'flex';
+    setSticky(false);
+    const sb = document.getElementById('similarBox');
+    const sl = document.getElementById('similarList');
+    if (similarWords && similarWords.length) {
+      sb.style.display = 'block';
+      sl.innerHTML = similarWords.map(w =>
+        `<button class="similar-chip" data-similar="${escapeHtml(w)}">${escapeHtml(w)}</button>`
+      ).join('');
+      sl.querySelectorAll('[data-similar]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          wInputEl.value = btn.dataset.similar;
+          smartAnalyze();
+        });
+      });
+    } else { sb.style.display = 'none'; sl.innerHTML = ''; }
+    mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function hideMultiRootPage() { document.getElementById('multiRootPage').style.display = 'none'; }
+  function hideProperNounPage() { document.getElementById('properNounPage').style.display = 'none'; }
+
+  function showProperNounPage(word) {
+    searchBoxEl.classList.add('search-completed');
+    resArea.style.display = 'none';
+    errorPage.style.display = 'none';
+    document.getElementById('multiRootPage').style.display = 'none';
+    setSticky(false);
+    const page = document.getElementById('properNounPage');
+    page.style.display = 'flex';
+    document.getElementById('properNounWord').textContent = word;
+    mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // نوار فیلتر رو می‌سازه
+  function renderFilterBar() {
+    const bar = document.getElementById('filterBar');
+    if (!bar) return;
+    const counts = { all: lastFamily.length, verb:0, partic:0, masdar:0, noun:0, plural:0, other:0 };
+    lastFamily.forEach(item => {
+      const f = patternFamily(item.pattern);
+      counts[f] = (counts[f] || 0) + 1;
+    });
+    const items = [
+      { key: 'all', label: t('filterAll') },
+      { key: 'verb', label: t('filterVerbs') },
+      { key: 'partic', label: t('filterPartic') },
+      { key: 'masdar', label: t('filterMasdar') },
+      { key: 'noun', label: t('filterNoun') },
+      { key: 'plural', label: t('filterPlural') }
+    ].filter(x => x.key === 'all' || counts[x.key] > 0);
+    bar.innerHTML = items.map(x => `
+      <button class="filter-chip ${currentFilter === x.key ? 'active' : ''}" data-filter="${x.key}">
+        <span>${x.label}</span>
+        <span class="chip-count">${counts[x.key] || 0}</span>
+      </button>
+    `).join('');
+    bar.querySelectorAll('[data-filter]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentFilter = btn.dataset.filter;
+        renderFilterBar();
+        renderFamilyGrid(lastFamily);
+      });
+    });
+  }
+
+  // ساخت گرید کلمات با فیلتر و جستجو
+  function renderFamilyGrid(family) {
+    let filtered = family;
+    if (currentFilter !== 'all') {
+      filtered = filtered.filter(item => patternFamily(item.pattern) === currentFilter);
+    }
+    if (currentSearch) {
+      const s = normalize(currentSearch);
+      filtered = filtered.filter(item => normalize(item.word).includes(s));
+    }
+
+    const grid = document.getElementById('familyGrid');
+    if (!filtered.length) {
+      grid.innerHTML = `<div class="empty-result">🔍 ${t('emptyResults')}</div>`;
+    } else {
+      grid.innerHTML = filtered.map(item => {
+        const fam = patternFamily(item.pattern);
+        const isVerb = item.pattern && CONJ_FAMILIES[item.pattern];
+        const fav = isFavorite(item.word);
+        const wEsc = escapeHtml(item.word);
+        const pEsc = escapeHtml(item.pattern || '');
+        return `<div class="chip ${isVerb ? 'verb' : ''}" data-word="${wEsc}" data-pattern="${pEsc}">
+          <div class="word-row">
+            <span class="word-text">${wEsc}</span>
+            <span class="chip-actions">
+              <span class="fav-star ${fav ? 'active' : ''}" data-fav="${wEsc}" title="⭐">${fav ? '⭐' : '☆'}</span>
+              <span data-copy="${wEsc}" title="📋">📋</span>
+            </span>
+          </div>
+          ${item.pattern ? `<div class="pattern-badge" data-family="${fam}">${pEsc}</div>` : ''}
+        </div>`;
+      }).join('');
+    }
+    document.getElementById('familyCountLabel').textContent = '(' + filtered.length + (filtered.length !== family.length ? '/' + family.length : '') + ')';
+
+    document.querySelectorAll('[data-copy]').forEach(el => {
+      el.addEventListener('click', function (e) { e.stopPropagation(); copyWord(this.dataset.copy); });
+    });
+    document.querySelectorAll('.fav-star').forEach(el => {
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const w = this.dataset.fav;
+        const item = lastFamily.find(f => f.word === w);
+        const active = toggleFavorite(w, lastRoot, item ? item.pattern : '');
+        this.classList.toggle('active', active);
+        this.textContent = active ? '⭐' : '☆';
+      });
+    });
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', function () {
+        const w = this.dataset.word, pat = this.dataset.pattern;
+        if (pat && CONJ_FAMILIES[pat]) showConjugation(w, lastRoot, pat);
+      });
+      attachLongPress(chip);
+    });
+  }
+
+  // نمایش نتایج تحلیل
+  function showFamily(root) {
+    errorPage.style.display = 'none';
+    document.getElementById('multiRootPage').style.display = 'none';
+    document.getElementById('properNounPage').style.display = 'none';
+    searchBoxEl.classList.add('search-completed');
+    document.getElementById('rootDisplay').innerText = root.split('').join('  ');
+    let family = generateFamily(root, getFamilyCount());
+    family = sortFamily(family);
+    lastRoot = root; lastFamily = family;
+    currentFilter = 'all';
+    currentSearch = '';
+    document.getElementById('resultSearch').value = '';
+    renderFilterBar();
+    renderFamilyGrid(family);
+    resArea.style.display = 'block';
+    mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+    setSticky(false);
+    recordSearch(root);
+    addRecentRoot(root);
+  }
+
+  function showMultiRootSelection(word, roots) {
+    searchBoxEl.classList.add('search-completed');
+    resArea.style.display = 'none';
+    errorPage.style.display = 'none';
+    document.getElementById('properNounPage').style.display = 'none';
+    setSticky(false);
+    const page = document.getElementById('multiRootPage');
+    page.style.display = 'flex';
+    document.getElementById('multiRootWord').textContent = word;
+    const cont = document.getElementById('multiRootOptions');
+    cont.innerHTML = roots.map(r => {
+      const rEsc = escapeHtml(r);
+      return `
+        <button class="multi-root-option" data-multi-root="${rEsc}">
+          <span class="mro-root">${rEsc.split('').join(' ')}</span>
+          <span class="mro-label">${t('multiRootBtn')}</span>
+        </button>
+      `;
+    }).join('');
+    cont.querySelectorAll('[data-multi-root]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const r = btn.dataset.multiRoot;
+        document.getElementById('multiRootPage').style.display = 'none';
+        document.getElementById('wInput').value = r;
+        showFamily(r);
+      });
+    });
+    mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // نقطه ورودی اصلی تحلیل — بسته به mode تصمیم می‌گیره
+  function smartAnalyze() {
+    let input = wInputEl.value.trim();
+    hideAutocomplete();
+    if (!input) { searchBoxEl.classList.remove('search-completed'); setSticky(false); return; }
+    if (searchMode === 'root') {
+      const n = normalize(input);
+      if (n.length !== 3) { showError('errRootLen', 'errRootLenMsg'); return; }
+      VALID_ROOTS.add(n);
+      showFamily(n);
+      return;
+    }
+    const n = normalize(input);
+    if (NON_ANALYZABLE_WORDS.has(n)) { showError('errNotAnalyze', 'errNotAnalyzeMsg'); return; }
+    if (PROPER_NOUNS.has(n)) { showProperNounPage(input); return; }
+    const multiRoots = findMultiRoots(n);
+    if (multiRoots && multiRoots.length > 1) { showMultiRootSelection(input, multiRoots); return; }
+    const root = findRoot(input);
+    if (!root) {
+      const similar = findSimilarWords(input, 6);
+      showError('errTitle', 'errMsg', similar);
+      return;
+    }
+    showFamily(root);
+    if (!history.includes(input)) {
+      history.unshift(input);
+      if (history.length > 15) history.pop();
+      localStorage.setItem('yab_morph_hist_v2', JSON.stringify(history));
+    }
+  }
+
+  function closeError(){ errorPage.style.display='none'; }
+  function copyWord(word) {
+    navigator.clipboard.writeText(word).then(() => alert(t('notifCopied') + ' ' + word));
+  }
+  function openDrawer(){ drawer.classList.add('open'); overlay.style.display='block'; }
+
+  function closeAllModals(options = {}){
+    const { keepPages = false } = options;
+    overlay.style.display='none';
+    drawer.classList.remove('open');
+    document.querySelectorAll('.modal').forEach(m=>m.style.display='none');
+    hideLpMenu(); hideAutocomplete();
+    if (!keepPages) { hideProperNounPage(); hideMultiRootPage(); }
+  }
+
+  function showModal(id){
+    closeAllModals({ keepPages: true });
+    let m=document.getElementById('modal-'+id);
+    if(m){
+      m.style.display='block';
+      overlay.style.display='block';
+      if(id==='hist') renderHistory();
+      if(id==='fav') renderFavorites();
+      if(id==='stats') renderStatsModal();
+    }
+  }
+
+  // منوی نگهداشتن طولانی روی کارت
+  let lpTimer = null, lpStartX = 0, lpStartY = 0, lpWord = '', lpPattern = '';
+  function hideLpMenu() { document.getElementById('lpMenu').style.display = 'none'; }
+
+  function showLpMenu(x, y, word, pattern) {
+    lpWord = word; lpPattern = pattern;
+    const menu = document.getElementById('lpMenu');
+    const isFav = isFavorite(word);
+    const isVerb = pattern && CONJ_FAMILIES[pattern];
+    menu.innerHTML = `
+      <div class="lp-word">${escapeHtml(word)}</div>
+      <div class="lp-item" data-lp="copy">${t('lpCopy')}</div>
+      <div class="lp-item" data-lp="similar">${t('lpSimilar')}</div>
+      <div class="lp-item" data-lp="shareLink">${t('lpShare')}</div>
+      <div class="lp-item" data-lp="fav">${isFav ? t('lpFavDel') : t('lpFavAdd')}</div>
+      <div class="lp-item" data-lp="root">${t('lpRoot')}</div>
+      ${isVerb ? `<div class="lp-item" data-lp="conj">${t('lpConj')}</div>` : ''}
+    `;
+    menu.style.display = 'block';
+    const menuW = 210, menuH = menu.offsetHeight || 280;
+    let px = Math.min(Math.max(x - menuW/2, 10), window.innerWidth - menuW - 10);
+    let py = y + 10;
+    if (py + menuH > window.innerHeight - 10) py = y - menuH - 10;
+    if (py < 10) py = 10;
+    menu.style.left = px + 'px'; menu.style.top = py + 'px';
+    menu.querySelectorAll('[data-lp]').forEach(el => {
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const action = this.dataset.lp;
+        if (action === 'copy') { navigator.clipboard.writeText(lpWord); hideLpMenu(); }
+        else if (action === 'similar') { hideLpMenu(); showSimilarModal(lpWord); }
+        else if (action === 'shareLink') { hideLpMenu(); shareSingleWord(lpWord, lastRoot, lpPattern); }
+        else if (action === 'fav') {
+          const item = lastFamily.find(f => f.word === lpWord);
+          toggleFavorite(lpWord, lastRoot, item ? item.pattern : '');
+          refreshStarsInGrid(); hideLpMenu();
+        }
+        else if (action === 'root') {
+          wInputEl.value = lastRoot;
+          searchMode = 'root';
+          document.querySelectorAll('.mode-btn[data-mode]').forEach(b => b.classList.toggle('active', b.dataset.mode === 'root'));
+          updatePlaceholder(); hideLpMenu(); smartAnalyze();
+        }
+        else if (action === 'conj') { hideLpMenu(); showConjugation(lpWord, lastRoot, lpPattern); }
+      });
+    });
+  }
+
+  function attachLongPress(el) {
+    el.addEventListener('pointerdown', function (e) {
+      if (e.target.closest('.chip-actions')) return;
+      lpStartX = e.clientX; lpStartY = e.clientY;
+      const word = el.dataset.word, pat = el.dataset.pattern;
+      lpTimer = setTimeout(() => {
+        if (navigator.vibrate) navigator.vibrate(30);
+        showLpMenu(e.clientX, e.clientY, word, pat);
+        lpTimer = null;
+      }, 550);
+    });
+    el.addEventListener('pointerup', () => { if (lpTimer) { clearTimeout(lpTimer); lpTimer = null; } });
+    el.addEventListener('pointerleave', () => { if (lpTimer) { clearTimeout(lpTimer); lpTimer = null; } });
+    el.addEventListener('pointermove', (e) => {
+      if (!lpTimer) return;
+      const dx = Math.abs(e.clientX - lpStartX), dy = Math.abs(e.clientY - lpStartY);
+      if (dx > 10 || dy > 10) { clearTimeout(lpTimer); lpTimer = null; }
+    });
+    el.addEventListener('contextmenu', (e) => e.preventDefault());
+  }
+  document.addEventListener('pointerdown', (e) => {
+    if (!e.target.closest('#lpMenu') && !e.target.closest('.chip')) hideLpMenu();
+  });
+
+  function showSimilarModal(word) {
+    const similar = findSimilarWords(word, 8);
+    const cont = document.getElementById('similarModalList');
+    if (!similar.length) {
+      cont.innerHTML = `<div class="fav-empty"><span class="icon">🔎</span>${t('emptyResults')}</div>`;
+    } else {
+      cont.innerHTML = similar.map(w =>
+        `<div class="fav-item" style="cursor:pointer;" data-similar-word="${escapeHtml(w)}">
+           <span class="fav-word">${escapeHtml(w)}</span>
+         </div>`
+      ).join('');
+      cont.querySelectorAll('[data-similar-word]').forEach(el => el.addEventListener('click', () => {
+        wInputEl.value = el.dataset.similarWord;
+        closeAllModals();
+        smartAnalyze();
+      }));
+    }
+    showModal('similar');
+  }
+
+  // جدول صرف فعل رو نشون میده
+  function showConjugation(word, root, pattern) {
+    const tpl = CONJ_FAMILIES[pattern];
+    if (!tpl) return;
+    const label = currentLang === 'ar' ? (tpl.labelAr || tpl.labelFa) : tpl.labelFa;
+    document.getElementById('conjTitle').innerHTML = `${t('conjTitle')}: <span style="color:var(--gold);">${escapeHtml(word)}</span>`;
+    const sections = [
+      { title: t('conjPast'), data: tpl.past },
+      { title: t('conjPresent'), data: tpl.present },
+      { title: t('conjFuture'), data: tpl.future },
+      { title: t('conjImperative'), data: tpl.imperative }
+    ];
+    let html = `<p style="color:var(--muted); font-size:.85em; margin-bottom:6px;">${t('conjRoot')}: <b style="color:var(--gold);">${escapeHtml(root)}</b> • ${t('conjPattern')}: <b style="color:var(--gold);">${escapeHtml(label)}</b></p>`;
+    for (const sec of sections) {
+      const rows = Object.entries(sec.data);
+      const half = Math.ceil(rows.length / 2);
+      let tableHtml = `<div class="conj-section"><h4>${sec.title}</h4><table class="conj-table"><thead><tr><th>${t('pron')}</th><th>${t('verb')}</th><th>${t('pron')}</th><th>${t('verb')}</th></tr></thead><tbody>`;
+      for (let i = 0; i < half; i++) {
+        const left = rows[i], right = rows[i + half];
+        const leftForm = correctWeakForm(root, substituteRoot(left[1], root));
+        const rightForm = right ? correctWeakForm(root, substituteRoot(right[1], root)) : '';
+        tableHtml += `<tr><td class="pronoun">${left[0]}</td><td class="form">${leftForm}</td><td class="pronoun">${right ? right[0] : ''}</td><td class="form">${rightForm}</td></tr>`;
+      }
+      tableHtml += `</tbody></table></div>`;
+      html += tableHtml;
+    }
+    document.getElementById('conjContent').innerHTML = html;
+    closeAllModals();
+    document.getElementById('modal-conj').style.display = 'block';
+    overlay.style.display = 'block';
+  }
+
+  // کپی همه به‌صورت متن
+  function shareAsText() {
+    if (!lastRoot || !lastFamily.length) return;
+    const lines = lastFamily.map(item => `• ${item.word}${item.pattern ? '  [' + item.pattern + ']' : ''}`);
+    const text = `📚 ${t('familyTitle')} «${lastRoot}»\n${'─'.repeat(20)}\n${lines.join('\n')}\n\n🔍 یاب | ياب`;
+    navigator.clipboard.writeText(text).then(() => alert(`${t('listCopied')} (${lastFamily.length})`));
+  }
+
+  // ساختن تصویر از نتایج با canvas
+  function shareAsImage() {
+    if (!lastRoot || !lastFamily.length) return;
+    const W = 800, padding = 30, rowH = 62, cols = 2, gap = 10;
+    const titleH = 130;
+    const rows = Math.ceil(lastFamily.length / cols);
+    const H = titleH + rows * (rowH + gap) + padding;
+    const dpr = Math.min(window.devicePixelRatio || 2, 2);
+    const canvas = document.createElement('canvas');
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    const cs = getComputedStyle(document.documentElement);
+    const bgCol = cs.getPropertyValue('--bg').trim() || '#0a0618';
+    const cardCol = cs.getPropertyValue('--chip-bg').trim() || '#1f173a';
+    const goldCol = cs.getPropertyValue('--gold').trim() || '#00e5ff';
+    const textCol = cs.getPropertyValue('--text').trim() || '#e8e4f5';
+    const mutedCol = cs.getPropertyValue('--muted').trim() || '#9a94b8';
+    const grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, bgCol); grad.addColorStop(1, cardCol);
+    ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = mutedCol;
+    ctx.font = '18px Vazir, Tahoma, sans-serif';
+    ctx.textAlign = 'center'; ctx.direction = 'rtl';
+    ctx.fillText(t('familyTitle'), W/2, 45);
+    ctx.fillStyle = goldCol;
+    ctx.font = 'bold 48px Vazir, Tahoma, sans-serif';
+    ctx.fillText(lastRoot.split('').join('  '), W/2, 105);
+    function roundRect(x, y, w, h, r) {
+      ctx.beginPath(); ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+    }
+    const colW = (W - padding * 2 - gap) / cols;
+    lastFamily.forEach((item, i) => {
+      const row = Math.floor(i / cols), col = i % cols;
+      const x = W - padding - (col + 1) * colW - col * gap;
+      const y = titleH + row * (rowH + gap);
+      ctx.fillStyle = cardCol;
+      roundRect(x, y, colW, rowH, 14); ctx.fill();
+      ctx.strokeStyle = goldWithAlpha(0.33); ctx.lineWidth = 1;
+      roundRect(x, y, colW, rowH, 14); ctx.stroke();
+      ctx.fillStyle = textCol;
+      ctx.font = 'bold 22px Vazir, Tahoma, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(item.word, x + colW - 15, y + rowH/2 + 8);
+      if (item.pattern) {
+        ctx.fillStyle = mutedCol;
+        ctx.font = '13px Vazir, Tahoma, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(item.pattern, x + 15, y + rowH/2 + 8);
+      }
+    });
+    ctx.fillStyle = mutedCol;
+    ctx.font = '14px Vazir, Tahoma, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🔍 یاب | ياب', W/2, H - 12);
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `yab-${lastRoot}.png`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+    }, 'image/png');
+  }
+
+  // ساختن فایل HTML قابل اشتراک
+  function shareAsLink() {
+    if (!lastRoot || !lastFamily.length) return;
+    const cs = getComputedStyle(document.documentElement);
+    const bg = cs.getPropertyValue('--bg').trim() || '#0a0618';
+    const card = cs.getPropertyValue('--chip-bg').trim() || '#1f173a';
+    const gold = cs.getPropertyValue('--gold').trim() || '#00e5ff';
+    const text = cs.getPropertyValue('--text').trim() || '#e8e4f5';
+    const muted = cs.getPropertyValue('--muted').trim() || '#9a94b8';
+    const wordsHtml = lastFamily.map(f => {
+      const wEsc = f.word.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+      return `<div class="chip" onclick="copyW(&quot;${wEsc}&quot;)"><span class="word">${f.word}</span>${f.pattern ? `<span class="pat">${f.pattern}</span>` : ''}</div>`;
+    }).join('');
+    const tagOpen = '<' + 'script>';
+    const tagClose = '<' + '/' + 'script>';
+    const html = `<!DOCTYPE html>
+<html lang="fa" dir="rtl"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${lastRoot}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:${bg};color:${text};font-family:Vazir,Tahoma,sans-serif;min-height:100vh;padding:22px 16px;display:flex;justify-content:center;font-size:15px}
+.wrap{max-width:680px;width:100%}
+h1{color:${gold};text-align:center;font-size:2.6em;letter-spacing:6px;margin-bottom:6px;text-shadow:0 0 24px ${goldWithAlpha(0.33)};font-weight:900}
+.sub{text-align:center;color:${muted};margin-bottom:22px;font-size:.9em}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.chip{background:${card};border:1px solid ${goldWithAlpha(0.2)};border-radius:14px;padding:12px 10px;text-align:center;transition:.18s;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.chip:hover{border-color:${gold};transform:translateY(-2px);box-shadow:0 8px 20px ${goldWithAlpha(0.13)}}
+.word{font-weight:700;font-size:1.12em;display:block;word-break:break-word}
+.pat{font-size:.72em;color:${muted};direction:rtl;background:${goldWithAlpha(0.07)};padding:2px 7px;border-radius:7px;align-self:center;border:1px solid ${goldWithAlpha(0.13)}}
+.footer{text-align:center;color:${muted};margin-top:28px;font-size:.82em;padding-top:18px;border-top:1px solid ${goldWithAlpha(0.13)}}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:${gold};color:${bg};padding:10px 22px;border-radius:12px;font-weight:800;transition:transform .3s;font-family:inherit}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style></head>
+<body><div class="wrap">
+<h1>${lastRoot.split('').join(' ')}</h1>
+<p class="sub">${lastFamily.length}</p>
+<div class="grid">${wordsHtml}</div>
+<p class="footer">🔍 یاب | ياب</p>
+</div>
+<div class="toast" id="t">✅</div>
+${tagOpen}
+function copyW(w){navigator.clipboard.writeText(w).then(function(){var t=document.getElementById('t');t.textContent='✅ '+w;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1400)})}
+${tagClose}
+</body></html>`;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `yab-${lastRoot}.html`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+  }
+
+  // اشتراک یک کلمه خاص به‌صورت HTML
+  function shareSingleWord(word, root, pattern) {
+    const cs = getComputedStyle(document.documentElement);
+    const bg = cs.getPropertyValue('--bg').trim() || '#0a0618';
+    const card = cs.getPropertyValue('--chip-bg').trim() || '#1f173a';
+    const gold = cs.getPropertyValue('--gold').trim() || '#00e5ff';
+    const text = cs.getPropertyValue('--text').trim() || '#e8e4f5';
+    const muted = cs.getPropertyValue('--muted').trim() || '#9a94b8';
+    const tagOpen = '<' + 'script>';
+    const tagClose = '<' + '/' + 'script>';
+    const html = `<!DOCTYPE html>
+<html lang="fa" dir="rtl"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${word}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:${bg};color:${text};font-family:Vazir,Tahoma,sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:22px;font-size:15px}
+.card{max-width:420px;width:100%;background:${card};border:2px solid ${goldWithAlpha(0.33)};border-radius:24px;padding:32px 24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.badge{color:${gold};font-size:.85em;letter-spacing:1px;margin-bottom:10px}
+.word{font-size:2.4em;font-weight:900;color:${text};letter-spacing:4px;margin:14px 0;word-break:break-word}
+.root{font-size:1.15em;color:${muted};margin:10px 0;direction:rtl}
+.root b{color:${gold};font-weight:900;font-size:1.4em;letter-spacing:4px}
+.pattern{display:inline-block;margin-top:12px;background:${goldWithAlpha(0.07)};color:${gold};padding:6px 14px;border-radius:10px;border:1px solid ${goldWithAlpha(0.2)};font-size:.85em;font-weight:700}
+.copy{margin-top:22px;padding:12px 22px;background:${gold};color:${bg};border:none;border-radius:12px;font-weight:900;font-size:.95em;cursor:pointer;font-family:inherit}
+.footer{color:${muted};font-size:.78em;margin-top:20px;padding-top:14px;border-top:1px solid ${goldWithAlpha(0.13)}}
+</style></head>
+<body><div class="card">
+<div class="badge">🔤</div>
+<div class="word">${word}</div>
+<div class="root">${t('rootLabel')} <b>${root.split('').join(' ')}</b></div>
+${pattern ? `<div class="pattern">${t('conjPattern')}: ${pattern}</div>` : ''}
+<button class="copy" onclick="navigator.clipboard.writeText('${word.replace(/'/g, "\\'")}')">📋 ${t('copyBtn')}</button>
+<div class="footer">🔍 یاب | ياب</div>
+</div>
+${tagOpen}${tagClose}
+</body></html>`;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `yab-word-${word}.html`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+  }
+
+  // تصویر «باب‌ها» — کلمات رو بر اساس دسته رنگی می‌کنه
+  function generateBabaImage() {
+    if (!lastRoot || !lastFamily.length) return;
+    const groups = { verb: { label: t('filterVerbs'), items: [] }, partic: { label: t('filterPartic'), items: [] }, masdar: { label: t('filterMasdar'), items: [] }, noun: { label: t('filterNoun'), items: [] }, plural: { label: t('filterPlural'), items: [] }, other: { label: t('filterOther'), items: [] } };
+    lastFamily.forEach(item => { const f = patternFamily(item.pattern); (groups[f] || groups.other).items.push(item.word); });
+    const activeGroups = Object.entries(groups).filter(([_, g]) => g.items.length > 0);
+    const W = 800, rowH = 44, groupHeaderH = 42, titleH = 140, padding = 30;
+    let contentH = 0;
+    activeGroups.forEach(([_, g]) => { contentH += groupHeaderH; contentH += Math.ceil(g.items.length / 3) * rowH + 10; });
+    const H = titleH + contentH + 70;
+    const dpr = Math.min(window.devicePixelRatio || 2, 2);
+    const canvas = document.createElement('canvas');
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    const cs = getComputedStyle(document.documentElement);
+    const bgCol = cs.getPropertyValue('--bg').trim() || '#0a0618';
+    const cardCol = cs.getPropertyValue('--chip-bg').trim() || '#1f173a';
+    const goldCol = cs.getPropertyValue('--gold').trim() || '#00e5ff';
+    const textCol = cs.getPropertyValue('--text').trim() || '#e8e4f5';
+    const mutedCol = cs.getPropertyValue('--muted').trim() || '#9a94b8';
+    const grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, bgCol); grad.addColorStop(1, cardCol);
+    ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = mutedCol;
+    ctx.font = '18px Vazir, Tahoma, sans-serif';
+    ctx.textAlign = 'center'; ctx.direction = 'rtl';
+    ctx.fillText(t('babaBtn'), W/2, 45);
+    ctx.fillStyle = goldCol;
+    ctx.font = 'bold 48px Vazir, Tahoma, sans-serif';
+    ctx.fillText(lastRoot.split('').join('  '), W/2, 105);
+    function roundRect(x, y, w, h, r) {
+      ctx.beginPath(); ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+    }
+    const GROUP_COLORS = { verb: '#ff7864', partic: '#64b4ff', masdar: '#64dc96', noun: '#c896ff', plural: '#ff82b4', other: mutedCol };
+    let y = titleH;
+    activeGroups.forEach(([key, g]) => {
+      ctx.fillStyle = GROUP_COLORS[key] || mutedCol;
+      ctx.font = 'bold 20px Vazir, Tahoma, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(g.label + '  (' + g.items.length + ')', W - padding, y + 28);
+      ctx.fillStyle = GROUP_COLORS[key] + '55';
+      ctx.fillRect(padding, y + 34, W - padding * 2, 1.5);
+      y += groupHeaderH;
+      const cols = 3;
+      const colW = (W - padding * 2 - 16) / cols;
+      g.items.forEach((word, i) => {
+        const row = Math.floor(i / cols); const col = i % cols;
+        const x = W - padding - (col + 1) * colW - col * 8;
+        const yy = y + row * rowH;
+        ctx.fillStyle = 'rgba(255,255,255,.05)';
+        roundRect(x, yy, colW, rowH - 6, 10); ctx.fill();
+        ctx.strokeStyle = GROUP_COLORS[key] + '33'; ctx.lineWidth = 1;
+        roundRect(x, yy, colW, rowH - 6, 10); ctx.stroke();
+        ctx.fillStyle = textCol;
+        ctx.font = 'bold 17px Vazir, Tahoma, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(word, x + colW/2, yy + rowH/2 + 2);
+      });
+      y += Math.ceil(g.items.length / cols) * rowH + 10;
+    });
+    ctx.fillStyle = mutedCol;
+    ctx.font = '14px Vazir, Tahoma, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🔍 یاب | ياب', W/2, H - 20);
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `yab-baba-${lastRoot}.png`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+    }, 'image/png');
+  }
+
+  // نمودار دایره‌ای — نسبت هر دسته
+  function generateChartImage() {
+    if (!lastRoot || !lastFamily.length) return;
+    const counts = { verb:0, partic:0, masdar:0, noun:0, plural:0, other:0 };
+    lastFamily.forEach(item => { const f = patternFamily(item.pattern); counts[f] = (counts[f] || 0) + 1; });
+    const labels = { verb: t('filterVerbs'), partic: t('filterPartic'), masdar: t('filterMasdar'), noun: t('filterNoun'), plural: t('filterPlural'), other: t('filterOther') };
+    const colors = { verb: '#ff7864', partic: '#64b4ff', masdar: '#64dc96', noun: '#c896ff', plural: '#ff82b4', other: '#9a94b8' };
+    const data = Object.entries(counts).filter(([_, v]) => v > 0);
+    const total = data.reduce((s, [_, v]) => s + v, 0);
+    const W = 800, H = 560;
+    const dpr = Math.min(window.devicePixelRatio || 2, 2);
+    const canvas = document.createElement('canvas');
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    const cs = getComputedStyle(document.documentElement);
+    const bgCol = cs.getPropertyValue('--bg').trim() || '#0a0618';
+    const cardCol = cs.getPropertyValue('--chip-bg').trim() || '#1f173a';
+    const goldCol = cs.getPropertyValue('--gold').trim() || '#00e5ff';
+    const textCol = cs.getPropertyValue('--text').trim() || '#e8e4f5';
+    const mutedCol = cs.getPropertyValue('--muted').trim() || '#9a94b8';
+    const grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, bgCol); grad.addColorStop(1, cardCol);
+    ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = mutedCol;
+    ctx.font = '18px Vazir, Tahoma, sans-serif';
+    ctx.textAlign = 'center'; ctx.direction = 'rtl';
+    ctx.fillText(t('chartBtn'), W/2, 45);
+    ctx.fillStyle = goldCol;
+    ctx.font = 'bold 44px Vazir, Tahoma, sans-serif';
+    ctx.fillText(lastRoot.split('').join('  '), W/2, 100);
+    const cx = W * 0.32, cy = H * 0.55, r = 130;
+    let angle = -Math.PI / 2;
+    data.forEach(([key, value]) => {
+      const slice = (value / total) * Math.PI * 2;
+      ctx.beginPath(); ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, r, angle, angle + slice); ctx.closePath();
+      ctx.fillStyle = colors[key]; ctx.fill();
+      ctx.strokeStyle = bgCol; ctx.lineWidth = 2; ctx.stroke();
+      angle += slice;
+    });
+    ctx.beginPath();
+    ctx.arc(cx, cy, r * 0.55, 0, Math.PI * 2);
+    ctx.fillStyle = cardCol; ctx.fill();
+    ctx.fillStyle = goldCol;
+    ctx.font = 'bold 32px Vazir, Tahoma, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(String(total), cx, cy + 5);
+    const legendX = W * 0.62;
+    let legendY = 160;
+    data.forEach(([key, value]) => {
+      const pct = ((value / total) * 100).toFixed(1);
+      ctx.fillStyle = colors[key];
+      ctx.fillRect(legendX, legendY - 14, 18, 18);
+      ctx.fillStyle = textCol;
+      ctx.font = 'bold 17px Vazir, Tahoma, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(labels[key], legendX - 10, legendY);
+      ctx.fillStyle = mutedCol;
+      ctx.font = '15px Vazir, Tahoma, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(`${value} • ${pct}%`, legendX + 25, legendY);
+      legendY += 40;
+    });
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `yab-chart-${lastRoot}.png`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+    }, 'image/png');
+  }
+
+  // تم‌های آماده
+  const THEMES = {
+    auto:    { name: "خودکار / تلقائي",  emoji: "🌗", preview: ["#0a0618", "#fff8f3", "#00e5ff"] },
+    dark:    { name: "شبانه / ليلي",     emoji: "🌙", preview: ["#0a0618", "#150e28", "#00e5ff"] },
+    light:   { name: "روشن / فاتح",      emoji: "☀️", preview: ["#fff8f3", "#ffffff", "#ff7f50"] },
+    glass:   { name: "شیشه‌ای / زجاجي",   emoji: "💎", preview: ["#1a1030", "#c8b0ff", "#00e5ff"], isGlass: true },
+    ocean:   { name: "اقیانوس / المحيط", emoji: "🌊", preview: ["#08131f", "#0f2538", "#4fc3f7"], vars: {
+      "--gold":"#4fc3f7","--gold-2":"#29b6f6","--gold-rgb":"79, 195, 247",
+      "--bg":"#08131f","--card":"#0f2538","--card-2":"#1a3a52",
+      "--text":"#d8eef5","--muted":"#7ba5b8","--chip-bg":"#1a3a52",
+      "--error-bg":"#1f0e1e","--error-text":"#ffb0c8","--overlay-bg":"rgba(4, 15, 24, .75)" }},
+    forest:  { name: "جنگل / الغابة",    emoji: "🌿", preview: ["#0d1a10", "#16291a", "#6fcf97"], vars: {
+      "--gold":"#6fcf97","--gold-2":"#4caf6f","--gold-rgb":"111, 207, 151",
+      "--bg":"#0d1a10","--card":"#16291a","--card-2":"#1e3a24",
+      "--text":"#e2f0e5","--muted":"#8ba890","--chip-bg":"#1e3a24",
+      "--error-bg":"#2a1a1a","--error-text":"#ffb0b0","--overlay-bg":"rgba(6, 16, 9, .75)" }},
+    sunset:  { name: "غروب / الغروب",    emoji: "🌅", preview: ["#1f0f1a", "#2e1a26", "#ff8c42"], vars: {
+      "--gold":"#ff8c42","--gold-2":"#ff6b6b","--gold-rgb":"255, 140, 66",
+      "--bg":"#1f0f1a","--card":"#2e1a26","--card-2":"#3e2532",
+      "--text":"#f5e0e8","--muted":"#b890a0","--chip-bg":"#3e2532",
+      "--error-bg":"#3a1520","--error-text":"#ffb0c8","--overlay-bg":"rgba(20, 8, 14, .78)" }},
+    rose:    { name: "رز / الورد",      emoji: "🌸", preview: ["#fff5f9", "#ffe0ec", "#e91e63"], vars: {
+      "--gold":"#e91e63","--gold-2":"#c2185b","--gold-rgb":"233, 30, 99",
+      "--bg":"#fff5f9","--card":"#ffffff","--card-2":"#ffe0ec",
+      "--text":"#2b1420","--muted":"#a06a80","--chip-bg":"#ffe0ec",
+      "--error-bg":"#fff0f5","--error-text":"#c2185b","--overlay-bg":"rgba(43, 20, 32, .35)" }},
+    midnight:{ name: "نیمه‌شب / منتصف الليل", emoji: "🌌", preview: ["#050818", "#0f1430", "#7c9aff"], vars: {
+      "--gold":"#7c9aff","--gold-2":"#536dfe","--gold-rgb":"124, 154, 255",
+      "--bg":"#050818","--card":"#0f1430","--card-2":"#1a2050",
+      "--text":"#dde3f5","--muted":"#8a92b8","--chip-bg":"#1a2050",
+      "--error-bg":"#1a0e28","--error-text":"#ffb0c8","--overlay-bg":"rgba(2, 4, 12, .82)" }},
+    coffee:  { name: "قهوه / القهوة",   emoji: "☕", preview: ["#1a120b", "#2b1d12", "#d4a574"], vars: {
+      "--gold":"#d4a574","--gold-2":"#b08050","--gold-rgb":"212, 165, 116",
+      "--bg":"#1a120b","--card":"#2b1d12","--card-2":"#3a281a",
+      "--text":"#f0e2d0","--muted":"#a89078","--chip-bg":"#3a281a",
+      "--error-bg":"#2a1810","--error-text":"#ffb0a0","--overlay-bg":"rgba(12, 8, 4, .78)" }},
+    neon:    { name: "نئون / نيون",     emoji: "⚡", preview: ["#050505", "#14041a", "#ff00ff"], vars: {
+      "--gold":"#ff00ff","--gold-2":"#00ffff","--gold-rgb":"255, 0, 255",
+      "--bg":"#050505","--card":"#14041a","--card-2":"#200825",
+      "--text":"#f0d8ff","--muted":"#a070b0","--chip-bg":"#200825",
+      "--error-bg":"#2a001a","--error-text":"#ff80d0","--overlay-bg":"rgba(2, 0, 4, .85)" }},
+    mono:    { name: "تک‌رنگ / أحادي",  emoji: "⚫", preview: ["#0a0a0a", "#1a1a1a", "#e0e0e0"], vars: {
+      "--gold":"#e0e0e0","--gold-2":"#b0b0b0","--gold-rgb":"224, 224, 224",
+      "--bg":"#0a0a0a","--card":"#1a1a1a","--card-2":"#252525",
+      "--text":"#e8e8e8","--muted":"#909090","--chip-bg":"#252525",
+      "--error-bg":"#1a0a0a","--error-text":"#ffb0b0","--overlay-bg":"rgba(0, 0, 0, .80)" }},
+    sand:    { name: "شنی / رملي",      emoji: "🏜️", preview: ["#2a2419", "#3d3524", "#e8c87a"], vars: {
+      "--gold":"#e8c87a","--gold-2":"#c9a850","--gold-rgb":"232, 200, 122",
+      "--bg":"#2a2419","--card":"#3d3524","--card-2":"#524a35",
+      "--text":"#f5ecd5","--muted":"#b0a080","--chip-bg":"#524a35",
+      "--error-bg":"#3a2820","--error-text":"#ffb090","--overlay-bg":"rgba(20, 17, 10, .80)" }},
+    custom:  { name: "دلخواه / مخصص",   emoji: "🎨", preview: ["#0a0f1e", "#161c2d", "#FFD700"] }
+  };
+
+  function isDaytime() { const h = new Date().getHours(); return h >= 6 && h < 18; }
+  function resolveAutoTheme() { return isDaytime() ? 'light' : 'dark'; }
+  const ALL_THEME_VARS = ['--gold','--gold-2','--gold-rgb','--bg','--card','--card-2','--text','--muted','--chip-bg','--error-bg','--error-text','--overlay-bg'];
+
+  // تبدیل RGB به HSL و برعکس — برای استخراج رنگ از عکس
+  function rgbToHsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) { h = s = 0; }
+    else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; }
+      h /= 6;
+    }
+    return { h, s, l };
+  }
+  function hslToRgb(h, s, l) {
+    let r, g, b;
+    if (s === 0) { r = g = b = l; }
+    else {
+      const hue2rgb = (p, q, t) => { if (t < 0) t += 1; if (t > 1) t -= 1; if (t < 1/6) return p + (q - p) * 6 * t; if (t < 1/2) return q; if (t < 2/3) return p + (q - p) * (2/3 - t) * 6; return p; };
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      r = hue2rgb(p, q, h + 1/3); g = hue2rgb(p, q, h); b = hue2rgb(p, q, h - 1/3);
+    }
+    return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+  }
+
+  // از عکس پس‌زمینه، رنگ اصلی درمیاد و روی تم اعمال میشه
+  function extractImageColors(dataUrl, cb) {
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const size = 100;
+        const c = document.createElement('canvas');
+        c.width = size; c.height = size;
+        const cx = c.getContext('2d');
+        cx.drawImage(img, 0, 0, size, size);
+        const data = cx.getImageData(0, 0, size, size).data;
+        let bestPixels = [];
+        let rSum = 0, gSum = 0, bSum = 0, brightSum = 0, count = 0;
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i], g = data[i+1], b = data[i+2];
+          rSum += r; gSum += g; bSum += b;
+          const bright = r * 0.299 + g * 0.587 + b * 0.114;
+          brightSum += bright; count++;
+          const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+          const sat = mx === 0 ? 0 : (mx - mn) / mx;
+          if (sat > 0.30 && bright > 60 && bright < 220) bestPixels.push({ r, g, b, sat, bright });
+        }
+        const avgR = rSum / count, avgG = gSum / count, avgB = bSum / count;
+        const avgBright = brightSum / count;
+        let accentH, accentS, accentL;
+        if (bestPixels.length > 30) {
+          bestPixels.sort((a, b) => b.sat * b.bright - a.sat * a.bright);
+          const top = bestPixels.slice(0, Math.max(30, Math.floor(bestPixels.length * 0.3)));
+          let ar = 0, ag = 0, ab = 0;
+          top.forEach(p => { ar += p.r; ag += p.g; ab += p.b; });
+          ar /= top.length; ag /= top.length; ab /= top.length;
+          const hsl = rgbToHsl(ar, ag, ab);
+          accentH = hsl.h; accentS = Math.max(0.70, Math.min(1, hsl.s)); accentL = 0.58;
+        } else {
+          const hsl = rgbToHsl(avgR, avgG, avgB);
+          accentH = hsl.h; accentS = 0.75; accentL = 0.58;
+        }
+        const accent = hslToRgb(accentH, accentS, accentL);
+        const accent2 = hslToRgb(accentH, accentS, 0.42);
+        cb({ avg: { r: Math.round(avgR), g: Math.round(avgG), b: Math.round(avgB), brightness: avgBright }, accent, accent2 });
+      } catch (e) { cb(null); }
+    };
+    img.onerror = () => cb(null);
+    img.src = dataUrl;
+  }
+
+  function applyImageColors(colors) {
+    if (!colors) return;
+    const rs = document.documentElement.style;
+    rs.setProperty('--gold', `rgb(${colors.accent.r}, ${colors.accent.g}, ${colors.accent.b})`);
+    rs.setProperty('--gold-2', `rgb(${colors.accent2.r}, ${colors.accent2.g}, ${colors.accent2.b})`);
+    rs.setProperty('--gold-rgb', `${colors.accent.r}, ${colors.accent.g}, ${colors.accent.b}`);
+    const bright = colors.avg.brightness;
+    if (bright < 128) {
+      rs.setProperty('--text', 'rgba(255, 255, 255, 0.96)');
+      rs.setProperty('--muted', 'rgba(220, 220, 240, 0.78)');
+      rs.setProperty('--overlay-bg', 'rgba(0, 0, 0, 0.55)');
+    } else {
+      rs.setProperty('--text', 'rgba(15, 10, 25, 0.96)');
+      rs.setProperty('--muted', 'rgba(50, 40, 70, 0.75)');
+      rs.setProperty('--overlay-bg', 'rgba(255, 255, 255, 0.45)');
+    }
+  }
+
+  function applyGlassSettings() {
+    const img = localStorage.getItem('yab_glass_bg') || '';
+    const intensity = parseInt(localStorage.getItem('yab_glass_intensity') || '55');
+    const blur = Math.round((intensity / 100) * 28);
+    const opacity = (0.02 + (intensity / 100) * 0.23).toFixed(3);
+    const rs = document.documentElement.style;
+    if (img) rs.setProperty('--glass-image', `url("${img}")`);
+    else rs.setProperty('--glass-image', 'none');
+    rs.setProperty('--glass-blur', blur + 'px');
+    rs.setProperty('--glass-opacity', opacity);
+    const valEl = document.getElementById('glassIntensityValue');
+    if (valEl) valEl.textContent = intensity + '%';
+    const slider = document.getElementById('glassIntensity');
+    if (slider) slider.value = intensity;
+    const preview = document.getElementById('glassPreview');
+    if (preview) {
+      if (img) { preview.style.backgroundImage = `url("${img}")`; preview.textContent = ''; }
+      else { preview.style.backgroundImage = 'none'; preview.textContent = '🖼️'; }
+    }
+    if (img) { extractImageColors(img, (colors) => { if (colors) applyImageColors(colors); }); }
+  }
+
+  function applyTheme(t2, save = true) {
+    let actual = t2;
+    if (t2 === 'auto') actual = resolveAutoTheme();
+    const body = document.getElementById('bodyTag');
+    body.classList.remove('light-mode', 'glass-mode');
+    ALL_THEME_VARS.forEach(p => document.documentElement.style.removeProperty(p));
+    if (actual === 'light') { body.classList.add('light-mode'); }
+    else if (actual === 'dark') { }
+    else if (actual === 'custom') {
+      const rs = document.documentElement.style;
+      rs.setProperty('--bg', localStorage.getItem('yab_bg') || '#0a0f1e');
+      rs.setProperty('--card', localStorage.getItem('yab_card') || '#161c2d');
+      rs.setProperty('--card-2', localStorage.getItem('yab_card') || '#161c2d');
+      rs.setProperty('--text', localStorage.getItem('yab_text') || '#f1f5f9');
+      rs.setProperty('--chip-bg', localStorage.getItem('yab_card') || '#161c2d');
+      rs.setProperty('--gold', localStorage.getItem('yab_gold') || '#FFD700');
+      const hex = (localStorage.getItem('yab_gold') || '#FFD700').replace('#','');
+      const r = parseInt(hex.substring(0,2),16), g = parseInt(hex.substring(2,4),16), b2 = parseInt(hex.substring(4,6),16);
+      rs.setProperty('--gold-2', localStorage.getItem('yab_gold') || '#FFD700');
+      rs.setProperty('--gold-rgb', `${r}, ${g}, ${b2}`);
+    } else if (actual === 'glass') {
+      body.classList.add('glass-mode');
+      applyGlassSettings();
+    } else if (THEMES[actual] && THEMES[actual].vars) {
+      for (const [k, v] of Object.entries(THEMES[actual].vars)) document.documentElement.style.setProperty(k, v);
+    }
+    document.querySelectorAll('.theme-card').forEach(c => c.classList.toggle('active', c.dataset.theme === t2));
+    const lbl = document.getElementById('currentThemeLabel');
+    if (lbl && THEMES[t2]) lbl.textContent = `${THEMES[t2].emoji} ${THEMES[t2].name}`;
+    const cd = document.getElementById('customColors');
+    if (cd) cd.style.display = (t2 === 'custom') ? 'block' : 'none';
+    const go = document.getElementById('glassOptions');
+    if (go) go.style.display = (t2 === 'glass') ? 'block' : 'none';
+    if (save) localStorage.setItem('yab_theme', t2);
+  }
+  setInterval(() => { if (localStorage.getItem('yab_theme') === 'auto' || !localStorage.getItem('yab_theme')) applyTheme('auto', false); }, 5 * 60 * 1000);
+
+  function renderThemeGallery() {
+    const gallery = document.getElementById('themeGallery');
+    if (!gallery) return;
+    gallery.innerHTML = Object.entries(THEMES).map(([key, theme]) => {
+      const previews = theme.preview.map(c => `<span style="background:${c}"></span>`).join('');
+      return `<div class="theme-card" data-theme="${key}"><div class="theme-preview">${previews}</div><div class="theme-name">${theme.emoji} ${theme.name}</div></div>`;
+    }).join('');
+    gallery.querySelectorAll('.theme-card').forEach(card => card.addEventListener('click', () => applyTheme(card.dataset.theme)));
+    const saved = localStorage.getItem('yab_theme') || 'auto';
+    gallery.querySelectorAll('.theme-card').forEach(c => c.classList.toggle('active', c.dataset.theme === saved));
+  }
+
+  function renderFontGallery() {
+    const gallery = document.getElementById('fontGallery');
+    if (!gallery) return;
+    gallery.innerHTML = Object.entries(FONTS).map(([key, f]) => `
+      <div class="font-card" data-font="${key}" style="font-family:${f.css};">
+        <span class="font-name" style="font-family:${f.css};">${currentLang === 'ar' ? f.nameAr : f.nameFa}</span>
+        <span class="font-sample" style="font-family:${f.css};">فَعَلَ</span>
+      </div>
+    `).join('');
+    gallery.querySelectorAll('.font-card').forEach(card => card.addEventListener('click', () => changeFontFamily(card.dataset.font)));
+    const saved = localStorage.getItem('yab_font') || 'Vazirmatn';
+    gallery.querySelectorAll('.font-card').forEach(c => c.classList.toggle('active', c.dataset.font === saved));
+  }
+
+  function changeFontFamily(f) {
+    const font = FONTS[f] || FONTS.Vazirmatn;
+    document.documentElement.style.setProperty('--font-family', font.css);
+    localStorage.setItem('yab_font', f);
+    const lbl = document.getElementById('currentFontLabel');
+    if (lbl) lbl.textContent = getFontDisplayName(font);
+    document.querySelectorAll('.font-card').forEach(c => c.classList.toggle('active', c.dataset.font === f));
+  }
+  function changeFontSize(v){ document.documentElement.style.setProperty('--font-size-multiplier',v); document.getElementById('fontSizeValue').textContent=v+'x'; localStorage.setItem('yab_fontSize',v); }
+  function invite(){ navigator.clipboard.writeText('از اپلیکیشن یاب استفاده کن! 🔥 | استخدم تطبيق ياب!').then(()=>alert('✅')); }
+  function clearData(){ if(confirm(currentLang === 'ar' ? 'هل تريد حذف السجل والإعدادات فقط؟' : 'آیا فقط تاریخچه و تنظیمات حذف شود؟')){ ['yab_morph_hist_v2','yab_theme','yab_font','yab_fontSize','yab_familyCount','yab_bg','yab_card','yab_text','yab_gold','yab_recent_roots','yab_glass_bg','yab_glass_intensity','yab_lang'].forEach(k=>localStorage.removeItem(k)); location.reload(); } }
+  function renderHistory(){
+    let c=document.getElementById('histList');
+    c.innerHTML = history.length
+      ? history.map(h => {
+          const hEsc = escapeHtml(h);
+          return `<div style="padding:10px;cursor:pointer;" data-word="${hEsc}">📌 ${hEsc}</div>`;
+        }).join('')
+      : `<p>${t('empty')}</p>`;
+    document.querySelectorAll('#histList [data-word]').forEach(el=>el.addEventListener('click',function(){ wInputEl.value=this.dataset.word; closeAllModals(); smartAnalyze(); }));
+  }
+
+  // کوچک‌کردن عکس قبل از ذخیره (برای جلوگیری از پر شدن localStorage)
+  function resizeImageToDataUrl(dataUrl, maxW, maxH, quality, cb) {
+    const img = new Image();
+    img.onload = () => {
+      let { width, height } = img;
+      if (width > maxW || height > maxH) {
+        const ratio = Math.min(maxW / width, maxH / height);
+        width = Math.round(width * ratio); height = Math.round(height * ratio);
+      }
+      const c = document.createElement('canvas');
+      c.width = width; c.height = height;
+      const cx = c.getContext('2d');
+      cx.imageSmoothingEnabled = true;
+      cx.imageSmoothingQuality = 'high';
+      cx.drawImage(img, 0, 0, width, height);
+      let out = '';
+      try { out = c.toDataURL('image/webp', quality); } catch (e) { out = ''; }
+      if (!out || out.indexOf('data:image/webp') !== 0) out = c.toDataURL('image/jpeg', quality);
+      cb(out);
+    };
+    img.onerror = () => cb(null);
+    img.src = dataUrl;
+  }
+
+  const glassImageInput = document.getElementById('glassImageInput');
+  if (glassImageInput) {
+    glassImageInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const raw = ev.target.result;
+        resizeImageToDataUrl(raw, 1920, 2880, 0.92, (resized) => {
+          if (!resized) { alert('❌'); return; }
+          try { localStorage.setItem('yab_glass_bg', resized); applyGlassSettings(); }
+          catch (err) {
+            resizeImageToDataUrl(raw, 1440, 2160, 0.85, (fallback) => {
+              if (!fallback) { alert('❌'); return; }
+              try { localStorage.setItem('yab_glass_bg', fallback); applyGlassSettings(); }
+              catch (e2) { alert('❌'); }
+            });
+          }
+        });
+      };
+      reader.readAsDataURL(file);
+      glassImageInput.value = '';
+    });
+  }
+  const removeGlassImage = document.getElementById('removeGlassImage');
+  if (removeGlassImage) {
+    removeGlassImage.addEventListener('click', () => {
+      localStorage.removeItem('yab_glass_bg');
+      const rs = document.documentElement.style;
+      rs.removeProperty('--gold'); rs.removeProperty('--gold-2'); rs.removeProperty('--gold-rgb');
+      rs.removeProperty('--text'); rs.removeProperty('--muted'); rs.removeProperty('--overlay-bg');
+      applyGlassSettings();
+    });
+  }
+  const glassIntensity = document.getElementById('glassIntensity');
+  if (glassIntensity) {
+    glassIntensity.addEventListener('input', (e) => { localStorage.setItem('yab_glass_intensity', e.target.value); applyGlassSettings(); });
+  }
+
+  document.getElementById('analyzeBtn').addEventListener('click',smartAnalyze);
+  wInputEl.addEventListener('input', () => {
+    const v = wInputEl.value.trim();
+    const sugg = getSuggestions(v);
+    if (sugg.length) renderAutocomplete(sugg); else hideAutocomplete();
+  });
+  wInputEl.addEventListener('focus', () => {
+    const v = wInputEl.value.trim();
+    const sugg = getSuggestions(v);
+    if (sugg.length) renderAutocomplete(sugg);
+  });
+  wInputEl.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' && acSuggestions.length) { e.preventDefault(); acActiveIndex = Math.min(acActiveIndex + 1, acSuggestions.length - 1); updateAcActive(); }
+    else if (e.key === 'ArrowUp' && acSuggestions.length) { e.preventDefault(); acActiveIndex = Math.max(acActiveIndex - 1, -1); updateAcActive(); }
+    else if (e.key === 'Enter') {
+      if (acActiveIndex >= 0 && acSuggestions[acActiveIndex]) { wInputEl.value = acSuggestions[acActiveIndex].word; hideAutocomplete(); }
+      smartAnalyze();
+    } else if (e.key === 'Escape') { hideAutocomplete(); }
+  });
+  wInputEl.addEventListener('blur', () => { setTimeout(hideAutocomplete, 200); });
+
+  const resultSearchEl = document.getElementById('resultSearch');
+  if (resultSearchEl) {
+    resultSearchEl.addEventListener('input', (e) => {
+      currentSearch = e.target.value.trim();
+      if (lastFamily.length) renderFamilyGrid(lastFamily);
+    });
+  }
+
+  document.querySelectorAll('.mode-btn[data-mode]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      searchMode = btn.dataset.mode;
+      document.querySelectorAll('.mode-btn[data-mode]').forEach(b => b.classList.toggle('active', b === btn));
+      updatePlaceholder();
+      const v = wInputEl.value.trim();
+      if (v) smartAnalyze();
+      else { searchBoxEl.classList.remove('search-completed'); resArea.style.display='none'; errorPage.style.display='none'; hideMultiRootPage(); hideProperNounPage(); setSticky(false); }
+    });
+  });
+
+  document.getElementById('langFaBtn').addEventListener('click', () => applyLanguage('fa'));
+  document.getElementById('langArBtn').addEventListener('click', () => applyLanguage('ar'));
+
+  document.getElementById('sortSelect').addEventListener('change', function() {
+    sortMode = this.value;
+    localStorage.setItem('yab_sortMode', sortMode);
+    if (lastFamily.length) { const sorted = sortFamily(lastFamily); lastFamily = sorted; renderFamilyGrid(sorted); }
+  });
+
+  document.getElementById('openDrawerBtn').addEventListener('click',openDrawer);
+  document.getElementById('helpBtn').addEventListener('click',()=>showModal('help'));
+  document.getElementById('closeDrawerBtn').addEventListener('click',closeAllModals);
+  overlay.addEventListener('click', () => closeAllModals({ keepPages: true }));
+  document.getElementById('gearBtn').addEventListener('click',()=>showModal('set'));
+  document.querySelectorAll('.modal-close').forEach(b=>b.addEventListener('click',closeAllModals));
+
+  const themeToggleBtn = document.getElementById('themeToggleBtn');
+  const themeGallery = document.getElementById('themeGallery');
+  themeToggleBtn.addEventListener('click', () => {
+    const isOpen = themeGallery.style.display !== 'none';
+    themeGallery.style.display = isOpen ? 'none' : 'grid';
+    themeToggleBtn.classList.toggle('open', !isOpen);
+  });
+
+  const fontToggleBtn = document.getElementById('fontToggleBtn');
+  const fontGallery = document.getElementById('fontGallery');
+  fontToggleBtn.addEventListener('click', () => {
+    const isOpen = fontGallery.style.display !== 'none';
+    fontGallery.style.display = isOpen ? 'none' : 'grid';
+    fontToggleBtn.classList.toggle('open', !isOpen);
+  });
+
+  document.getElementById('applyCustomColors').addEventListener('click',()=>{
+    localStorage.setItem('yab_bg',document.getElementById('bgColor').value);
+    localStorage.setItem('yab_card',document.getElementById('cardColor').value);
+    localStorage.setItem('yab_text',document.getElementById('textColor').value);
+    localStorage.setItem('yab_gold',document.getElementById('goldColor').value);
+    applyTheme('custom');
+  });
+  document.getElementById('fontSizeSlider').addEventListener('input',e=>changeFontSize(e.target.value));
+  document.getElementById('shareTextBtn').addEventListener('click', shareAsText);
+  document.getElementById('shareImageBtn').addEventListener('click', shareAsImage);
+  document.getElementById('shareLinkBtn').addEventListener('click', shareAsLink);
+  document.getElementById('babaBtn').addEventListener('click', generateBabaImage);
+  document.getElementById('chartBtn').addEventListener('click', generateChartImage);
+
+  const familyCountInput = document.getElementById('familyCountInput');
+  function commitFamilyCount(value, writeBack) {
+    let v = parseInt(value); if (isNaN(v)) v = 24;
+    v = Math.max(1, Math.min(255, v));
+    if (writeBack) familyCountInput.value = v;
+    localStorage.setItem('yab_familyCount', v);
+  }
+  familyCountInput.addEventListener('input', e => commitFamilyCount(e.target.value, false));
+  familyCountInput.addEventListener('blur', e => commitFamilyCount(e.target.value, true));
+  familyCountInput.addEventListener('change', e => commitFamilyCount(e.target.value, true));
+
+  document.querySelectorAll('.drawer-item[data-action]').forEach(item=>item.addEventListener('click',function(){
+    let a=this.dataset.action;
+    if(a==='stats') showModal('stats');
+    else if(a==='hist') showModal('hist');
+    else if(a==='fav') showModal('fav');
+    else if(a==='set') showModal('set');
+    else if(a==='invite') invite();
+    else if(a==='about') showModal('about');
+    else if(a==='clear') clearData();
+  }));
+
+  // راه‌اندازی اولیه
+  renderThemeGallery();
+  renderFontGallery();
+  updateFavBadge();
+  renderRecentRoots();
+  let savedTheme = localStorage.getItem('yab_theme')||'auto';
+  applyTheme(savedTheme);
+  const savedFont = localStorage.getItem('yab_font')||'Vazirmatn';
+  changeFontFamily(savedFont);
+  document.getElementById('fontSizeSlider').value = localStorage.getItem('yab_fontSize')||'1';
+  changeFontSize(localStorage.getItem('yab_fontSize')||'1');
+  familyCountInput.value = getFamilyCount();
+  localStorage.setItem('yab_familyCount', getFamilyCount());
+  document.getElementById('sortSelect').value = sortMode;
+
+  applyLanguage(currentLang);
+
+  window.closeError = closeError;
+  window.showModal = showModal;
+  window.hideMultiRootPage = hideMultiRootPage;
+  window.hideProperNounPage = hideProperNounPage;
+})();
+</script>
+</body>
+</html>
