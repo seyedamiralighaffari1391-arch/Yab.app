@@ -486,17 +486,66 @@
       .modal { width: 92%; }
     }
     @media (min-width: 431px) { .app-container { height: 96vh; max-height: 900px; border-radius: 22px; } }
-  </style>
+<style>
+  /* استایل‌های قبلی سایتت اینجا هستند */
+
+  /* استایل دکمه دانلود APK */
+  .download-apk {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    background: rgba(212, 175, 55, 0.10);
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .download-apk small {
+    padding: 3px 5px;
+    border-radius: 6px;
+    background: var(--gold);
+    color: #101b35;
+    font-size: 10px;
+  }
+
+  .download-apk:active {
+    transform: scale(0.97);
+  }
+</style>
 </head>
 <body id="bodyTag" class="dark-mode">
 <div class="app-container">
   <div class="overlay" id="overlay"></div>
-  <header class="header">
-    <span style="font-size:28px; cursor:pointer; color:var(--gold)" id="openDrawerBtn">☰</span>
-    <span style="font-weight:900; color:var(--gold); font-size:26px;" id="appTitleEl">یاب | v1.0</span>
-    <span style="font-size:24px; cursor:pointer; color:var(--gold)" id="helpBtn">❓</span>
-  </header>
-  <nav class="drawer" id="drawer">
+<header class="header">
+  <span
+    style="font-size:28px; cursor:pointer; color:var(--gold); flex-shrink:0;"
+    id="openDrawerBtn"
+  >☰</span>
+
+  <a
+    href="https://github.com/seyedamiralighaffari1391-arch/Yab.app/releases/download/v1.0.0/yab.10.apk"
+    class="download-apk"
+    aria-label="دانلود نسخه اندروید یاب"
+  >
+    <span>⬇</span>
+    <span>دانلود APK</span>
+    <small>۱.۰.۰</small>
+  </a>
+
+  <span
+    style="font-size:24px; cursor:pointer; color:var(--gold); flex-shrink:0;"
+    id="helpBtn"
+  >❓</span>
+</header>
+
+<nav class="drawer" id="drawer">
     <h2 style="color:var(--gold)" data-i18n="menuTitle">📚 منوی اصلی</h2>
     <div class="drawer-item" data-action="stats"><span data-i18n="menuStats">📊 آمار من</span></div>
     <div class="drawer-item" data-action="hist"><span data-i18n="menuHist">📜 تاریخچه</span></div>
