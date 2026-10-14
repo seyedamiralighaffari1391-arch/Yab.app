@@ -486,38 +486,64 @@
       .modal { width: 92%; }
     }
     @media (min-width: 431px) { .app-container { height: 96vh; max-height: 900px; border-radius: 22px; } }
-<style>
-  /* استایل‌های قبلی سایتت اینجا هستند */
 
-  /* استایل دکمه دانلود APK */
+
+/* دکمه دانلود APK — اصلاح‌شده */
+.download-apk {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 8px 10px;
+  box-sizing: border-box;
+  border: 1px solid rgba(var(--gold-rgb), .48);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(var(--gold-rgb), .16), rgba(var(--gold-rgb), .06));
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.4;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  box-shadow: 0 4px 14px rgba(var(--gold-rgb), .10);
+  transition: background .2s ease, transform .2s ease, border-color .2s ease;
+}
+.download-apk > span:first-child {
+  font-size: 15px;
+  line-height: 1;
+}
+.download-apk small {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 5px;
+  border-radius: 6px;
+  background: var(--gold);
+  color: var(--bg);
+  font-size: 10px;
+  line-height: 1.4;
+}
+.download-apk:hover {
+  background: rgba(var(--gold-rgb), .22);
+  border-color: var(--gold);
+}
+.download-apk:active {
+  transform: scale(.97);
+}
+@media (max-width: 360px) {
   .download-apk {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 8px 10px;
-    border: 1px solid var(--gold);
-    border-radius: 12px;
-    background: rgba(212, 175, 55, 0.10);
-    color: var(--gold);
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: 800;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .download-apk small {
-    padding: 3px 5px;
-    border-radius: 6px;
-    background: var(--gold);
-    color: #101b35;
+    gap: 4px;
+    padding: 7px 6px;
     font-size: 10px;
   }
-
-  .download-apk:active {
-    transform: scale(0.97);
+  .download-apk small {
+    padding: 2px 4px;
+    font-size: 9px;
   }
+}
+
 </style>
 </head>
 <body id="bodyTag" class="dark-mode">
@@ -717,7 +743,7 @@
     <div class="top-roots-list" id="topRootsList"></div>
     <button class="btn modal-close" style="margin-top:18px;" data-i18n="close">بستن</button>
   </div>
-  <div id="modal-about" class="modal"><h3 style="color:var(--gold);" data-i18n="aboutTitle">ℹ️ دربارهٔ یاب</h3><p data-i18n="aboutBody"><b>یاب | v1.0</b> – ریشه‌یاب هوشمند عربی</p><p data-i18n="aboutAuthor">طراحی و توسعه: سیدامیرعلی غفاری</p><button class="btn modal-close" data-i18n="close">بستن</button></div>
+  <div id="modal-about" class="modal"><h3 style="color:var(--gold);" data-i18n="aboutTitle">ℹ️ دربارهٔ یاب</h3><p data-i18n="aboutBody"><b>یاب | v1.0</b> – ریشه‌یاب هوشمند عربی</p><p data-i18n="aboutAuthor">طراحی و توسعه: سیدامیرعلی غفاری<br>با ایدهٔ استاد سینا بشیری</p><button class="btn modal-close" data-i18n="close">بستن</button></div>
   <div id="modal-conj" class="modal">
     <h3 style="color:var(--gold);" id="conjTitle">📜 جدول صرف</h3>
     <div id="conjContent"></div>
@@ -808,8 +834,8 @@
       statFavLbl: "علاقه‌مندی‌ها",
       topRootsTitle: "🔥 پرتکرارترین ریشه‌ها",
       aboutTitle: "ℹ️ دربارهٔ یاب",
-     aboutBody: "<b>یاب | v1.0</b> – ریشه‌یاب هوشمند عربی",
-aboutAuthor: "طراحی و توسعه: سیدامیرعلی غفاری<br>با ایدهٔ استاد سینا بشیری",
+      aboutBody: "<b>یاب | v1.0</b> – ریشه‌یاب هوشمند عربی",
+      aboutAuthor: "طراحی و توسعه: سیدامیرعلی غفاری<br>با ایدهٔ استاد سینا بشیری",
       lpCopy: "📋 کپی",
       lpSimilar: "🔎 کلمات مشابه",
       lpShare: "📤 اشتراک لینک",
@@ -909,8 +935,8 @@ aboutAuthor: "طراحی و توسعه: سیدامیرعلی غفاری<br>با 
       statFavLbl: "المفضلة",
       topRootsTitle: "🔥 أكثر الجذور تكرارًا",
       aboutTitle: "ℹ️ حول ياب",
-  aboutBody: "<b>یاب | v1.0</b> – الباحث الذكي عن جذور الكلمات العربية",
-aboutAuthor: "التصميم والتطوير: سيد أمير علي غفاري<br>بفكرة الأستاذ سينا بشيري",
+      aboutBody: "<b>ياب | v1.0</b> – مُستخرِج الجذور الذكي",
+      aboutAuthor: "تصميم وتطوير: سيد أمير علي غفاري<br>بفكرة الأستاذ سينا بشيري",
       lpCopy: "📋 نسخ",
       lpSimilar: "🔎 كلمات مشابهة",
       lpShare: "📤 مشاركة الرابط",
