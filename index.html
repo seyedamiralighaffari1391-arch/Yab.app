@@ -649,7 +649,10 @@
         <div class="similar-title" data-i18n="similarTitle">🔎 کلمات مشابه در دیتابیس:</div>
         <div class="similar-list" id="similarList"></div>
       </div>
-      <button class="btn" onclick="window.closeError()" data-i18n="backBtn">بازگشت</button>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
+        <button class="btn" onclick="window.closeError()" data-i18n="backBtn">بازگشت</button>
+        <button class="btn secondary" id="yabReportBtn" type="button">گزارش اشتباه</button>
+      </div>
     </div>
   </main>
   <div class="gear-icon" id="gearBtn">⚙️</div>
@@ -751,6 +754,36 @@
   </div>
   <div class="lp-menu" id="lpMenu"></div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* اتصال اختیاری یاب به Supabase؛ تحلیل اصلی همچنان در خود سایت انجام می‌شود. */
+(function(){
+  const URL='https://jtzvidnofailzguumruf.supabase.co';
+  const KEY='sb_publishable_KjZvFj9Fp5UgzXRly-C6hg_WQXntByW';
+  if(!window.supabase || !window.supabase.createClient) return;
+  const db=window.supabase.createClient(URL,KEY,{auth:{persistSession:false,autoRefreshToken:false}});
+  window.yabSupabase=db;
+  window.yabCorrectionRows=[];
+  window.yabLogEvent=async function(event_type,word,root){
+    try {
+      const {error}=await db.from('yab_events').insert({event_type,word:String(word||'').slice(0,160)||null,root:root==null?null:String(root).slice(0,160)});
+      if(error) console.debug('Yab event not stored:',error.message);
+    } catch(e){console.debug('Yab event logging unavailable.');}
+  };
+  window.yabReportError=async function(word,reported_root,details){
+    try {
+      const {error}=await db.from('yab_error_reports').insert({word:String(word||'').slice(0,160)||null,reported_root:reported_root==null?null:String(reported_root).slice(0,160),details:details==null?null:String(details).slice(0,1000)});
+      if(error) throw error;
+      return true;
+    } catch(e){console.warn('ثبت گزارش ممکن نشد:',e.message||e);return false;}
+  };
+  // در صورت فعال بودن سیاست SELECT عمومی/مجاز، اصلاح‌های مدیر در سایت هم اعمال می‌شوند.
+  db.from('yab_corrections').select('word,corrected_root').limit(1000).then(({data,error})=>{
+    if(!error && Array.isArray(data)) window.yabCorrectionRows=data;
+  }).catch(()=>{});
+})();
+</script>
+
 <script>
 // یاب | v1.0
 (function() {
@@ -1357,6 +1390,9 @@
   function findRoot(word) {
     let n = normalize(word);
     if (!n || n.length < 2) return null;
+    // اصلاح‌های ثبت‌شده توسط مدیر، در صورت دسترسی به Supabase، اولویت دارند.
+    const onlineCorrection = (window.yabCorrectionRows || []).find(x => normalize(x.word || '') === n);
+    if (onlineCorrection && onlineCorrection.corrected_root) return normalize(onlineCorrection.corrected_root);
     if (customDB[n] && VALID_ROOTS.has(customDB[n]) && customDB[n].length===3) return customDB[n];
     let r = morphologicalAnalysis(n);
     if (r && r.length===3) { if (VALID_ROOTS.has(r)) { customDB[n] = r; localStorage.setItem('yab_morph_custom_v2', JSON.stringify(customDB)); } return r; }
@@ -1940,6 +1976,7 @@
   }
 
   function showError(titleKey, msgKey, similarWords) {
+    if (window.yabLogEvent) window.yabLogEvent('analysis_error', wInputEl.value.trim(), null);
     document.getElementById('errTitle').textContent = t(titleKey);
     document.getElementById('errMsg').textContent = t(msgKey);
     searchBoxEl.classList.add('search-completed');
@@ -2089,6 +2126,7 @@
     setSticky(false);
     recordSearch(root);
     addRecentRoot(root);
+    if (window.yabLogEvent) window.yabLogEvent('analysis_success', wInputEl.value.trim(), root);
   }
 
   function showMultiRootSelection(word, roots) {
@@ -2153,6 +2191,18 @@
   }
 
   function closeError(){ errorPage.style.display='none'; }
+  const yabReportBtn = document.getElementById('yabReportBtn');
+  if (yabReportBtn) yabReportBtn.addEventListener('click', async () => {
+    const word = wInputEl.value.trim();
+    if (!word) { alert('ابتدا کلمه را وارد کنید.'); return; }
+    const details = prompt('اگر توضیحی دارید بنویسید (اختیاری):', 'ریشه پیدا نشد یا نتیجه نیاز به بررسی دارد.');
+    if (details === null) return;
+    if (!window.yabReportError) { alert('اتصال گزارش خطا در دسترس نیست.'); return; }
+    yabReportBtn.disabled = true;
+    const ok = await window.yabReportError(word, null, details);
+    yabReportBtn.disabled = false;
+    alert(ok ? 'گزارش شما ثبت شد. ممنون از کمک‌تان!' : 'گزارش ثبت نشد. لطفاً بعداً دوباره امتحان کنید.');
+  });
   function copyWord(word) {
     navigator.clipboard.writeText(word).then(() => alert(t('notifCopied') + ' ' + word));
   }
