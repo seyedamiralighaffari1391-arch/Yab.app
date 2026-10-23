@@ -115,18 +115,28 @@
       <div class="sectionhead"><h2>مدیریت ریشه‌های اصلاح‌شده</h2></div>
       <form id="correctionForm" class="panel" style="background:#0e172a;margin-bottom:16px">
         <input id="correctionId" type="hidden">
-        <div class="split">
-          <div class="field"><label for="word">کلمه</label><input id="word" required maxlength="160" placeholder="مثلاً حمال"></div>
-          <div class="field"><label for="correctedRoot">ریشه صحیح</label><input id="correctedRoot" maxlength="160" placeholder="مثلاً حمل؛ برای چندریشه‌ای: حمل، ح م ل"></div>
-        </div>
+        <div class="field"><label for="word">کلمه</label><input id="word" required maxlength="160" placeholder="مثلاً حمال"></div>
         <div class="field"><label for="correctionType">نوع واژه / روش اصلاح</label>
           <select id="correctionType" required>
-            <option value="single_root">ریشه واحد (اصلاح مستقیم)</option>
-            <option value="multi_root">چندریشه‌ای (ریشه‌ها را با ویرگول جدا کن)</option>
+            <option value="single_root">ریشه واحد (فقط همین کلمه)</option>
+            <option value="multi_root">دو ریشه‌ای (دو ریشه جداگانه)</option>
             <option value="noun">اسم دارای ریشه (در آمار خطا حساب نشود)</option>
             <option value="proper_noun">اسم خاص / بدون ریشه (در آمار خطا حساب نشود)</option>
           </select>
         </div>
+        <div id="singleRootFields" class="field"><label for="correctedRoot">ریشه صحیح</label><input id="correctedRoot" maxlength="12" placeholder="مثلاً حمل"></div>
+        <div id="multiRootFields" class="split hidden">
+          <div class="field"><label for="correctedRoot1">ریشهٔ اول</label><input id="correctedRoot1" maxlength="12" placeholder="مثلاً حمل"></div>
+          <div class="field"><label for="correctedRoot2">ریشهٔ دوم</label><input id="correctedRoot2" maxlength="12" placeholder="ریشهٔ دوم را جدا وارد کن"></div>
+        </div>
+        <div class="field"><label for="correctionMethod">روش اعمال اصلاح</label>
+          <select id="correctionMethod">
+            <option value="word_only">فقط اصلاح همین کلمه؛ الگو تغییر نکند</option>
+            <option value="add_pattern">اصلاح همین کلمه + افزودن الگوی صرفی</option>
+          </select>
+          <div class="small">حالت اول فقط همین کلمه را اصلاح می‌کند. حالت دوم، در صورت داشتن یک ریشه، الگوی استخراج‌شده را هم به فهرست الگوهای عمومی اضافه می‌کند.</div>
+        </div>
+        <div id="derivedCorrectionPatternBox" class="notice hidden">الگوی پیشنهادی: <strong id="derivedCorrectionPattern">—</strong><br>الگو فقط پس از انتخاب «افزودن الگوی صرفی» و ذخیره فرم اضافه می‌شود.</div>
         <div class="field"><label for="note">یادداشت (اختیاری)</label><textarea id="note" rows="2" maxlength="1000" placeholder="توضیح کوتاه درباره اصلاح"></textarea></div>
         <div class="formactions"><button class="primary" type="submit">ذخیره اصلاح</button><button id="cancelEditBtn" type="button">لغو ویرایش</button></div>
       </form>
@@ -446,32 +456,59 @@
     showSection(tab);
     if(tab==='events')renderEvents(); else if(tab==='reports')renderReports(); else if(tab==='corrections')renderCorrections(); else if(tab==='morph-patterns')renderMorphPatterns();
   }));
-  function resetCorrectionForm(){ $('correctionId').value='';$('word').value='';$('correctedRoot').value='';$('correctionType').value='single_root';$('note').value=''; }
+  function syncCorrectionFields(){
+    const type=$('correctionType').value, multi=type==='multi_root', proper=type==='proper_noun';
+    $('singleRootFields').classList.toggle('hidden',multi||proper);
+    $('multiRootFields').classList.toggle('hidden',!multi);
+    $('correctedRoot').required=!multi&&!proper;
+    $('correctedRoot1').required=multi;$('correctedRoot2').required=multi;
+    $('correctionMethod').disabled=multi||proper;
+    if(multi||proper)$('correctionMethod').value='word_only';
+    updateCorrectionPatternPreview();
+  }
+  function updateCorrectionPatternPreview(){
+    const type=$('correctionType').value, word=$('word').value.trim(), root=adminNormalize($('correctedRoot').value);
+    const pattern=(!['multi_root','proper_noun'].includes(type)&&root.length===3)?derivePatternFromWordRoot(word,root):null;
+    $('derivedCorrectionPattern').textContent=pattern||'برای این ورودی الگوی خودکار قابل ساخت نیست';
+    $('derivedCorrectionPatternBox').classList.toggle('hidden',$('correctionMethod').value!=='add_pattern');
+  }
+  function resetCorrectionForm(){
+    $('correctionId').value='';$('word').value='';$('correctedRoot').value='';$('correctedRoot1').value='';$('correctedRoot2').value='';$('correctionType').value='single_root';$('correctionMethod').value='word_only';$('note').value='';syncCorrectionFields();
+  }
+  $('correctionType').addEventListener('change',syncCorrectionFields);
+  $('correctionMethod').addEventListener('change',updateCorrectionPatternPreview);
+  $('word').addEventListener('input',updateCorrectionPatternPreview);$('correctedRoot').addEventListener('input',updateCorrectionPatternPreview);
+  syncCorrectionFields();
   $('cancelEditBtn').addEventListener('click',resetCorrectionForm);
   $('correctionForm').addEventListener('submit',async e=>{
     e.preventDefault();
-    const id=$('correctionId').value;
-    const correctionType=$('correctionType').value, rootInput=$('correctedRoot').value.trim();
+    const id=$('correctionId').value, correctionType=$('correctionType').value;
+    const root1=adminNormalize($('correctedRoot1').value),root2=adminNormalize($('correctedRoot2').value);
+    const rootInput=correctionType==='multi_root'?[root1,root2].filter(Boolean).join('، '):$('correctedRoot').value.trim();
     const payload={word:$('word').value.trim(),corrected_root:correctionType==='proper_noun'?(rootInput||'—'):rootInput,correction_type:correctionType,counts_as_error:!['proper_noun','noun'].includes(correctionType),note:$('note').value.trim()||null,created_by:currentUser.id,updated_at:new Date().toISOString()};
     if(!payload.word||(correctionType!=='proper_noun'&&!payload.corrected_root)){showMessage('globalMessage','کلمه و ریشه را کامل کن؛ برای اسم خاص ریشه لازم نیست.','error');return;}
-    const roots=payload.corrected_root.split(/[,،؛;|\/\s]+/).map(x=>adminNormalize(x)).filter(Boolean);
-    if(correctionType==='multi_root'&&(roots.length<2||roots.some(r=>r.length!==3))){showMessage('globalMessage','برای چندریشه‌ای حداقل دو ریشهٔ سه‌حرفی وارد کن و آن‌ها را با ویرگول جدا کن.','error');return;}
+    if(correctionType==='multi_root'&&(!root1||!root2||root1.length!==3||root2.length!==3)){showMessage('globalMessage','برای دو ریشه‌ای، هر دو باکس را جداگانه با یک ریشهٔ سه‌حرفی پر کن.','error');return;}
     if(['single_root','noun'].includes(correctionType)&&adminNormalize(payload.corrected_root).replace(/[\s،,؛;|/]/g,'').length!==3){showMessage('globalMessage','ریشه واحد باید سه حرف داشته باشد.','error');return;}
+    const method=$('correctionMethod').value;
+    const suggestedPattern=(!['multi_root','proper_noun'].includes(correctionType)&&adminNormalize(payload.corrected_root).length===3)?derivePatternFromWordRoot(payload.word,payload.corrected_root):null;
+    if(method==='add_pattern'&&!suggestedPattern){showMessage('globalMessage','برای افزودن الگو، یک ریشهٔ سه‌حرفی وارد کن که حروفش به همان ترتیب در کلمه وجود داشته باشند. برای دو ریشه‌ای‌ها فعلاً فقط اصلاح همان کلمه ثبت می‌شود.','error');return;}
     let result;
     const fields={word:payload.word,corrected_root:payload.corrected_root,correction_type:payload.correction_type,counts_as_error:payload.counts_as_error,note:payload.note,updated_at:payload.updated_at};
     if(id) result=await client.from('yab_corrections').update(fields).eq('id',id);
     else {
       const existing=corrections.find(x=>adminNormalize(x.word)===adminNormalize(payload.word));
-      result=existing
-        ? await client.from('yab_corrections').update(fields).eq('id',existing.id)
-        : await client.from('yab_corrections').insert(payload);
+      result=existing?await client.from('yab_corrections').update(fields).eq('id',existing.id):await client.from('yab_corrections').insert(payload);
     }
     if(result.error){showMessage('globalMessage','ذخیره انجام نشد: '+result.error.message,'error');return;}
-    resetCorrectionForm();await loadAll();showMessage('globalMessage','ریشه اصلاح‌شده ذخیره شد.','ok');
+    if(method==='add_pattern'){
+      const ok=await saveMorphPattern({pattern:suggestedPattern,source_word:payload.word,source_root:payload.corrected_root,note:payload.note||('الگو از نمونهٔ '+payload.word),enabled:true});
+      if(!ok){await loadAll();showMessage('globalMessage','اصلاح همین کلمه ذخیره شد، اما افزودن الگو ناموفق بود.','error');return;}
+    }
+    resetCorrectionForm();await loadAll();showMessage('globalMessage',method==='add_pattern'?'اصلاح کلمه ذخیره شد و الگوی صرفی هم به‌صورت عمومی اضافه شد.':'فقط همین کلمه اصلاح شد؛ هیچ الگوی عمومی تغییر نکرد.','ok');
   });
   $('correctionsBody').addEventListener('click',async e=>{
     const edit=e.target.closest('[data-edit]'), del=e.target.closest('[data-delete]');
-    if(edit){const x=corrections.find(c=>String(c.id)===edit.dataset.edit);if(!x)return;$('correctionId').value=x.id;$('word').value=x.word||'';$('correctedRoot').value=x.corrected_root||'';$('correctionType').value=x.correction_type||'single_root';$('note').value=x.note||'';$('word').focus();return;}
+    if(edit){const x=corrections.find(c=>String(c.id)===edit.dataset.edit);if(!x)return;$('correctionId').value=x.id;$('word').value=x.word||'';$('correctionType').value=x.correction_type||'single_root';const savedRoots=String(x.corrected_root||'').split(/[,،؛;|\/\s]+/).map(v=>adminNormalize(v)).filter(Boolean);$('correctedRoot').value=x.correction_type==='multi_root'?'':(x.corrected_root||'');$('correctedRoot1').value=x.correction_type==='multi_root'?(savedRoots[0]||''):'';$('correctedRoot2').value=x.correction_type==='multi_root'?(savedRoots[1]||''):'';$('correctionMethod').value='word_only';$('note').value=x.note||'';syncCorrectionFields();$('word').focus();return;}
     if(del){const x=corrections.find(c=>String(c.id)===del.dataset.delete);if(!x)return;if(!confirm(`«${x.word}» حذف شود؟ این کار قابل بازگشت نیست.`))return;const {error}=await client.from('yab_corrections').delete().eq('id',x.id);if(error){showMessage('globalMessage','حذف انجام نشد: '+error.message,'error');return;}await loadAll();showMessage('globalMessage','رکورد حذف شد.','ok');}
   });
   client.auth.getSession().then(async({data,error})=>{if(error){showMessage('loginMessage',error.message,'error');return;}if(data.session)await showApp(data.session.user);});
