@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>پنل مدیریت یاب</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root{--bg:#0b1020;--panel:#111a2e;--panel2:#17233b;--line:#263653;--text:#eef3ff;--muted:#aab7d0;--gold:#e8bd68;--green:#66d9a4;--red:#ff7d87;--blue:#8ab4ff}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#182746 0,#0b1020 58%);color:var(--text);font-family:Vazirmatn,Tahoma,sans-serif;min-height:100vh}
+    button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:#1b2944;color:var(--text)}button:hover{filter:brightness(1.12)}button.primary{background:var(--gold);color:#1b1a17;border:0;font-weight:800}button.danger{color:#ffdce0;border-color:#713b4a;background:#3b1e2a}button:disabled{opacity:.5;cursor:not-allowed}
+    .wrap{max-width:1200px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}.brand{display:flex;gap:12px;align-items:center}.logo{width:48px;height:48px;display:grid;place-items:center;border-radius:16px;background:linear-gradient(145deg,#f7d98f,#b98634);color:#161b2a;font-size:25px;font-weight:900}.brand h1{font-size:22px;margin:0}.sub{color:var(--muted);font-size:13px}.panel{background:rgba(17,26,46,.94);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 18px 55px #0002}.hidden{display:none!important}.login{max-width:440px;margin:8vh auto}.login h2{margin-top:0}.field{display:grid;gap:7px;margin:14px 0}.field label{color:var(--muted);font-size:13px}.field input,.field textarea,.field select,.toolbar input,.toolbar select{width:100%;padding:12px;border-radius:11px;border:1px solid var(--line);background:#0b1427;color:var(--text);outline:none}.field input:focus,.field textarea:focus,.toolbar input:focus{border-color:var(--gold)}.notice{padding:12px 14px;border-radius:12px;background:#1c2b47;color:#cfe0ff;margin:12px 0;font-size:13px}.notice.error{background:#3a202a;color:#ffd5da}.notice.ok{background:#17372f;color:#bdf5dc}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0}.stat{background:linear-gradient(145deg,#182743,#111a2e);border:1px solid var(--line);border-radius:17px;padding:17px}.stat .n{font-size:28px;font-weight:800;color:var(--gold);direction:ltr;text-align:right}.stat .label{font-size:13px;color:var(--muted)}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}.tabs button.active{background:var(--gold);color:#171a22;border-color:var(--gold);font-weight:800}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.toolbar input{flex:1;min-width:180px}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{border-collapse:collapse;width:100%;min-width:680px;background:#0e172a}th,td{padding:12px 13px;text-align:right;border-bottom:1px solid #202f49;font-size:13px;vertical-align:top}th{background:#17243b;color:#e7c982;position:sticky;top:0}td{color:#e2e9f8}tr:last-child td{border-bottom:0}.empty{text-align:center;color:var(--muted);padding:30px}.small{font-size:12px;color:var(--muted)}.rowactions{display:flex;gap:6px;flex-wrap:wrap}.rowactions button{padding:6px 9px;font-size:12px}.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.sectionhead h2{font-size:18px;margin:0 0 12px}.status{color:var(--green);font-size:13px}.footer{color:var(--muted);font-size:12px;text-align:center;padding:24px 0}.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}.formactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    @media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.wrap{padding:14px}.panel{padding:15px}.split{grid-template-columns:1fr}}
+    @media(max-width:420px){.grid{grid-template-columns:1fr 1fr}.stat{padding:12px}.stat .n{font-size:23px}.brand h1{font-size:18px}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><div class="logo">ی</div><div><h1>پنل مدیریت یاب</h1><div class="sub">مدیریت رویدادها، گزارش‌ها و ریشه‌های اصلاح‌شده</div></div></div>
+    <div id="headerActions" class="hidden"><span id="who" class="sub"></span> <button id="refreshBtn">تازه‌سازی</button> <button id="logoutBtn">خروج</button></div>
+  </header>
+
+  <section id="loginPanel" class="panel login">
+    <h2>ورود مدیر</h2>
+    <p class="sub">با حسابی وارد شوید که شناسه کاربری آن در جدول <code>yab_admins</code> ثبت شده است.</p>
+    <form id="loginForm">
+      <div class="field"><label for="email">ایمیل</label><input id="email" type="email" autocomplete="username" required></div>
+      <div class="field"><label for="password">رمز عبور</label><input id="password" type="password" autocomplete="current-password" required></div>
+      <button class="primary" type="submit" style="width:100%">ورود امن</button>
+    </form>
+    <div id="loginMessage" class="notice hidden" role="status"></div>
+    <p class="small">اگر ورود انجام شد اما دسترسی رد شد، شناسه کامل کاربر را در جدول <code>yab_admins.user_id</code> بررسی کنید.</p>
+  </section>
+
+  <main id="dashboard" class="hidden">
+    <div id="globalMessage" class="notice hidden" role="status"></div>
+    <div class="grid">
+      <div class="stat"><div class="label">کل رویدادهای قابل مشاهده</div><div id="totalEvents" class="n">—</div></div>
+      <div class="stat"><div class="label">تحلیل‌های موفق</div><div id="successEvents" class="n">—</div></div>
+      <div class="stat"><div class="label">خطاهای تحلیل</div><div id="errorEvents" class="n">—</div></div>
+      <div class="stat"><div class="label">گزارش‌های کاربران</div><div id="reportsCount" class="n">—</div></div>
+    </div>
+    <div class="tabs">
+      <button class="active" data-tab="events">رویدادها</button>
+      <button data-tab="reports">گزارش خطاها</button>
+      <button data-tab="corrections">ریشه‌های اصلاح‌شده</button>
+    </div>
+
+    <section id="tab-events" class="panel">
+      <div class="sectionhead"><h2>رویدادهای ثبت‌شده</h2><span class="small">این عدد فقط داده‌های ذخیره‌شده در Supabase را نشان می‌دهد.</span></div>
+      <div class="toolbar"><input id="eventSearch" placeholder="جست‌وجو در کلمه، ریشه یا نوع رویداد…"><button id="searchEventsBtn">جست‌وجو</button></div>
+      <div class="tablewrap"><table><thead><tr><th>زمان</th><th>نوع رویداد</th><th>کلمه</th><th>ریشه</th></tr></thead><tbody id="eventsBody"><tr><td colspan="4" class="empty">در حال بارگذاری…</td></tr></tbody></table></div>
+    </section>
+
+    <section id="tab-reports" class="panel hidden">
+      <div class="sectionhead"><h2>گزارش خطاهای کاربران</h2></div>
+      <div class="toolbar"><input id="reportSearch" placeholder="جست‌وجو در کلمه، ریشه گزارش‌شده یا توضیحات…"><button id="searchReportsBtn">جست‌وجو</button></div>
+      <div class="tablewrap"><table><thead><tr><th>زمان</th><th>کلمه</th><th>ریشه گزارش‌شده</th><th>توضیحات</th></tr></thead><tbody id="reportsBody"><tr><td colspan="4" class="empty">در حال بارگذاری…</td></tr></tbody></table></div>
+    </section>
+
+    <section id="tab-corrections" class="panel hidden">
+      <div class="sectionhead"><h2>مدیریت ریشه‌های اصلاح‌شده</h2></div>
+      <form id="correctionForm" class="panel" style="background:#0e172a;margin-bottom:16px">
+        <input id="correctionId" type="hidden">
+        <div class="split">
+          <div class="field"><label for="word">کلمه</label><input id="word" required maxlength="160" placeholder="مثلاً تعمیر"></div>
+          <div class="field"><label for="correctedRoot">ریشه صحیح</label><input id="correctedRoot" required maxlength="160" placeholder="مثلاً عمر"></div>
+        </div>
+        <div class="field"><label for="note">یادداشت (اختیاری)</label><textarea id="note" rows="2" maxlength="1000" placeholder="توضیح کوتاه درباره اصلاح"></textarea></div>
+        <div class="formactions"><button class="primary" type="submit">ذخیره اصلاح</button><button id="cancelEditBtn" type="button">لغو ویرایش</button></div>
+      </form>
+      <div class="toolbar"><input id="correctionSearch" placeholder="جست‌وجو در کلمه یا ریشه…"><button id="searchCorrectionsBtn">جست‌وجو</button></div>
+      <div class="tablewrap"><table><thead><tr><th>کلمه</th><th>ریشه اصلاح‌شده</th><th>یادداشت</th><th>آخرین تغییر</th><th>عملیات</th></tr></thead><tbody id="correctionsBody"><tr><td colspan="5" class="empty">در حال بارگذاری…</td></tr></tbody></table></div>
+    </section>
+  </main>
+  <div class="footer">یاب • پنل مدیریت • دسترسی‌ها باید با سیاست‌های RLS در Supabase محدود شوند.</div>
+</div>
+<script>
+(() => {
+  'use strict';
+  const SUPABASE_URL = 'https://jtzvidnofailzguumruf.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_KjZvFj9Fp5UgzXRly-C6hg_WQXntByW';
+  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+  });
+  const $ = id => document.getElementById(id);
+  let currentUser = null, events = [], reports = [], corrections = [];
+  const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const dateText = value => value ? new Date(value).toLocaleString('fa-IR') : '—';
+  const showMessage = (id, message, kind='') => {
+    const el = $(id); el.textContent = message; el.className = 'notice' + (kind ? ' '+kind : '');
+    el.classList.remove('hidden');
+  };
+  const hideMessage = id => $(id).classList.add('hidden');
+  const errorText = error => error?.message || 'خطای نامشخص؛ ساختار جدول و سیاست‌های دسترسی را بررسی کنید.';
+  async function ensureAdmin(user) {
+    const { data, error } = await client.from('yab_admins').select('user_id').eq('user_id', user.id).maybeSingle();
+    if (error) throw new Error('بررسی دسترسی مدیر ناموفق بود: ' + error.message);
+    if (!data) throw new Error('این حساب در جدول yab_admins مجاز نشده است.');
+    return true;
+  }
+  async function showApp(user) {
+    currentUser = user;
+    try {
+      await ensureAdmin(user);
+      $('loginPanel').classList.add('hidden'); $('dashboard').classList.remove('hidden'); $('headerActions').classList.remove('hidden');
+      $('who').textContent = user.email || user.id;
+      await loadAll();
+    } catch (e) {
+      await client.auth.signOut();
+      $('dashboard').classList.add('hidden'); $('headerActions').classList.add('hidden'); $('loginPanel').classList.remove('hidden');
+      showMessage('loginMessage', errorText(e), 'error');
+    }
+  }
+  async function loadAll() {
+    hideMessage('globalMessage');
+    const [ev, rp, co] = await Promise.all([
+      client.from('yab_events').select('id,event_type,word,root,created_at').order('created_at',{ascending:false}).limit(500),
+      client.from('yab_error_reports').select('id,word,reported_root,details,created_at').order('created_at',{ascending:false}).limit(500),
+      client.from('yab_corrections').select('id,word,corrected_root,note,created_by,created_at,updated_at').order('updated_at',{ascending:false}).limit(500)
+    ]);
+    const failures = [];
+    if (ev.error) failures.push('رویدادها: '+ev.error.message); else events = ev.data || [];
+    if (rp.error) failures.push('گزارش‌ها: '+rp.error.message); else reports = rp.data || [];
+    if (co.error) failures.push('اصلاح‌ها: '+co.error.message); else corrections = co.data || [];
+    $('totalEvents').textContent = ev.error ? '—' : events.length.toLocaleString('fa-IR');
+    $('successEvents').textContent = ev.error ? '—' : events.filter(x=>x.event_type==='analysis_success').length.toLocaleString('fa-IR');
+    $('errorEvents').textContent = ev.error ? '—' : events.filter(x=>x.event_type==='analysis_error').length.toLocaleString('fa-IR');
+    $('reportsCount').textContent = rp.error ? '—' : reports.length.toLocaleString('fa-IR');
+    renderEvents(); renderReports(); renderCorrections();
+    if (failures.length) showMessage('globalMessage','برخی اطلاعات بارگذاری نشدند. '+failures.join(' | '),'error');
+    else showMessage('globalMessage','اطلاعات با موفقیت بارگذاری شد.','ok');
+  }
+  function renderEvents() {
+    const q = $('eventSearch').value.trim().toLocaleLowerCase('fa');
+    const list = events.filter(x => [x.word,x.root,x.event_type].some(v=>String(v??'').toLocaleLowerCase('fa').includes(q)));
+    $('eventsBody').innerHTML = list.length ? list.map(x=>`<tr><td>${escapeHtml(dateText(x.created_at))}</td><td>${escapeHtml(x.event_type)}</td><td>${escapeHtml(x.word)}</td><td>${escapeHtml(x.root)}</td></tr>`).join('') : '<tr><td colspan="4" class="empty">موردی پیدا نشد.</td></tr>';
+  }
+  function renderReports() {
+    const q = $('reportSearch').value.trim().toLocaleLowerCase('fa');
+    const list = reports.filter(x=>[x.word,x.reported_root,x.details].some(v=>String(v??'').toLocaleLowerCase('fa').includes(q)));
+    $('reportsBody').innerHTML = list.length ? list.map(x=>`<tr><td>${escapeHtml(dateText(x.created_at))}</td><td>${escapeHtml(x.word)}</td><td>${escapeHtml(x.reported_root)}</td><td>${escapeHtml(x.details)}</td></tr>`).join('') : '<tr><td colspan="4" class="empty">موردی پیدا نشد.</td></tr>';
+  }
+  function renderCorrections() {
+    const q = $('correctionSearch').value.trim().toLocaleLowerCase('fa');
+    const list = corrections.filter(x=>[x.word,x.corrected_root,x.note].some(v=>String(v??'').toLocaleLowerCase('fa').includes(q)));
+    $('correctionsBody').innerHTML = list.length ? list.map(x=>`<tr><td>${escapeHtml(x.word)}</td><td>${escapeHtml(x.corrected_root)}</td><td>${escapeHtml(x.note)}</td><td>${escapeHtml(dateText(x.updated_at||x.created_at))}</td><td><div class="rowactions"><button data-edit="${escapeHtml(x.id)}">ویرایش</button><button class="danger" data-delete="${escapeHtml(x.id)}">حذف</button></div></td></tr>`).join('') : '<tr><td colspan="5" class="empty">موردی پیدا نشد.</td></tr>';
+  }
+  $('loginForm').addEventListener('submit', async e=>{
+    e.preventDefault(); hideMessage('loginMessage');
+    const button = e.submitter; if(button) button.disabled=true;
+    const {data,error} = await client.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});
+    if(button) button.disabled=false;
+    if(error){showMessage('loginMessage','ورود ناموفق بود: '+error.message,'error');return;}
+    await showApp(data.user);
+  });
+  $('logoutBtn').addEventListener('click', async()=>{await client.auth.signOut();currentUser=null;$('dashboard').classList.add('hidden');$('headerActions').classList.add('hidden');$('loginPanel').classList.remove('hidden');hideMessage('loginMessage');});
+  $('refreshBtn').addEventListener('click',loadAll);
+  $('searchEventsBtn').addEventListener('click',renderEvents); $('eventSearch').addEventListener('keydown',e=>{if(e.key==='Enter')renderEvents()});
+  $('searchReportsBtn').addEventListener('click',renderReports); $('reportSearch').addEventListener('keydown',e=>{if(e.key==='Enter')renderReports()});
+  $('searchCorrectionsBtn').addEventListener('click',renderCorrections); $('correctionSearch').addEventListener('keydown',e=>{if(e.key==='Enter')renderCorrections()});
+  document.querySelectorAll('[data-tab]').forEach(btn=>btn.addEventListener('click',()=>{
+    document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b===btn));
+    ['events','reports','corrections'].forEach(t=>$('tab-'+t).classList.toggle('hidden',t!==btn.dataset.tab));
+  }));
+  function resetCorrectionForm(){ $('correctionId').value='';$('word').value='';$('correctedRoot').value='';$('note').value=''; }
+  $('cancelEditBtn').addEventListener('click',resetCorrectionForm);
+  $('correctionForm').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const id=$('correctionId').value;
+    const payload={word:$('word').value.trim(),corrected_root:$('correctedRoot').value.trim(),note:$('note').value.trim()||null,created_by:currentUser.id,updated_at:new Date().toISOString()};
+    if(!payload.word||!payload.corrected_root)return;
+    let result;
+    if(id) result=await client.from('yab_corrections').update({word:payload.word,corrected_root:payload.corrected_root,note:payload.note,updated_at:payload.updated_at}).eq('id',id);
+    else result=await client.from('yab_corrections').insert(payload);
+    if(result.error){showMessage('globalMessage','ذخیره انجام نشد: '+result.error.message,'error');return;}
+    resetCorrectionForm();await loadAll();showMessage('globalMessage','ریشه اصلاح‌شده ذخیره شد.','ok');
+  });
+  $('correctionsBody').addEventListener('click',async e=>{
+    const edit=e.target.closest('[data-edit]'), del=e.target.closest('[data-delete]');
+    if(edit){const x=corrections.find(c=>String(c.id)===edit.dataset.edit);if(!x)return;$('correctionId').value=x.id;$('word').value=x.word||'';$('correctedRoot').value=x.corrected_root||'';$('note').value=x.note||'';$('word').focus();return;}
+    if(del){const x=corrections.find(c=>String(c.id)===del.dataset.delete);if(!x)return;if(!confirm(`«${x.word}» حذف شود؟ این کار قابل بازگشت نیست.`))return;const {error}=await client.from('yab_corrections').delete().eq('id',x.id);if(error){showMessage('globalMessage','حذف انجام نشد: '+error.message,'error');return;}await loadAll();showMessage('globalMessage','رکورد حذف شد.','ok');}
+  });
+  client.auth.getSession().then(async({data,error})=>{if(error){showMessage('loginMessage',error.message,'error');return;}if(data.session)await showApp(data.session.user);});
+  client.auth.onAuthStateChange((_event,session)=>{if(!session){$('dashboard').classList.add('hidden');$('headerActions').classList.add('hidden');$('loginPanel').classList.remove('hidden');}});
+})();
+</script>
+</body>
+</html>
