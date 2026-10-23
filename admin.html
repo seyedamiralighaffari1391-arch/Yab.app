@@ -41,7 +41,7 @@
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="brand"><div class="logo">ی</div><div><h1>پنل مدیریت یاب</h1><div class="sub">مدیریت رویدادها، گزارش‌ها و ریشه‌های اصلاح‌شده</div></div></div>
+    <div class="brand"><div class="logo">ی</div><div><h1>پنل مدیریت یاب</h1><div class="sub">مدیریت رویدادها، اصلاح ریشه‌ها و الگوهای صرفی</div></div></div>
     <div id="headerActions" class="hidden"><span id="who" class="sub"></span> <button id="refreshBtn">تازه‌سازی</button> <button id="logoutBtn">خروج</button></div>
   </header>
 
@@ -69,6 +69,7 @@
         <button data-category="searches">🔎 جست‌وجوها</button>
         <button data-category="visits">📈 بازدیدهای روزانه</button>
         <button data-category="corrections">✏️ اصلاح ریشه‌ها</button>
+        <button data-category="morph-patterns">🧠 الگوهای صرفی</button>
       </aside>
       <div class="chat-main">
     <div class="grid">
@@ -132,6 +133,36 @@
       <div class="toolbar"><input id="correctionSearch" placeholder="جست‌وجو در کلمه یا ریشه…"><button id="searchCorrectionsBtn">جست‌وجو</button></div>
       <div class="tablewrap"><table><thead><tr><th>کلمه</th><th>ریشه اصلاح‌شده</th><th>نوع</th><th>یادداشت</th><th>آخرین تغییر</th><th>عملیات</th></tr></thead><tbody id="correctionsBody"><tr><td colspan="6" class="empty">در حال بارگذاری…</td></tr></tbody></table></div>
     </section>
+
+    <section id="tab-morph-patterns" class="panel hidden">
+      <div class="sectionhead"><h2>آموزش و مدیریت الگوهای صرفی</h2><span class="small">الگوهای فعال در الگوریتم ریشه‌یابی سایت استفاده می‌شوند.</span></div>
+      <div class="chat-note">در الگو، حروف «ف»، «ع» و «ل» جایگاه‌های اول، دوم و سوم ریشه هستند. مثال: «فعال» یعنی ف + ع + ا + ل؛ پس برای «حمال» ریشهٔ «حمل» به دست می‌آید. ثبت الگو تضمین نمی‌کند همهٔ واژه‌های هم‌شکل درست باشند؛ بعد از فعال‌کردن، چند نمونه را آزمایش کن.</div>
+      <div class="split">
+        <form id="directPatternForm" class="panel" style="background:#0e172a;margin-bottom:16px">
+          <h3 style="margin-top:0">افزودن مستقیم الگو</h3>
+          <input id="patternId" type="hidden">
+          <input id="patternSourceWord" type="hidden">
+          <input id="patternSourceRoot" type="hidden">
+          <div class="field"><label for="patternText">الگوی صرفی</label><input id="patternText" required maxlength="80" placeholder="مثلاً فعال یا مفعول"></div>
+          <div class="field"><label for="patternNote">یادداشت (اختیاری)</label><textarea id="patternNote" rows="2" maxlength="1000" placeholder="توضیح یا نکته درباره الگو"></textarea></div>
+          <div class="field"><label><input id="patternEnabled" type="checkbox" checked style="width:auto;accent-color:var(--green)"> الگو فعال باشد</label></div>
+          <div class="formactions"><button class="primary" type="submit">ذخیره الگو</button><button id="cancelPatternEditBtn" type="button">لغو ویرایش</button></div>
+          <p class="small">در این فیلد قالب را وارد کن، نه یک واژهٔ عادی. «ف»، «ع»، «ل» باید جایگاه ریشه باشند.</p>
+        </form>
+        <form id="learnPatternForm" class="panel" style="background:#0e172a;margin-bottom:16px">
+          <h3 style="margin-top:0">ساخت الگو از کلمه و ریشه</h3>
+          <div class="field"><label for="learnWord">کلمه نمونه</label><input id="learnWord" required maxlength="160" placeholder="مثلاً حمال"></div>
+          <div class="field"><label for="learnRoot">ریشه صحیح (سه حرف)</label><input id="learnRoot" required maxlength="12" placeholder="مثلاً حمل"></div>
+          <div class="notice" id="derivedPatternPreview">کلمه و ریشه را وارد کن تا الگوی پیشنهادی ساخته شود.</div>
+          <div class="field"><label for="learnNote">یادداشت (اختیاری)</label><textarea id="learnNote" rows="2" maxlength="1000" placeholder="مثلاً الگوی اسم مبالغه"></textarea></div>
+          <div class="field"><label><input id="learnPatternEnabled" type="checkbox" checked style="width:auto;accent-color:var(--green)"> الگوی ساخته‌شده فعال باشد</label></div>
+          <div class="formactions"><button class="primary" type="submit">ساخت و ذخیره الگو</button></div>
+          <p class="small">الگو از ترتیب حروف ریشه در کلمه ساخته می‌شود. پیش از ذخیره، الگوی پیشنهادی را بررسی کن.</p>
+        </form>
+      </div>
+      <div class="toolbar"><input id="morphPatternSearch" placeholder="جست‌وجو در الگو، کلمه نمونه یا ریشه…"><button id="searchMorphPatternsBtn" type="button">جست‌وجو</button></div>
+      <div class="tablewrap"><table><thead><tr><th>الگو</th><th>کلمه نمونه</th><th>ریشه نمونه</th><th>وضعیت</th><th>یادداشت</th><th>عملیات</th></tr></thead><tbody id="morphPatternsBody"><tr><td colspan="6" class="empty">در حال بارگذاری…</td></tr></tbody></table></div>
+    </section>
       </div>
     </div>
   </main>
@@ -146,7 +177,7 @@
     auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
   });
   const $ = id => document.getElementById(id);
-  let currentUser = null, events = [], reports = [], corrections = [], dailyVisits = [], eventFilter = "all", reportFilter = "all";
+  let currentUser = null, events = [], reports = [], corrections = [], morphPatterns = [], dailyVisits = [], eventFilter = "all", reportFilter = "all";
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const dateText = value => value ? new Date(value).toLocaleString('fa-IR') : '—';
   const showMessage = (id, message, kind='') => {
@@ -176,17 +207,19 @@
   }
   async function loadAll() {
     hideMessage('globalMessage');
-    const [ev, rp, co, vi] = await Promise.all([
+    const [ev, rp, co, vi, mp] = await Promise.all([
       client.from('yab_events').select('id,event_type,word,root,error_type,created_at').order('created_at',{ascending:false}).limit(2000),
       client.from('yab_error_reports').select('id,word,reported_root,details,created_at,is_read,category,counts_as_error').order('created_at',{ascending:false}).limit(500),
       client.from('yab_corrections').select('id,word,corrected_root,correction_type,counts_as_error,note,created_by,created_at,updated_at').order('updated_at',{ascending:false}).limit(2000),
-      client.from('yab_daily_visits').select('visit_date,visit_count,updated_at').order('visit_date',{ascending:false}).limit(30)
+      client.from('yab_daily_visits').select('visit_date,visit_count,updated_at').order('visit_date',{ascending:false}).limit(30),
+      client.from('yab_morph_patterns').select('id,pattern,normalized_pattern,source_word,source_root,note,enabled,created_by,created_at,updated_at').order('updated_at',{ascending:false}).limit(1000)
     ]);
     const failures = [];
     if (ev.error) failures.push('رویدادها: '+ev.error.message); else events = ev.data || [];
     if (rp.error) failures.push('گزارش‌ها: '+rp.error.message); else reports = rp.data || [];
     if (co.error) failures.push('اصلاح‌ها: '+co.error.message); else corrections = co.data || [];
     if (vi.error) failures.push('بازدیدها: '+vi.error.message); else dailyVisits = vi.data || [];
+    if (mp.error) failures.push('الگوهای صرفی: '+mp.error.message); else morphPatterns = mp.data || [];
     const nonErrorWords = new Set([...reports.filter(x=>x.counts_as_error===false || ['proper_noun','not_error','noun'].includes(x.category)).map(x=>adminNormalize(x.word)), ...corrections.filter(x=>x.counts_as_error===false || ['proper_noun','noun'].includes(x.correction_type)).map(x=>adminNormalize(x.word))]);
     $('totalEvents').textContent = ev.error ? '—' : events.length.toLocaleString('fa-IR');
     $('successEvents').textContent = ev.error ? '—' : events.filter(x=>x.event_type==='analysis_success').length.toLocaleString('fa-IR');
@@ -194,7 +227,7 @@
     $('reportsCount').textContent = rp.error ? '—' : reports.filter(x=>x.counts_as_error!==false && !['proper_noun','not_error','noun'].includes(x.category) && !nonErrorWords.has(adminNormalize(x.word))).length.toLocaleString('fa-IR');
     const todayKey = new Date().toISOString().slice(0,10);
     $('todayVisits').textContent = (dailyVisits.find(v=>String(v.visit_date).slice(0,10)===todayKey)?.visit_count ?? 0).toLocaleString('fa-IR');
-    renderEvents(); renderReports(); renderCorrections(); renderUnreported(); renderVisits();
+    renderEvents(); renderReports(); renderCorrections(); renderMorphPatterns(); renderUnreported(); renderVisits();
     if (failures.length) showMessage('globalMessage','برخی اطلاعات بارگذاری نشدند. '+failures.join(' | '),'error');
     else showMessage('globalMessage','اطلاعات با موفقیت بارگذاری شد.','ok');
   }
@@ -234,6 +267,79 @@
     $('correctionsBody').innerHTML = list.length ? list.map(x=>`<tr><td>${escapeHtml(x.word)}</td><td>${escapeHtml(x.corrected_root)}</td><td>${escapeHtml(({single_root:'ریشه واحد',multi_root:'چندریشه‌ای',noun:'اسم دارای ریشه',proper_noun:'اسم خاص'})[x.correction_type]||'ریشه واحد')}</td><td>${escapeHtml(x.note)}</td><td>${escapeHtml(dateText(x.updated_at||x.created_at))}</td><td><div class="rowactions"><button data-edit="${escapeHtml(x.id)}">ویرایش</button><button class="danger" data-delete="${escapeHtml(x.id)}">حذف</button></div></td></tr>`).join('') : '<tr><td colspan="6" class="empty">موردی پیدا نشد.</td></tr>';
   }
 
+  function renderMorphPatterns(){
+    const q=($('morphPatternSearch')?.value||'').trim().toLocaleLowerCase('fa');
+    const list=morphPatterns.filter(x=>[x.pattern,x.source_word,x.source_root,x.note].some(v=>String(v??'').toLocaleLowerCase('fa').includes(q)));
+    $('morphPatternsBody').innerHTML=list.length?list.map(x=>`<tr><td><strong>${escapeHtml(x.pattern)}</strong><div class="small">${escapeHtml(x.normalized_pattern)}</div></td><td>${escapeHtml(x.source_word||'—')}</td><td>${escapeHtml(x.source_root||'—')}</td><td><label><input type="checkbox" data-pattern-toggle="${escapeHtml(x.id)}" ${x.enabled?'checked':''} style="width:18px;height:18px;accent-color:var(--green)"> ${x.enabled?'فعال':'غیرفعال'}</label></td><td>${escapeHtml(x.note||'—')}</td><td><div class="rowactions"><button data-pattern-edit="${escapeHtml(x.id)}">ویرایش</button><button class="danger" data-pattern-delete="${escapeHtml(x.id)}">حذف</button></div></td></tr>`).join(''):'<tr><td colspan="6" class="empty">الگویی پیدا نشد.</td></tr>';
+  }
+  function normalizePatternAdmin(value){return adminNormalize(String(value||'').replace(/ّ/g,''));}
+  function derivePatternFromWordRoot(word,root){
+    const w=adminNormalize(word),r=adminNormalize(root);
+    if(!w||r.length!==3)return null;
+    const positions=[];let cursor=0;
+    for(const ch of r){const at=w.indexOf(ch,cursor);if(at<0)return null;positions.push(at);cursor=at+1;}
+    const marks=new Map(positions.map((pos,i)=>[pos,['ف','ع','ل'][i]]));
+    return [...w].map((ch,i)=>marks.get(i)||ch).join('');
+  }
+  function validMorphPattern(value){const p=normalizePatternAdmin(value);return p.length>=3&&p.length<=80&&p.includes('ف')&&p.includes('ع')&&p.includes('ل');}
+  function resetPatternForm(){ $('patternId').value='';$('patternSourceWord').value='';$('patternSourceRoot').value='';$('patternText').value='';$('patternNote').value='';$('patternEnabled').checked=true; }
+  async function saveMorphPattern({id=null,pattern,source_word=null,source_root=null,note=null,enabled=true}){
+    const normalized_pattern=normalizePatternAdmin(pattern);
+    if(!validMorphPattern(normalized_pattern)){showMessage('globalMessage','الگو باید حداقل یک «ف»، یک «ع» و یک «ل» داشته باشد. مثال: فعال یا مفعول.','error');return false;}
+    const payload={pattern:String(pattern).trim(),normalized_pattern,source_word:source_word||null,source_root:source_root?adminNormalize(source_root):null,note:note||null,enabled:!!enabled,created_by:currentUser.id,updated_at:new Date().toISOString()};
+    let result;
+    if(id) result=await client.from('yab_morph_patterns').update({...payload,created_by:undefined}).eq('id',id);
+    else {
+      const existing=morphPatterns.find(x=>x.normalized_pattern===normalized_pattern);
+      result=existing?await client.from('yab_morph_patterns').update({pattern:payload.pattern,source_word:payload.source_word||existing.source_word,source_root:payload.source_root||existing.source_root,note:payload.note,enabled:payload.enabled,updated_at:payload.updated_at}).eq('id',existing.id):await client.from('yab_morph_patterns').insert(payload);
+    }
+    if(result.error){showMessage('globalMessage','ذخیره الگو انجام نشد: '+result.error.message,'error');return false;}
+    await loadAll();showMessage('globalMessage','الگوی صرفی ذخیره شد. اگر فعال باشد، سایت پس از تازه‌شدن فهرست الگوها از آن استفاده می‌کند.','ok');return true;
+  }
+  function updateDerivedPatternPreview(){
+    const pattern=derivePatternFromWordRoot($('learnWord').value,$('learnRoot').value);
+    $('derivedPatternPreview').textContent=pattern?'الگوی پیشنهادی: '+pattern+'  |  نرمال‌شده: '+normalizePatternAdmin(pattern):'کلمه و ریشه را طوری وارد کن که سه حرف ریشه به ترتیب در کلمه وجود داشته باشند.';
+  }
+  $('learnWord').addEventListener('input',updateDerivedPatternPreview);$('learnRoot').addEventListener('input',updateDerivedPatternPreview);
+  $('directPatternForm').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const pattern=$('patternText').value.trim();
+    if(!validMorphPattern(pattern)){showMessage('globalMessage','الگو باید شامل جایگاه‌های «ف»، «ع» و «ل» باشد؛ مثلاً فعال یا مفعول.','error');return;}
+    const ok=await saveMorphPattern({id:$('patternId').value||null,pattern,source_word:$('patternSourceWord').value||null,source_root:$('patternSourceRoot').value||null,note:$('patternNote').value.trim()||null,enabled:$('patternEnabled').checked});
+    if(ok)resetPatternForm();
+  });
+  $('learnPatternForm').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const word=$('learnWord').value.trim(),root=adminNormalize($('learnRoot').value),pattern=derivePatternFromWordRoot(word,root);
+    if(root.length!==3){showMessage('globalMessage','ریشه باید دقیقاً سه حرف داشته باشد.','error');return;}
+    if(!pattern||!validMorphPattern(pattern)){showMessage('globalMessage','از این کلمه و ریشه نتوانستم الگوی معتبر بسازم؛ ترتیب حروف ریشه را بررسی کن.','error');return;}
+    const note=$('learnNote').value.trim()||null;
+    const ok=await saveMorphPattern({pattern,source_word:word,source_root:root,note,enabled:$('learnPatternEnabled').checked});
+    if(ok){
+      // نمونه آموزشی خودش هم به‌عنوان اصلاح دقیق کلمه ثبت شود.
+      const existing=corrections.find(x=>adminNormalize(x.word)===adminNormalize(word));
+      const correctionPayload={word,corrected_root:root,correction_type:'single_root',counts_as_error:true,note:note||('نمونه آموزشی الگوی '+pattern),created_by:currentUser.id,updated_at:new Date().toISOString()};
+      const correctionResult=existing?await client.from('yab_corrections').update({word,corrected_root:root,correction_type:'single_root',counts_as_error:true,note:correctionPayload.note,updated_at:correctionPayload.updated_at}).eq('id',existing.id):await client.from('yab_corrections').insert(correctionPayload);
+      if(correctionResult.error)showMessage('globalMessage','الگو ذخیره شد، اما اصلاح دقیق کلمه ذخیره نشد: '+correctionResult.error.message,'error');
+      else {await loadAll();showMessage('globalMessage','الگو ذخیره شد و خود کلمهٔ نمونه هم به‌عنوان اصلاح مستقیم ثبت شد.','ok');}
+      $('learnWord').value='';$('learnRoot').value='';$('learnNote').value='';updateDerivedPatternPreview();
+    }
+  });
+  $('cancelPatternEditBtn').addEventListener('click',resetPatternForm);
+  $('searchMorphPatternsBtn').addEventListener('click',renderMorphPatterns);$('morphPatternSearch').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();renderMorphPatterns();}});
+  $('morphPatternsBody').addEventListener('change',async e=>{
+    const toggle=e.target.closest('[data-pattern-toggle]');if(!toggle)return;
+    const row=morphPatterns.find(x=>String(x.id)===String(toggle.dataset.patternToggle));if(!row)return;
+    const {error}=await client.from('yab_morph_patterns').update({enabled:toggle.checked,updated_at:new Date().toISOString()}).eq('id',row.id);
+    if(error){showMessage('globalMessage','تغییر وضعیت الگو انجام نشد: '+error.message,'error');toggle.checked=!!row.enabled;return;}
+    await loadAll();showMessage('globalMessage',toggle.checked?'الگو فعال شد.':'الگو غیرفعال شد.','ok');
+  });
+  $('morphPatternsBody').addEventListener('click',async e=>{
+    const edit=e.target.closest('[data-pattern-edit]'),del=e.target.closest('[data-pattern-delete]');
+    if(edit){const x=morphPatterns.find(z=>String(z.id)===String(edit.dataset.patternEdit));if(!x)return;$('patternId').value=x.id;$('patternSourceWord').value=x.source_word||'';$('patternSourceRoot').value=x.source_root||'';$('patternText').value=x.pattern||'';$('patternNote').value=x.note||'';$('patternEnabled').checked=!!x.enabled;$('patternText').focus();$('directPatternForm').scrollIntoView({behavior:'smooth',block:'start'});return;}
+    if(del){const x=morphPatterns.find(z=>String(z.id)===String(del.dataset.patternDelete));if(!x||!confirm(`الگوی «${x.pattern}» حذف شود؟`))return;const {error}=await client.from('yab_morph_patterns').delete().eq('id',x.id);if(error){showMessage('globalMessage','حذف الگو انجام نشد: '+error.message,'error');return;}await loadAll();showMessage('globalMessage','الگو حذف شد.','ok');}
+  });
+
   function renderUnreported(){
     const reported=new Set(reports.map(x=>adminNormalize(x.word)));
     const q=($('unreportedSearch')?.value||'').trim().toLocaleLowerCase('fa');
@@ -248,7 +354,7 @@
     $('visitBars').innerHTML=rows.length?rows.slice(0,14).reverse().map(x=>`<div class="visit-bar"><span class="bar-value">${Number(x.visit_count||0).toLocaleString('fa-IR')}</span><div class="bar" style="height:${Math.max(3,Math.round(Number(x.visit_count||0)/max*112))}px"></div><span class="bar-label">${escapeHtml(String(x.visit_date).slice(5))}</span></div>`).join(''):'<div class="empty">هنوز داده‌ای برای نمایش نیست.</div>';
   }
   function showSection(section){
-    ['events','reports','corrections','unreported','visits'].forEach(t=>{const el=$('tab-'+t);if(el)el.classList.toggle('hidden',t!==section);});
+    ['events','reports','corrections','unreported','visits','morph-patterns'].forEach(t=>{const el=$('tab-'+t);if(el)el.classList.toggle('hidden',t!==section);});
     document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===section));
     document.querySelectorAll('[data-category]').forEach(b=>b.classList.toggle('active',b.dataset.category===section || (section==='events'&&b.dataset.category==='events')));
   }
@@ -261,6 +367,7 @@
     else if(cat==='unreported'){showSection('unreported');renderUnreported();}
     else if(cat==='visits'){showSection('visits');renderVisits();}
     else if(cat==='corrections'){showSection('corrections');renderCorrections();}
+    else if(cat==='morph-patterns'){showSection('morph-patterns');renderMorphPatterns();}
   }));
   function openCorrectionFromRow(row){
     if(!row)return;
@@ -337,7 +444,7 @@
     if(tab==='events')eventFilter='all';
     if(tab==='reports')reportFilter='all';
     showSection(tab);
-    if(tab==='events')renderEvents(); else if(tab==='reports')renderReports(); else if(tab==='corrections')renderCorrections();
+    if(tab==='events')renderEvents(); else if(tab==='reports')renderReports(); else if(tab==='corrections')renderCorrections(); else if(tab==='morph-patterns')renderMorphPatterns();
   }));
   function resetCorrectionForm(){ $('correctionId').value='';$('word').value='';$('correctedRoot').value='';$('correctionType').value='single_root';$('note').value=''; }
   $('cancelEditBtn').addEventListener('click',resetCorrectionForm);
