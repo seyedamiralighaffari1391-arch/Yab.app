@@ -377,7 +377,8 @@
     .advanced-bar .adv-btn:hover, .advanced-bar .adv-btn:active { border-color: var(--gold); background: rgba(var(--gold-rgb), .15); color: var(--gold); transform: translateY(-1px); }
 
     /* صفحه خطا */
-    .error-page { display: none; flex-direction: column; align-items: center; gap: 12px; padding: 23px 18px; background: var(--error-bg); border: 1px solid rgba(255,100,120,.18); border-radius: var(--radius-lg); color: var(--error-text); text-align: center; }
+    .error-page { display: none; position: fixed; z-index: 1250; top: 50%; left: 50%; transform: translate(-50%,-50%); width: min(92vw, 430px); max-height: 84dvh; overflow-y: auto; flex-direction: column; align-items: center; gap: 12px; padding: 23px 18px; background: var(--error-bg); border: 1px solid rgba(255,100,120,.28); border-radius: var(--radius-lg); color: var(--error-text); text-align: center; box-shadow: 0 24px 80px rgba(0,0,0,.55); }
+    .error-type-badge { display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:rgba(255,100,120,.12);border:1px solid rgba(255,100,120,.3);color:var(--error-text);font-size:.78em;font-weight:800 }
     .error-page p { color: var(--muted); line-height: 1.8; }
     .error-page .similar-box { width: 100%; margin-top: 4px; }
     .error-page .similar-title { color: var(--muted); font-size: .78em; margin-bottom: 8px; text-align: center; }
@@ -642,7 +643,8 @@
         <button class="adv-btn" id="chartBtn"><span data-i18n="chartBtn">📊 نمودار توزیع</span></button>
       </div>
     </div>
-    <div id="errorPage" class="error-page">
+    <div id="errorPage" class="error-page" role="dialog" aria-modal="true" aria-labelledby="errTitle">
+      <div id="errTypeBadge" class="error-type-badge">⚠️ نوع خطا: ریشه پیدا نشد</div>
       <h3 id="errTitle" data-i18n="errTitle">⚠️ ریشه پیدا نشد</h3>
       <p id="errMsg" data-i18n="errMsg">متأسفانه این کلمه در دیتابیس یافت نشد. لطفاً کلمه دیگری امتحان کنید.</p>
       <div class="similar-box" id="similarBox" style="display:none;">
@@ -756,7 +758,7 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* اتصال اختیاری یاب به Supabase؛ تحلیل اصلی همچنان در خود سایت انجام می‌شود. */
+/* اتصال یاب به Supabase: اصلاح مدیر، رویداد و گزارش */
 (function(){
   const URL='https://jtzvidnofailzguumruf.supabase.co';
   const KEY='sb_publishable_KjZvFj9Fp5UgzXRly-C6hg_WQXntByW';
@@ -764,23 +766,31 @@
   const db=window.supabase.createClient(URL,KEY,{auth:{persistSession:false,autoRefreshToken:false}});
   window.yabSupabase=db;
   window.yabCorrectionRows=[];
-  window.yabLogEvent=async function(event_type,word,root){
+  // تازه‌خوانی هنگام هر تحلیل تا اصلاح‌های پنل بدون انتشار نسخه جدید هم اعمال شوند.
+  window.yabRefreshCorrections=async function(){
     try {
-      const {error}=await db.from('yab_events').insert({event_type,word:String(word||'').slice(0,160)||null,root:root==null?null:String(root).slice(0,160)});
-      if(error) console.debug('Yab event not stored:',error.message);
-    } catch(e){console.debug('Yab event logging unavailable.');}
+      const {data,error}=await db.from('yab_corrections')
+        .select('word,corrected_root,correction_type,counts_as_error,updated_at')
+        .order('updated_at',{ascending:false}).limit(2000);
+      if(!error && Array.isArray(data)) window.yabCorrectionRows=data;
+      else if(error) console.debug('Yab corrections unavailable:',error.message);
+    } catch(e){console.debug('Yab corrections unavailable.');}
+    return window.yabCorrectionRows;
   };
-  window.yabReportError=async function(word,reported_root,details){
-    try {
-      const {error}=await db.from('yab_error_reports').insert({word:String(word||'').slice(0,160)||null,reported_root:reported_root==null?null:String(reported_root).slice(0,160),details:details==null?null:String(details).slice(0,1000)});
-      if(error) throw error;
-      return true;
-    } catch(e){console.warn('ثبت گزارش ممکن نشد:',e.message||e);return false;}
+  window.yabCorrectionsReady=window.yabRefreshCorrections();
+  window.yabLogEvent=async function(event_type,word,root,error_type){
+    try { const {error}=await db.from('yab_events').insert({event_type,word:String(word||'').slice(0,160)||null,root:root==null?null:String(root).slice(0,160),error_type:error_type||null}); if(error)console.debug('Yab event not stored:',error.message); }
+    catch(e){console.debug('Yab event logging unavailable.');}
   };
-  // در صورت فعال بودن سیاست SELECT عمومی/مجاز، اصلاح‌های مدیر در سایت هم اعمال می‌شوند.
-  db.from('yab_corrections').select('word,corrected_root').limit(1000).then(({data,error})=>{
-    if(!error && Array.isArray(data)) window.yabCorrectionRows=data;
-  }).catch(()=>{});
+  window.yabReportError=async function(word,reported_root,details,category){
+    try { const {error}=await db.from('yab_error_reports').insert({word:String(word||'').slice(0,160)||null,reported_root:reported_root==null?null:String(reported_root).slice(0,160),details:details==null?null:String(details).slice(0,1000),is_read:false,category:category||'unclassified',counts_as_error:!['proper_noun','not_error','noun'].includes(category)}); if(error)throw error; return true; }
+    catch(e){console.warn('ثبت گزارش ممکن نشد:',e.message||e);return false;}
+  };
+  // هر بار بازشدن صفحه در آمار روزانه ثبت می‌شود؛ به جست‌وجو وابسته نیست.
+  try { db.rpc('yab_record_visit').then(({error})=>{if(error)console.debug('Yab visit counter unavailable:',error.message);}); } catch(e) {}
+  try { db.channel('yab-corrections-live').on('postgres_changes',{event:'*',schema:'public',table:'yab_corrections'},()=>{
+    window.yabCorrectionsReady=window.yabRefreshCorrections();
+  }).subscribe(); } catch(e) {}
 })();
 </script>
 
@@ -1077,7 +1087,6 @@
 
   let VALID_ROOTS = new Set(STATIC_VALID_ROOTS);
   let customDB = JSON.parse(localStorage.getItem('yab_morph_custom_v2') || '{}');
-  for (let r of Object.values(customDB)) if(r && r.length===3) VALID_ROOTS.add(r);
   let history = JSON.parse(localStorage.getItem('yab_morph_hist_v2') || '[]');
   let customPatternsSet = new Set(JSON.parse(localStorage.getItem('yab_custom_patterns') || '[]'));
   let favorites = JSON.parse(localStorage.getItem('yab_favorites') || '[]');
@@ -1113,7 +1122,7 @@
   const PERMANENT_USER_WORDS = {
     "رز": "رزز","استعمار": "عمر","حق": "حقق","طهورا": "طهر","سلام": "سلم","تحقق": "حقق",
     "امورات": "مور","فعولات": "فعل","مطهر": "طهر","تفعیل": "فعل","افعل": "فعل","حسنا": "حسن",
-    "امیر": "مور","تجدید": "جدد","تشدید": "شدد","تحلیل": "حلل","حلایل": "حلل","احستلل": "حلل",
+    "امیر": "امر","تجدید": "جدد","تشدید": "شدد","تحلیل": "حلل","حلایل": "حلل","احستلل": "حلل",
     "یحلل": "حلل","حلل": "حلل","حل": "حلل","احلل": "حلل","تفعل": "فعل","تحلل": "حلل",
     "فحالل": "حلل","ففاعل": "فعل","تفاعل": "فعل","احنلل": "حلل","محلولة": "حلل","حللات": "حلل",
     "ماموریت": "امر","مامور": "امر","عجیب": "عجب","تعجب": "عجب","متعجب": "عجب","اعجاب": "عجب",
@@ -1125,7 +1134,7 @@
   let PATTERNS_BY_LENGTH = {};
   (function merge() {
     for (const [w, r] of Object.entries(PERMANENT_USER_WORDS)) {
-      if (r && r.length === 3) { customDB[w] = r; VALID_ROOTS.add(r); }
+      if (r && normalize(r).length === 3) { const nr = normalize(r); customDB[normalize(w)] = nr; VALID_ROOTS.add(nr); }
     }
     for (const p of PERMANENT_USER_PATTERNS) {
       if (!customPatternsSet.has(p)) { customPatternsSet.add(p); addPattern(p); }
@@ -1211,7 +1220,8 @@
     "زال": "زول","زوال": "زول","زائل": "زول",
     "طاف": "طوف","طائف": "طوف","طواف": "طوف",
     "حان": "حین","حائن": "حین",
-    "نال": "نول","نوال": "نول","نائل": "نول",
+    "نال": "نیل","نوال": "نیل","نائل": "نیل",
+    "حمال": "حمل","محال": "محل",
     "فاز": "فوز","فائز": "فوز","مفاز": "فوز",
     "جال": "جول","جائل": "جول","مجال": "جول","جولة": "جول",
     "سال": "سیل","سائل": "سیل","سیلة": "سیل",
@@ -1232,14 +1242,14 @@
     "غاب": "غیب","غائب": "غیب","غیبة": "غیب",
     "فات": "فوت","فائت": "فوت",
     "قاد": "قود","قائد": "قود","قیادة": "قود",
-    "کاد": "کید","کائد": "کید",
+    "کاد": "کود","کائد": "کید",
     "ناد": "نود","نائد": "نود","نداء": "نود",
     "واحد": "وحد","اثنان": "ثنی","ثلاثة": "ثلث","اربعة": "ربع",
     "خمسة": "خمس","ستة": "ستت","سبعة": "سبع","ثمانیة": "ثمن","تسعة": "تسع",
     "عشرة": "عشر","عشرون": "عشر","مائة": "مأی","مئة": "مأی",
     "الف": "الف","الفان": "الف","الاف": "الف","ملیون": "ملن","ملايين": "ملن",
     "احمر": "حمر","اخضر": "خضر","ازرق": "زرق","اصفر": "صفر","ابیض": "بیض",
-    "اسود": "سود","بنی": "بنن","وردی": "ورد","ذهبی": "ذهب","فضی": "فضض",
+    "اسود": "سود","بنی": "بنی","وردی": "ورد","ذهبی": "ذهب","فضی": "فضض",
     "راس": "روس","روس": "روس","رؤوس": "روس","عین": "عین","عیون": "عین",
     "انف": "انف","انوف": "انف","فم": "فوه","افواه": "فوه",
     "رجل": "رجل","ارجل": "رجل","قلب": "قلب","قلوب": "قلب",
@@ -1253,7 +1263,38 @@
     "جد": "جدد","جده": "جدد","اجداد": "جدد",
     "عم": "عمم","اعمام": "عمم","عمة": "عمم",
     "خال": "خول","اخوال": "خول","خالة": "خول",
-    "زوج": "زوج","زوجة": "زوج","ازواج": "زوج"
+    "زوج": "زوج","زوجة": "زوج","ازواج": "زوج",
+    // تکمیل افعال معتل: أجوف، ناقص و مثال (ریشه‌های رایج سه‌حرفی)
+    "قام": "قوم","يقوم": "قوم","یقوم": "قوم","قيام": "قوم","قیام": "قوم","قائم": "قوم",
+    "سار": "سير","سائر": "سير","سير": "سير","سیرة": "سیر",
+    "طار": "طير","طائر": "طير","طير": "طير",
+    "عاش": "عيش","عائش": "عيش","معيشة": "عيش","معیشت": "عیش",
+    "زاد": "زيد","زائد": "زيد","زيادة": "زيد","زیادة": "زید",
+    "جاع": "جوع","جائع": "جوع","جوع": "جوع",
+    "ضاع": "ضيع","ضائع": "ضيع","ضياع": "ضيع","ضیاع": "ضیع",
+    "شاع": "شيع","شائع": "شيع","شيوع": "شيع","شیوع": "شیع",
+    "ثار": "ثور","ثائر": "ثور","ثورة": "ثور","ثوره": "ثور",
+    "غار": "غور","غائر": "غور","غور": "غور",
+    "بات": "بيت","باتوا": "بيت","مبيت": "بيت",
+    "حاز": "حوز","حائز": "حوز","حيازة": "حوز","حیازة": "حوز",
+    "جاز": "جوز","جائز": "جوز","جواز": "جوز","تجاوز": "جوز",
+    "سعى": "سعي","سعي": "سعي","ساع": "سعي","مسعى": "سعي",
+    "قضى": "قضي","قضي": "قضي","قاض": "قضي","قاضي": "قضي","قضاء": "قضي","قضائي": "قضي",
+    "مضى": "مضي","مضي": "مضي","ماض": "مضي","ماضي": "مضي",
+    "رعى": "رعي","رعي": "رعي","راع": "رعي","راعي": "رعي","رعاية": "رعي",
+    "وعى": "وعي","وعي": "وعي","واع": "وعي","واعي": "وعي","وعي": "وعي",
+    "سقى": "سقي","سقي": "سقي","ساق": "سقي","ساقي": "سقي","سقاية": "سقي",
+    "بقى": "بقي","بقي": "بقي","باق": "بقي","باقي": "بقي","بقاء": "بقي",
+    "أتى": "أتي","إتى": "أتي","اتى": "أتي","اتی": "اتی","أتي": "أتي","آتي": "أتي","إتيان": "أتي","اتيان": "أتي",
+    "وهب": "وهب","يهب": "وهب","یهب": "وهب","هبة": "وهب","هبه": "وهب",
+    "وعد": "وعد","يعد": "وعد","یعد": "وعد","واعد": "وعد","موعود": "وعد",
+    "وصل": "وصل","يصل": "وصل","یصل": "وصل","واصل": "وصل","وصول": "وصل","اتصال": "وصل",
+    "وقف": "وقف","يقف": "وقف","یقف": "وقف","واقف": "وقف","موقف": "وقف","وقوف": "وقف",
+    "وجد": "وجد","يجد": "وجد","یجد": "وجد","واجد": "وجد","وجود": "وجد","موجود": "وجد",
+    "ورث": "ورث","يرث": "ورث","یرث": "ورث","وارث": "ورث","ميراث": "ورث","میراث": "ورث",
+    "وصف": "وصف","يصف": "وصف","یصف": "وصف","واصف": "وصف","موصوف": "وصف",
+    "يئس": "يأس","یئس": "یأس","يائس": "يأس","یائس": "یأس","يأس": "يأس","یأس": "یأس",
+    "حَيِيَ": "حيي","حیی": "حیی","حي": "حيي","حياة": "حيي","حیات": "حیی"
   };
 
   // کلماتی که ریشه‌یابی براشون بی‌معنیه (حرف، ادات و...)
@@ -1280,7 +1321,7 @@
 
   (function mergeFixed() {
     for (const [w, r] of Object.entries(FIXED_ROOTS_BY_WORD)) {
-      if (r && r.length === 3) { customDB[w] = r; VALID_ROOTS.add(r); }
+      if (r && normalize(r).length === 3) { const nr = normalize(r); customDB[normalize(w)] = nr; VALID_ROOTS.add(nr); }
     }
     localStorage.setItem('yab_morph_custom_v2', JSON.stringify(customDB));
   })();
@@ -1297,9 +1338,15 @@
 
   // نرمال‌سازی حروف عربی/فارسی
   function normalize(s) {
-    return expandShadda(s).replace(/[\u064B-\u0652\u0670]/g, '').replace(/[ـ\u200C]/g, '')
-      .replace(/[أإ]/g, 'ا').replace(/ؤ/g, 'و').replace(/ئ/g, 'ی').replace(/ي/g, 'ی').replace(/ء/g, 'ا').trim();
+    return expandShadda(s).normalize('NFKC').replace(/[\u064B-\u0652\u0670]/g, '').replace(/[ـ\u200C]/g, '')
+      .replace(/[أإآٱ]/g, 'ا').replace(/ؤ/g, 'و').replace(/ئ/g, 'ی').replace(/[يى]/g, 'ی').replace(/ك/g, 'ک').replace(/ء/g, 'ا').trim();
   }
+
+  // پاک‌سازی یک‌بارهٔ فرهنگ محلی و ریشه‌های ثابت با همان نرمال‌ساز ورودی.
+  // این کار مانع اختلاف کلیدهای عربی/فارسی (ي/ی، ى/ی، أ/ا، ك/ک) می‌شود.
+  customDB = Object.fromEntries(Object.entries(customDB).map(([w,r]) => [normalize(w), normalize(r)]));
+  VALID_ROOTS = new Set([...STATIC_VALID_ROOTS].map(normalize));
+  for (const r of Object.values(customDB)) if (r && r.length === 3) VALID_ROOTS.add(r);
 
   // الگوها رو بر اساس طول دسته‌بندی می‌کنه
   function addPattern(p) {
@@ -1386,13 +1433,27 @@
     return null;
   }
 
+  // اصلاح‌های زنده‌ای که از پنل مدیر در Supabase ذخیره شده‌اند
+  function getOnlineCorrection(word) {
+    const n = normalize(word);
+    return (window.yabCorrectionRows || []).find(x => normalize(x.word || '') === n) || null;
+  }
+  function splitCorrectionRoots(value) {
+    return [...new Set(String(value || '').split(/[,،؛;|\/\s]+/).map(x => normalize(x)).filter(x => x.length === 3))];
+  }
+
   // تابع اصلی پیدا کردن ریشه
   function findRoot(word) {
     let n = normalize(word);
     if (!n || n.length < 2) return null;
-    // اصلاح‌های ثبت‌شده توسط مدیر، در صورت دسترسی به Supabase، اولویت دارند.
-    const onlineCorrection = (window.yabCorrectionRows || []).find(x => normalize(x.word || '') === n);
-    if (onlineCorrection && onlineCorrection.corrected_root) return normalize(onlineCorrection.corrected_root);
+    // اصلاح‌های مدیر بر داده‌های محلی و الگوریتم اولویت دارند؛ اسم خاص عمداً ریشه نمی‌گیرد.
+    const onlineCorrection = getOnlineCorrection(n);
+    if (onlineCorrection) {
+      const type = onlineCorrection.correction_type || 'single_root';
+      if (type === 'proper_noun' || type === 'multi_root') return null;
+      const corrected = normalize(onlineCorrection.corrected_root || '');
+      if ((type === 'single_root' || type === 'noun') && corrected.length === 3) return corrected;
+    }
     if (customDB[n] && VALID_ROOTS.has(customDB[n]) && customDB[n].length===3) return customDB[n];
     let r = morphologicalAnalysis(n);
     if (r && r.length===3) { if (VALID_ROOTS.has(r)) { customDB[n] = r; localStorage.setItem('yab_morph_custom_v2', JSON.stringify(customDB)); } return r; }
@@ -1401,6 +1462,12 @@
 
   function findMultiRoots(word) {
     const n = normalize(word);
+    const onlineCorrection = getOnlineCorrection(n);
+    if (onlineCorrection) {
+      if ((onlineCorrection.correction_type || 'single_root') !== 'multi_root') return null;
+      const roots = splitCorrectionRoots(onlineCorrection.corrected_root);
+      return roots.length > 1 ? roots : null;
+    }
     if (!MULTI_ROOT_WORDS[n]) return null;
     const unique = [...new Set(MULTI_ROOT_WORDS[n].filter(r => r && r.length === 3))];
     return unique.length ? unique : null;
@@ -1976,7 +2043,11 @@
   }
 
   function showError(titleKey, msgKey, similarWords) {
-    if (window.yabLogEvent) window.yabLogEvent('analysis_error', wInputEl.value.trim(), null);
+    const category = titleKey === 'errRootLen' ? 'root_length' : (titleKey === 'errNotAnalyze' ? 'unsupported_word' : 'root_not_found');
+    window.yabCurrentErrorCategory = category;
+    const labels = {root_length:'ساختار ریشه نامعتبر', unsupported_word:'واژه غیرقابل تحلیل', root_not_found:'ریشه پیدا نشد / احتمال خطای تحلیل'};
+    if (window.yabLogEvent) window.yabLogEvent('analysis_error', wInputEl.value.trim(), null, category);
+    document.getElementById('errTypeBadge').textContent = '⚠️ نوع خطا: ' + labels[category];
     document.getElementById('errTitle').textContent = t(titleKey);
     document.getElementById('errMsg').textContent = t(msgKey);
     searchBoxEl.classList.add('search-completed');
@@ -1984,6 +2055,7 @@
     document.getElementById('multiRootPage').style.display = 'none';
     document.getElementById('properNounPage').style.display = 'none';
     errorPage.style.display = 'flex';
+    overlay.style.display = 'block';
     setSticky(false);
     const sb = document.getElementById('similarBox');
     const sl = document.getElementById('similarList');
@@ -2160,7 +2232,9 @@
   }
 
   // نقطه ورودی اصلی تحلیل — بسته به mode تصمیم می‌گیره
-  function smartAnalyze() {
+  async function smartAnalyze() {
+    if (window.yabRefreshCorrections) { try { await window.yabRefreshCorrections(); } catch(e) {} }
+    else if (window.yabCorrectionsReady) { try { await window.yabCorrectionsReady; } catch(e) {} }
     let input = wInputEl.value.trim();
     hideAutocomplete();
     if (!input) { searchBoxEl.classList.remove('search-completed'); setSticky(false); return; }
@@ -2172,8 +2246,13 @@
       return;
     }
     const n = normalize(input);
-    if (NON_ANALYZABLE_WORDS.has(n)) { showError('errNotAnalyze', 'errNotAnalyzeMsg'); return; }
-    if (PROPER_NOUNS.has(n)) { showProperNounPage(input); return; }
+    const onlineCorrection = getOnlineCorrection(n);
+    // تنظیمی که مدیر در پنل ثبت می‌کند، بر طبقه‌بندی پیش‌فرض هم اولویت دارد.
+    if (onlineCorrection && onlineCorrection.correction_type === 'proper_noun') {
+      showProperNounPage(input); return;
+    }
+    if (!onlineCorrection && NON_ANALYZABLE_WORDS.has(n)) { showError('errNotAnalyze', 'errNotAnalyzeMsg'); return; }
+    if (!onlineCorrection && PROPER_NOUNS.has(n)) { showProperNounPage(input); return; }
     const multiRoots = findMultiRoots(n);
     if (multiRoots && multiRoots.length > 1) { showMultiRootSelection(input, multiRoots); return; }
     const root = findRoot(input);
@@ -2190,16 +2269,16 @@
     }
   }
 
-  function closeError(){ errorPage.style.display='none'; }
+  function closeError(){ errorPage.style.display='none'; if(!document.querySelector('.modal[style*="display: block"]') && !drawer.classList.contains('open')) overlay.style.display='none'; }
   const yabReportBtn = document.getElementById('yabReportBtn');
   if (yabReportBtn) yabReportBtn.addEventListener('click', async () => {
     const word = wInputEl.value.trim();
     if (!word) { alert('ابتدا کلمه را وارد کنید.'); return; }
-    const details = prompt('اگر توضیحی دارید بنویسید (اختیاری):', 'ریشه پیدا نشد یا نتیجه نیاز به بررسی دارد.');
+    const details = prompt('توضیح تکمیلی (اختیاری):', 'نوع خطا: ' + (window.yabCurrentErrorCategory||'root_not_found'));
     if (details === null) return;
     if (!window.yabReportError) { alert('اتصال گزارش خطا در دسترس نیست.'); return; }
     yabReportBtn.disabled = true;
-    const ok = await window.yabReportError(word, null, details);
+    const ok = await window.yabReportError(word, null, details, window.yabCurrentErrorCategory||'root_not_found');
     yabReportBtn.disabled = false;
     alert(ok ? 'گزارش شما ثبت شد. ممنون از کمک‌تان!' : 'گزارش ثبت نشد. لطفاً بعداً دوباره امتحان کنید.');
   });
@@ -3043,7 +3122,7 @@ ${tagOpen}${tagClose}
   document.getElementById('openDrawerBtn').addEventListener('click',openDrawer);
   document.getElementById('helpBtn').addEventListener('click',()=>showModal('help'));
   document.getElementById('closeDrawerBtn').addEventListener('click',closeAllModals);
-  overlay.addEventListener('click', () => closeAllModals({ keepPages: true }));
+  overlay.addEventListener('click', () => { closeAllModals({ keepPages: true }); closeError(); });
   document.getElementById('gearBtn').addEventListener('click',()=>showModal('set'));
   document.querySelectorAll('.modal-close').forEach(b=>b.addEventListener('click',closeAllModals));
 
