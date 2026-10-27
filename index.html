@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta name="google-site-verification" content="yzr-y1koxhf91LijCOVRAezdk5sjlQt5Ax2h2kOynfY" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>یاب | v1.0</title>
@@ -767,7 +766,8 @@
   const db=window.supabase.createClient(URL,KEY,{auth:{persistSession:false,autoRefreshToken:false}});
   window.yabSupabase=db;
   window.yabCorrectionRows=[];
-  // تازه‌خوانی هنگام هر تحلیل تا اصلاح‌های پنل بدون انتشار نسخه جدید هم اعمال شوند.
+  window.yabRemotePatternRows=[];
+  // اصلاح‌های مدیر؛ در صورت قطع اینترنت، الگوریتم و داده‌های محلی بدون توقف کار می‌کنند.
   window.yabRefreshCorrections=async function(){
     try {
       const {data,error}=await db.from('yab_corrections')
@@ -779,23 +779,39 @@
     return window.yabCorrectionRows;
   };
   window.yabCorrectionsReady=window.yabRefreshCorrections();
-  // الگوهای صرفی فعال از Supabase؛ فقط مدیر می‌تواند آن‌ها را تغییر دهد.
-  window.yabMorphPatternRows=[];
-  window.yabRefreshMorphPatterns=async function(){
+  // الگوهای فعال پنل به الگوهای الگوریتم محلی اضافه می‌شوند؛ خطای جدول نباید سایت را از کار بیندازد.
+  window.yabRefreshPatterns=async function(){
     try {
       const {data,error}=await db.from('yab_morph_patterns')
-        .select('pattern,source_word,source_root,enabled,updated_at')
-        .eq('enabled',true).order('updated_at',{ascending:false}).limit(500);
-      if(!error && Array.isArray(data)) window.yabMorphPatternRows=data;
-      else if(error) console.debug('Yab morph patterns unavailable:',error.message);
-    } catch(e){console.debug('Yab morph patterns unavailable.');}
-    if(typeof window.yabApplyOnlineMorphPatterns==='function') window.yabApplyOnlineMorphPatterns(window.yabMorphPatternRows);
-    return window.yabMorphPatternRows;
+        .select('normalized_pattern,enabled').eq('enabled',true).limit(1000);
+      if(!error && Array.isArray(data)){
+        window.yabRemotePatternRows=data;
+        if(typeof window.yabApplyRemotePatterns==='function') window.yabApplyRemotePatterns(data);
+      } else if(error) console.debug('Yab patterns unavailable:',error.message);
+    } catch(e){console.debug('Yab patterns unavailable.');}
+    return window.yabRemotePatternRows;
   };
-  window.yabMorphPatternsReady=window.yabRefreshMorphPatterns();
+  window.yabPatternsReady=window.yabRefreshPatterns();
+  // شناسه ناشناس همین مرورگر؛ برای تخمین دستگاه‌های فعال، نه شناسایی شخص.
+  let yabDeviceId='';
+  try {
+    yabDeviceId=localStorage.getItem('yab_anon_device_id')||'';
+    if(!/^[a-z0-9-]{16,80}$/i.test(yabDeviceId)){
+      yabDeviceId=(typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():('yab-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,14));
+      localStorage.setItem('yab_anon_device_id',yabDeviceId);
+    }
+  } catch(e) { yabDeviceId=''; }
   window.yabLogEvent=async function(event_type,word,root,error_type){
-    try { const {error}=await db.from('yab_events').insert({event_type,word:String(word||'').slice(0,160)||null,root:root==null?null:String(root).slice(0,160),error_type:error_type||null}); if(error)console.debug('Yab event not stored:',error.message); }
-    catch(e){console.debug('Yab event logging unavailable.');}
+    try {
+      const payload={event_type,word:String(word||'').slice(0,160)||null,root:root==null?null:String(root).slice(0,160),error_type:error_type||null};
+      if(yabDeviceId)payload.device_id=yabDeviceId;
+      let result=await db.from('yab_events').insert(payload);
+      // سازگاری با جدول‌های قدیمی که ستون device_id ندارند؛ ثبت خود جست‌وجو همچنان ادامه پیدا کند.
+      if(result.error&&yabDeviceId&&/device_id|column/i.test(result.error.message||'')){
+        delete payload.device_id; result=await db.from('yab_events').insert(payload);
+      }
+      if(result.error)console.debug('Yab event not stored:',result.error.message);
+    } catch(e){console.debug('Yab event logging unavailable.');}
   };
   window.yabReportError=async function(word,reported_root,details,category){
     try { const {error}=await db.from('yab_error_reports').insert({word:String(word||'').slice(0,160)||null,reported_root:reported_root==null?null:String(reported_root).slice(0,160),details:details==null?null:String(details).slice(0,1000),is_read:false,category:category||'unclassified',counts_as_error:!['proper_noun','not_error','noun'].includes(category)}); if(error)throw error; return true; }
@@ -803,12 +819,12 @@
   };
   // هر بار بازشدن صفحه در آمار روزانه ثبت می‌شود؛ به جست‌وجو وابسته نیست.
   try { db.rpc('yab_record_visit').then(({error})=>{if(error)console.debug('Yab visit counter unavailable:',error.message);}); } catch(e) {}
-  try { db.channel('yab-corrections-live').on('postgres_changes',{event:'*',schema:'public',table:'yab_corrections'},()=>{
-    window.yabCorrectionsReady=window.yabRefreshCorrections();
-  }).subscribe(); } catch(e) {}
-  try { db.channel('yab-morph-patterns-live').on('postgres_changes',{event:'*',schema:'public',table:'yab_morph_patterns'},()=>{
-    window.yabMorphPatternsReady=window.yabRefreshMorphPatterns();
-  }).subscribe(); } catch(e) {}
+  // این رویداد از نسخه جدید به بعد دستگاه فعال را به‌صورت ناشناس ثبت می‌کند.
+  window.yabLogEvent('page_view', null, null, null);
+  try { db.channel('yab-live-updates')
+    .on('postgres_changes',{event:'*',schema:'public',table:'yab_corrections'},()=>{window.yabCorrectionsReady=window.yabRefreshCorrections();})
+    .on('postgres_changes',{event:'*',schema:'public',table:'yab_morph_patterns'},()=>{window.yabPatternsReady=window.yabRefreshPatterns();})
+    .subscribe(); } catch(e) {}
 })();
 </script>
 
@@ -1366,15 +1382,11 @@
   VALID_ROOTS = new Set([...STATIC_VALID_ROOTS].map(normalize));
   for (const r of Object.values(customDB)) if (r && r.length === 3) VALID_ROOTS.add(r);
 
-  // نرمال‌سازی الگو با حفظ حروف ف/ع/ل به‌عنوان جایگاه‌های ریشه؛ تشدید در الگو حذف می‌شود، نه اینکه حرف تکرار بسازد.
-  function normalizePattern(p) {
-    return normalize(String(p || '').replace(/ّ/g, ''));
-  }
-  // الگوها بر اساس طول دسته‌بندی می‌شوند.
+  // الگوها رو بر اساس طول دسته‌بندی می‌کنه
   function addPattern(p) {
-    const clean = normalizePattern(p);
-    if (!clean) return;
-    const len = clean.length;
+    // همان نرمال‌سازی واژهٔ ورودی را روی الگو هم اعمال می‌کنیم تا ي/ی و اعراب ناسازگار نشوند.
+    let clean = normalize(p);
+    let len = clean.length;
     if (!PATTERNS_BY_LENGTH[len]) PATTERNS_BY_LENGTH[len] = [];
     if (!PATTERNS_BY_LENGTH[len].includes(clean)) PATTERNS_BY_LENGTH[len].push(clean);
   }
@@ -1388,32 +1400,19 @@
     "مُسْتَفْعِل","مُسْتَفْعَل","مَفْعَل","مَفْعِل","مَفْعَلَة","مَفَاعِل","مَفَاعِيل","فَوَاعِل",
     "فَعَالِيل","فَعَائِل","فُعَّال","أَفْعَال","أَفَاعِل","فَعْلَل","فِعْلَل","فُعْلَل","فَعْلَلَة"
   ];
-  // الگوهای ثبت‌شده در دیتابیس در ابتدای هر طول قرار می‌گیرند تا اولویت داشته باشند.
-  function rebuildPatternIndex(rows) {
-    PATTERNS_BY_LENGTH = {};
-    (Array.isArray(rows) ? rows : []).filter(row => row && row.enabled !== false && row.pattern)
-      .forEach(row => addPattern(row.pattern));
-    ALL_PATTERNS.forEach(addPattern);
-    customPatternsSet.forEach(addPattern);
-  }
-  function rebuildValidRoots(rows) {
-    VALID_ROOTS = new Set([...STATIC_VALID_ROOTS].map(normalize));
-    for (const r of Object.values(customDB)) if (r && normalize(r).length === 3) VALID_ROOTS.add(normalize(r));
-    for (const r of Object.values(PERMANENT_USER_WORDS)) if (r && normalize(r).length === 3) VALID_ROOTS.add(normalize(r));
-    for (const r of Object.values(FIXED_ROOTS_BY_WORD)) if (r && normalize(r).length === 3) VALID_ROOTS.add(normalize(r));
-    (Array.isArray(rows) ? rows : []).filter(row => row && row.enabled !== false).forEach(row => {
-      const root = normalize(row.source_root || '');
-      if (root.length === 3) VALID_ROOTS.add(root);
+  ALL_PATTERNS.forEach(addPattern);
+  customPatternsSet.forEach(addPattern);
+  // الگوهای آنلاین فقط به فهرست الگوهای موجود اضافه می‌شوند؛ داده‌های ثابت/آفلاین دست‌نخورده می‌مانند.
+  window.yabApplyRemotePatterns = function(rows) {
+    if (!Array.isArray(rows)) return;
+    rows.forEach(row => {
+      if (row && row.enabled !== false && typeof row.normalized_pattern === 'string') {
+        const p = normalize(row.normalized_pattern);
+        if (p.length >= 3 && p.length <= 20 && /ف/.test(p) && /ع/.test(p) && /ل/.test(p)) addPattern(p);
+      }
     });
-  }
-  window.yabApplyOnlineMorphPatterns = function(rows) {
-    const activeRows = (Array.isArray(rows) ? rows : []).filter(row => row && row.enabled !== false);
-    rebuildValidRoots(activeRows);
-    rebuildPatternIndex(activeRows);
   };
-  rebuildPatternIndex(window.yabMorphPatternRows || []);
-  rebuildValidRoots(window.yabMorphPatternRows || []);
-  if (window.yabMorphPatternsReady) window.yabMorphPatternsReady.then(rows => window.yabApplyOnlineMorphPatterns(rows || []));
+  window.yabApplyRemotePatterns(window.yabRemotePatternRows || []);
 
   // یه الگو رو روی کلمه امتحان می‌کنه — اگه ف،ع،ل یکسان دربیاد یعنی ریشه پیدا شده
   function tryPattern(pat, word) {
@@ -2281,7 +2280,6 @@
   async function smartAnalyze() {
     if (window.yabRefreshCorrections) { try { await window.yabRefreshCorrections(); } catch(e) {} }
     else if (window.yabCorrectionsReady) { try { await window.yabCorrectionsReady; } catch(e) {} }
-    if (window.yabMorphPatternsReady) { try { await window.yabMorphPatternsReady; } catch(e) {} }
     let input = wInputEl.value.trim();
     hideAutocomplete();
     if (!input) { searchBoxEl.classList.remove('search-completed'); setSticky(false); return; }

@@ -1,518 +1,211 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="color-scheme" content="dark">
-  <title>یاب | صندوق مدیریت</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>.report-unread{background:rgba(255,125,135,.06)}.report-read{opacity:.82}.tablewrap select{min-width:125px;max-width:180px;padding:7px;border-radius:8px;background:#0b1427;color:var(--text);border:1px solid var(--line)}.tablewrap input[type=checkbox]{width:18px;height:18px;accent-color:var(--green)}
-    :root{--bg:#0b1020;--panel:#111a2e;--panel2:#17233b;--line:#263653;--text:#eef3ff;--muted:#aab7d0;--gold:#e8bd68;--green:#66d9a4;--red:#ff7d87;--blue:#8ab4ff}
-    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#182746 0,#0b1020 58%);color:var(--text);font-family:Vazirmatn,Tahoma,sans-serif;min-height:100vh}
-    button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:#1b2944;color:var(--text)}button:hover{filter:brightness(1.12)}button.primary{background:var(--gold);color:#1b1a17;border:0;font-weight:800}button.danger{color:#ffdce0;border-color:#713b4a;background:#3b1e2a}button:disabled{opacity:.5;cursor:not-allowed}
-    .wrap{max-width:1200px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}.brand{display:flex;gap:12px;align-items:center}.logo{width:48px;height:48px;display:grid;place-items:center;border-radius:16px;background:linear-gradient(145deg,#f7d98f,#b98634);color:#161b2a;font-size:25px;font-weight:900}.brand h1{font-size:22px;margin:0}.sub{color:var(--muted);font-size:13px}.panel{background:rgba(17,26,46,.94);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 18px 55px #0002}.hidden{display:none!important}.login{max-width:440px;margin:8vh auto}.login h2{margin-top:0}.field{display:grid;gap:7px;margin:14px 0}.field label{color:var(--muted);font-size:13px}.field input,.field textarea,.field select,.toolbar input,.toolbar select{width:100%;padding:12px;border-radius:11px;border:1px solid var(--line);background:#0b1427;color:var(--text);outline:none}.field input:focus,.field textarea:focus,.toolbar input:focus{border-color:var(--gold)}.notice{padding:12px 14px;border-radius:12px;background:#1c2b47;color:#cfe0ff;margin:12px 0;font-size:13px}.notice.error{background:#3a202a;color:#ffd5da}.notice.ok{background:#17372f;color:#bdf5dc}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0}.stat{background:linear-gradient(145deg,#182743,#111a2e);border:1px solid var(--line);border-radius:17px;padding:17px}.stat .n{font-size:28px;font-weight:800;color:var(--gold);direction:ltr;text-align:right}.stat .label{font-size:13px;color:var(--muted)}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}.tabs button.active{background:var(--gold);color:#171a22;border-color:var(--gold);font-weight:800}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.toolbar input{flex:1;min-width:180px}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{border-collapse:collapse;width:100%;min-width:680px;background:#0e172a}th,td{padding:12px 13px;text-align:right;border-bottom:1px solid #202f49;font-size:13px;vertical-align:top}th{background:#17243b;color:#e7c982;position:sticky;top:0}td{color:#e2e9f8}tr:last-child td{border-bottom:0}.empty{text-align:center;color:var(--muted);padding:30px}.small{font-size:12px;color:var(--muted)}.rowactions{display:flex;gap:6px;flex-wrap:wrap}.rowactions button{padding:6px 9px;font-size:12px}.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.sectionhead h2{font-size:18px;margin:0 0 12px}.status{color:var(--green);font-size:13px}.footer{color:var(--muted);font-size:12px;text-align:center;padding:24px 0}.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}.formactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    @media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.wrap{padding:14px}.panel{padding:15px}.split{grid-template-columns:1fr}}
-    @media(max-width:420px){.grid{grid-template-columns:1fr 1fr}.stat{padding:12px}.stat .n{font-size:23px}.brand h1{font-size:18px}}
-  
-    /* Telegram-inspired two-pane admin */
-    .messenger-layout{display:grid;grid-template-columns:225px minmax(0,1fr);gap:14px;align-items:start}
-    .chat-sidebar{background:#101c2d;border:1px solid #263b52;border-radius:18px;padding:12px;position:sticky;top:12px}
-    .chat-sidebar .side-title{font-size:12px;color:#8ea8c4;padding:8px 10px 12px;font-weight:800}
-    .chat-sidebar button{display:flex;width:100%;justify-content:flex-start;align-items:center;gap:10px;margin:4px 0;padding:12px 11px;border:1px solid transparent;background:transparent;border-radius:12px;text-align:right}
-    .chat-sidebar button.active,.chat-sidebar button:hover{background:#20354b;border-color:#31516a}
-    .chat-sidebar .side-count{margin-right:auto;border-radius:999px;background:#244a61;padding:2px 7px;font-size:11px}
-    .chat-main{min-width:0}
-    .chat-main .panel{border-radius:17px}
-    .message-row{cursor:pointer}
-    .message-row:hover td{background:#182941}
-    .chat-note{padding:10px 13px;background:#14283b;border:1px solid #26445b;border-radius:12px;color:#c8d9e8;font-size:12px;margin:0 0 12px}
-    .visit-bars{display:flex;align-items:flex-end;gap:8px;min-height:180px;padding:16px;overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:#0e172a}
-    .visit-bar{min-width:38px;display:flex;flex-direction:column;align-items:center;gap:7px;justify-content:flex-end;height:160px}
-    .visit-bar .bar{width:24px;min-height:3px;border-radius:7px 7px 3px 3px;background:linear-gradient(180deg,#63c7b0,#2b6e83)}
-    .visit-bar .bar-label{font-size:10px;color:var(--muted);white-space:nowrap}
-    .visit-bar .bar-value{font-size:11px;color:#e8bd68}
-    @media(max-width:850px){.messenger-layout{grid-template-columns:1fr}.chat-sidebar{position:static;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}.chat-sidebar .side-title{grid-column:1/-1}.chat-sidebar button{font-size:12px;padding:10px 8px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>یاب | پنل مدیریت</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2d;--panel2:#18243b;--text:#edf2ff;--muted:#aab6cf;--line:#2b3853;--gold:#e8bd68;--blue:#83a9ff;--green:#5bd6a2;--red:#ff8080;--radius:18px;font-family:Tahoma,Vazirmatn,"Segoe UI",sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:inherit}button,input,select,textarea{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:12px;padding:10px 13px;background:var(--panel2);color:var(--text)}button:hover{border-color:var(--gold)}button.primary{background:var(--gold);color:#172033;border-color:var(--gold);font-weight:700}button.danger{color:var(--red)}input,select,textarea{width:100%;background:#0d1527;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:11px;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--blue)}label{display:block;color:var(--muted);font-size:13px;margin:0 0 7px}.muted{color:var(--muted)}.small{font-size:12px}.hidden{display:none!important}.wrap{max-width:1500px;margin:auto;padding:18px}.top{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-bottom:16px}.brand{display:flex;gap:12px;align-items:center}.logo{width:46px;height:46px;display:grid;place-items:center;border-radius:14px;background:var(--gold);color:#101827;font-weight:900;font-size:22px}.brand h1{font-size:19px;margin:0 0 4px}.brand p{margin:0;color:var(--muted);font-size:12px}.top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.layout{display:grid;grid-template-columns:245px minmax(0,1fr);gap:16px}.sidebar,.main,.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius)}.sidebar{padding:12px;height:max-content;position:sticky;top:12px}.navbtn{display:flex;align-items:center;gap:10px;width:100%;text-align:right;background:transparent;border-color:transparent;margin:3px 0}.navbtn.active{background:var(--panel2);border-color:var(--line);color:var(--gold)}.navicon{width:24px;text-align:center}.main{padding:20px;min-width:0}.pagehead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}.pagehead h2{margin:0 0 7px;font-size:21px}.pagehead p{margin:0;color:var(--muted);font-size:13px;line-height:1.8}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.card{padding:15px;min-width:0}.metric{font-size:25px;font-weight:800;margin:8px 0}.metric-label{color:var(--muted);font-size:13px}.section-title{font-size:15px;margin:0 0 13px}.cols{display:grid;grid-template-columns:1.15fr .85fr;gap:12px;margin-top:12px}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field.full{grid-column:1/-1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.notice{padding:12px 14px;border:1px solid #725e36;background:#302719;border-radius:12px;color:#ffe4a6;line-height:1.8;font-size:13px;margin-bottom:14px}.notice.info{border-color:#334e7d;background:#14233e;color:#d5e3ff}.notice.success{border-color:#276a54;background:#102c25;color:#b8ffe2}.notice.error{border-color:#7b3838;background:#351c22;color:#ffc9c9}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:12px}table{border-collapse:collapse;width:100%;min-width:650px}th,td{text-align:right;padding:11px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top}th{background:var(--panel2);color:var(--muted);font-weight:600}tr:last-child td{border-bottom:0}.pill{display:inline-block;border-radius:99px;padding:4px 8px;background:var(--panel2);font-size:11px}.pill.ok{color:var(--green)}.pill.warn{color:#ffd27b}.pill.bad{color:var(--red)}.empty{padding:22px;text-align:center;color:var(--muted);line-height:1.8}.device-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.device-box{background:var(--panel2);padding:13px;border-radius:12px}.device-box b{display:block;font-size:19px;margin-top:6px}.login{max-width:490px;margin:8vh auto;padding:24px}.login h2{margin-top:0}.login .field{margin:13px 0}.foot{margin-top:14px;color:var(--muted);font-size:11px;line-height:1.8}.bar{height:8px;background:var(--line);border-radius:20px;overflow:hidden;margin-top:8px}.bar span{display:block;height:100%;background:var(--gold);width:0}.toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:12px 0}.toolbar input{max-width:330px}.toast{position:fixed;bottom:18px;left:18px;max-width:min(430px,calc(100vw - 36px));padding:12px 16px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 40px #0005;z-index:20}.device-note{font-size:12px;color:var(--muted);line-height:1.9}.inline{display:flex;gap:8px;align-items:center}.inline>*{flex:1}
+@media(max-width:950px){.layout{grid-template-columns:1fr}.sidebar{position:static;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px}.navbtn{font-size:12px;padding:9px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cols{grid-template-columns:1fr}}
+@media(max-width:560px){.wrap{padding:10px}.top{align-items:flex-start}.top-actions{justify-content:flex-end}.top-actions button{font-size:12px;padding:8px}.main{padding:13px}.sidebar{grid-template-columns:1fr 1fr}.grid{gap:8px}.card{padding:12px}.formgrid{grid-template-columns:1fr}.device-grid{grid-template-columns:1fr 1fr}.pagehead{flex-direction:column}.brand h1{font-size:16px}}
 
-  </style>
+/* هماهنگ با ظاهر اصلی یاب */
+:root{--bg:#0a0618;--panel:#150e28;--panel2:#1f173a;--text:#e8e4f5;--muted:#9a94b8;--line:rgba(0,229,255,.18);--gold:#00e5ff;--blue:#00b8d4;--green:#5bd6a2;--red:#ff809b;--radius:22px;font-family:YabVazirmatn,Tahoma,sans-serif}
+body{background:radial-gradient(circle at 90% 0%,rgba(0,229,255,.08),transparent 28%),radial-gradient(circle at 0% 90%,rgba(111,64,255,.09),transparent 32%),var(--bg)}
+.sidebar,.main,.card{background:rgba(21,14,40,.94);border-color:rgba(0,229,255,.16);border-radius:22px;box-shadow:0 12px 38px rgba(0,0,0,.12)}
+button{border-radius:14px;border-color:rgba(0,229,255,.22);transition:.18s ease}button:hover{border-color:var(--gold);transform:translateY(-1px)}button.primary{background:var(--gold);color:#08121d;border-color:var(--gold)}
+input,select,textarea{background:#0d0a1d;border-color:rgba(0,229,255,.2);border-radius:14px}
+.logo{background:transparent;border:1px solid rgba(0,229,255,.25);overflow:hidden;padding:0}.logo img{width:100%;height:100%;object-fit:contain;border-radius:inherit}
+.wrap{max-width:1500px;padding:16px}.top{gap:12px}.brand{gap:10px}.brand h1{font-size:18px}.main{padding:clamp(14px,2vw,24px)}
+.layout{display:block}.sidebar{position:fixed;z-index:50;top:0;right:0;bottom:0;width:min(310px,86vw);height:100dvh;overflow:auto;border-radius:0 0 0 24px;padding:78px 14px 20px;transform:translateX(110%);transition:transform .24s ease;box-shadow:-20px 0 70px #0007;display:block}.sidebar.open{transform:translateX(0)}.navbtn{padding:12px 13px;border-radius:14px;font-size:14px}.navbtn.active{background:rgba(0,229,255,.09);border-color:rgba(0,229,255,.22);color:var(--gold)}
+.menu-toggle{width:44px;height:44px;display:grid;place-items:center;font-size:23px;padding:0;flex:0 0 auto}.top{justify-content:flex-start}.top .brand{margin-left:auto}.top-actions{justify-content:flex-end}.drawer-scrim{position:fixed;inset:0;background:rgba(4,2,15,.62);backdrop-filter:blur(3px);z-index:49;display:none}.drawer-scrim.show{display:block}.chart-wrap{padding:14px;border:1px solid rgba(0,229,255,.16);border-radius:18px;background:rgba(10,6,24,.45);overflow:hidden}.chart{width:100%;height:220px;display:block}.chart-grid{stroke:rgba(154,148,184,.18);stroke-width:1}.chart-line{fill:none;stroke:#00e5ff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.chart-area{fill:rgba(0,229,255,.10)}.chart-label{fill:#9a94b8;font-size:11px}.search-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}.search-row .card{padding:13px}
+@media(max-width:700px){.wrap{padding:10px}.top{flex-wrap:wrap}.top .brand{min-width:0}.brand h1{font-size:15px}.top-actions{width:100%;justify-content:flex-start}.top-actions button{font-size:12px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.search-row{grid-template-columns:1fr}.sidebar{width:min(300px,88vw)}}
+</style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <div class="brand"><div class="logo">ی</div><div><h1>پنل مدیریت یاب</h1><div class="sub">مدیریت رویدادها، اصلاح ریشه‌ها و الگوهای صرفی</div></div></div>
-    <div id="headerActions" class="hidden"><span id="who" class="sub"></span> <button id="refreshBtn">تازه‌سازی</button> <button id="logoutBtn">خروج</button></div>
-  </header>
-
-  <section id="loginPanel" class="panel login">
-    <h2>ورود مدیر</h2>
-    <p class="sub">با حسابی وارد شوید که شناسه کاربری آن در جدول <code>yab_admins</code> ثبت شده است.</p>
-    <form id="loginForm">
-      <div class="field"><label for="email">ایمیل</label><input id="email" type="email" autocomplete="username" required></div>
-      <div class="field"><label for="password">رمز عبور</label><input id="password" type="password" autocomplete="current-password" required></div>
-      <button class="primary" type="submit" style="width:100%">ورود امن</button>
-    </form>
-    <div id="loginMessage" class="notice hidden" role="status"></div>
-    <p class="small">اگر ورود انجام شد اما دسترسی رد شد، شناسه کامل کاربر را در جدول <code>yab_admins.user_id</code> بررسی کنید.</p>
-  </section>
-
-  <main id="dashboard" class="hidden">
-    <div id="globalMessage" class="notice hidden" role="status"></div>
-    <div class="messenger-layout">
-      <aside class="chat-sidebar" aria-label="دسته‌بندی پیام‌ها">
-        <div class="side-title">یاب • صندوق پیام‌ها</div>
-        <button class="active" data-category="events">🗂️ همه رویدادها</button>
-        <button data-category="wrong-root">🧩 ریشه اشتباه</button>
-        <button data-category="unreported">📥 خطاهای گزارش‌نشده <span id="unreportedCount" class="side-count">۰</span></button>
-        <button data-category="reports">📨 گزارش‌های کاربران</button>
-        <button data-category="searches">🔎 جست‌وجوها</button>
-        <button data-category="visits">📈 بازدیدهای روزانه</button>
-        <button data-category="corrections">✏️ اصلاح ریشه‌ها</button>
-        <button data-category="morph-patterns">🧠 الگوهای صرفی</button>
-      </aside>
-      <div class="chat-main">
-    <div class="grid">
-      <div class="stat"><div class="label">کل رویدادهای قابل مشاهده</div><div id="totalEvents" class="n">—</div></div>
-      <div class="stat"><div class="label">تحلیل‌های موفق</div><div id="successEvents" class="n">—</div></div>
-      <div class="stat"><div class="label">خطاهای تحلیل</div><div id="errorEvents" class="n">—</div></div>
-      <div class="stat"><div class="label">گزارش‌های کاربران</div><div id="reportsCount" class="n">—</div></div>
-      <div class="stat"><div class="label">بازدید امروز</div><div id="todayVisits" class="n">—</div></div>
-    </div>
-    <div class="tabs">
-      <button class="active" data-tab="events">رویدادها</button>
-      <button data-tab="reports">گزارش خطاها</button>
-      <button data-tab="corrections">ریشه‌های اصلاح‌شده</button>
-    </div>
-
-    <section id="tab-events" class="panel">
-      <div class="sectionhead"><h2>رویدادهای ثبت‌شده</h2><span class="small">این عدد فقط داده‌های ذخیره‌شده در Supabase را نشان می‌دهد.</span></div>
-      <div class="toolbar"><input id="eventSearch" placeholder="جست‌وجو در کلمه، ریشه یا نوع رویداد…"><button id="searchEventsBtn">جست‌وجو</button><button id="deleteAllSearchesBtn" class="danger">حذف همه جست‌وجوها و خطاها</button></div>
-      <div class="tablewrap"><table><thead><tr><th>زمان</th><th>نوع رویداد</th><th>کلمه</th><th>ریشه</th></tr></thead><tbody id="eventsBody"><tr><td colspan="4" class="empty">در حال بارگذاری…</td></tr></tbody></table></div>
-    </section>
-
-    <section id="tab-unreported" class="panel hidden">
-      <div class="sectionhead"><h2>خطاهای تحلیل که کاربر گزارش نکرده</h2><span class="small">روی هر ردیف بزن تا فرم اصلاح باز شود.</span></div>
-      <div class="toolbar"><input id="unreportedSearch" placeholder="جست‌وجو در خطاهای گزارش‌نشده…"><button id="searchUnreportedBtn">جست‌وجو</button></div>
-      <div class="tablewrap"><table><thead><tr><th>زمان</th><th>کلمه</th><th>نوع خطا</th><th>ریشه</th><th>اقدام</th></tr></thead><tbody id="unreportedBody"><tr><td colspan="5" class="empty">در حال بارگذاری…</td></tr></tbody></table></div>
-    </section>
-
-    <section id="tab-visits" class="panel hidden">
-      <div class="sectionhead"><h2>بازدیدهای روزانه</h2><span class="small">هر بار بازشدن سایت ثبت می‌شود، حتی بدون جست‌وجو.</span></div>
-      <div class="chat-note">آمار بازدید در جدول جدا ذخیره می‌شود؛ حذف جست‌وجوها، آمار بازدید را پاک نمی‌کند.</div>
-      <div id="visitBars" class="visit-bars"><div class="empty">در حال بارگذاری…</div></div>
-      <div class="tablewrap" style="margin-top:14px"><table><thead><tr><th>تاریخ</th><th>تعداد بازدید</th><th>آخرین به‌روزرسانی</th></tr></thead><tbody id="visitsBody"><tr><td colspan="3" class="empty">در حال بارگذاری…</td></tr></table></div>
-    </section>
-
-    <section id="tab-reports" class="panel hidden">
-      <div class="sectionhead"><h2>گزارش‌های کاربران</h2><span class="small" id="reportSummary">خوانده‌نشده: —</span></div>
-      <p class="small" style="margin:0 0 12px">اسم خاص و موارد «خطا نیست» از شمارش خطاها کنار گذاشته می‌شوند.</p>
-      <div class="toolbar"><input id="reportSearch" placeholder="جست‌وجو در کلمه، ریشه گزارش‌شده یا توضیحات…"><button id="searchReportsBtn">جست‌وجو</button><button id="deleteReadReportsBtn" class="danger">حذف پیام‌های خوانده‌شده</button><button id="deleteAllReportsBtn" class="danger">حذف همه گزارش‌ها</button></div>
-      <div class="tablewrap"><table><thead><tr><th>زمان</th><th>کلمه</th><th>ریشه گزارش‌شده</th><th>توضیحات</th><th>دسته‌بندی</th><th>وضعیت</th><th>خطا محسوب شود</th><th>عملیات</th></tr></thead><tbody id="reportsBody"><tr><td colspan="8" class="empty">در حال بارگذاری…</td></tr></tbody></table></div>
-    </section>
-
-    <section id="tab-corrections" class="panel hidden">
-      <div class="sectionhead"><h2>مدیریت ریشه‌های اصلاح‌شده</h2></div>
-      <form id="correctionForm" class="panel" style="background:#0e172a;margin-bottom:16px">
-        <input id="correctionId" type="hidden">
-        <div class="field"><label for="word">کلمه</label><input id="word" required maxlength="160" placeholder="مثلاً حمال"></div>
-        <div class="field"><label for="correctionType">نوع واژه / روش اصلاح</label>
-          <select id="correctionType" required>
-            <option value="single_root">ریشه واحد (فقط همین کلمه)</option>
-            <option value="multi_root">دو ریشه‌ای (دو ریشه جداگانه)</option>
-            <option value="noun">اسم دارای ریشه (در آمار خطا حساب نشود)</option>
-            <option value="proper_noun">اسم خاص / بدون ریشه (در آمار خطا حساب نشود)</option>
-          </select>
-        </div>
-        <div id="singleRootFields" class="field"><label for="correctedRoot">ریشه صحیح</label><input id="correctedRoot" maxlength="12" placeholder="مثلاً حمل"></div>
-        <div id="multiRootFields" class="split hidden">
-          <div class="field"><label for="correctedRoot1">ریشهٔ اول</label><input id="correctedRoot1" maxlength="12" placeholder="مثلاً حمل"></div>
-          <div class="field"><label for="correctedRoot2">ریشهٔ دوم</label><input id="correctedRoot2" maxlength="12" placeholder="ریشهٔ دوم را جدا وارد کن"></div>
-        </div>
-        <div class="field"><label for="correctionMethod">روش اعمال اصلاح</label>
-          <select id="correctionMethod">
-            <option value="word_only">فقط اصلاح همین کلمه؛ الگو تغییر نکند</option>
-            <option value="add_pattern">اصلاح همین کلمه + افزودن الگوی صرفی</option>
-          </select>
-          <div class="small">حالت اول فقط همین کلمه را اصلاح می‌کند. حالت دوم، در صورت داشتن یک ریشه، الگوی استخراج‌شده را هم به فهرست الگوهای عمومی اضافه می‌کند.</div>
-        </div>
-        <div id="derivedCorrectionPatternBox" class="notice hidden">الگوی پیشنهادی: <strong id="derivedCorrectionPattern">—</strong><br>الگو فقط پس از انتخاب «افزودن الگوی صرفی» و ذخیره فرم اضافه می‌شود.</div>
-        <div class="field"><label for="note">یادداشت (اختیاری)</label><textarea id="note" rows="2" maxlength="1000" placeholder="توضیح کوتاه درباره اصلاح"></textarea></div>
-        <div class="formactions"><button class="primary" type="submit">ذخیره اصلاح</button><button id="cancelEditBtn" type="button">لغو ویرایش</button></div>
-      </form>
-      <div class="toolbar"><input id="correctionSearch" placeholder="جست‌وجو در کلمه یا ریشه…"><button id="searchCorrectionsBtn">جست‌وجو</button></div>
-      <div class="tablewrap"><table><thead><tr><th>کلمه</th><th>ریشه اصلاح‌شده</th><th>نوع</th><th>یادداشت</th><th>آخرین تغییر</th><th>عملیات</th></tr></thead><tbody id="correctionsBody"><tr><td colspan="6" class="empty">در حال بارگذاری…</td></tr></tbody></table></div>
-    </section>
-
-    <section id="tab-morph-patterns" class="panel hidden">
-      <div class="sectionhead"><h2>آموزش و مدیریت الگوهای صرفی</h2><span class="small">الگوهای فعال در الگوریتم ریشه‌یابی سایت استفاده می‌شوند.</span></div>
-      <div class="chat-note">در الگو، حروف «ف»، «ع» و «ل» جایگاه‌های اول، دوم و سوم ریشه هستند. مثال: «فعال» یعنی ف + ع + ا + ل؛ پس برای «حمال» ریشهٔ «حمل» به دست می‌آید. ثبت الگو تضمین نمی‌کند همهٔ واژه‌های هم‌شکل درست باشند؛ بعد از فعال‌کردن، چند نمونه را آزمایش کن.</div>
-      <div class="split">
-        <form id="directPatternForm" class="panel" style="background:#0e172a;margin-bottom:16px">
-          <h3 style="margin-top:0">افزودن مستقیم الگو</h3>
-          <input id="patternId" type="hidden">
-          <input id="patternSourceWord" type="hidden">
-          <input id="patternSourceRoot" type="hidden">
-          <div class="field"><label for="patternText">الگوی صرفی</label><input id="patternText" required maxlength="80" placeholder="مثلاً فعال یا مفعول"></div>
-          <div class="field"><label for="patternNote">یادداشت (اختیاری)</label><textarea id="patternNote" rows="2" maxlength="1000" placeholder="توضیح یا نکته درباره الگو"></textarea></div>
-          <div class="field"><label><input id="patternEnabled" type="checkbox" checked style="width:auto;accent-color:var(--green)"> الگو فعال باشد</label></div>
-          <div class="formactions"><button class="primary" type="submit">ذخیره الگو</button><button id="cancelPatternEditBtn" type="button">لغو ویرایش</button></div>
-          <p class="small">در این فیلد قالب را وارد کن، نه یک واژهٔ عادی. «ف»، «ع»، «ل» باید جایگاه ریشه باشند.</p>
-        </form>
-        <form id="learnPatternForm" class="panel" style="background:#0e172a;margin-bottom:16px">
-          <h3 style="margin-top:0">ساخت الگو از کلمه و ریشه</h3>
-          <div class="field"><label for="learnWord">کلمه نمونه</label><input id="learnWord" required maxlength="160" placeholder="مثلاً حمال"></div>
-          <div class="field"><label for="learnRoot">ریشه صحیح (سه حرف)</label><input id="learnRoot" required maxlength="12" placeholder="مثلاً حمل"></div>
-          <div class="notice" id="derivedPatternPreview">کلمه و ریشه را وارد کن تا الگوی پیشنهادی ساخته شود.</div>
-          <div class="field"><label for="learnNote">یادداشت (اختیاری)</label><textarea id="learnNote" rows="2" maxlength="1000" placeholder="مثلاً الگوی اسم مبالغه"></textarea></div>
-          <div class="field"><label><input id="learnPatternEnabled" type="checkbox" checked style="width:auto;accent-color:var(--green)"> الگوی ساخته‌شده فعال باشد</label></div>
-          <div class="formactions"><button class="primary" type="submit">ساخت و ذخیره الگو</button></div>
-          <p class="small">الگو از ترتیب حروف ریشه در کلمه ساخته می‌شود. پیش از ذخیره، الگوی پیشنهادی را بررسی کن.</p>
-        </form>
-      </div>
-      <div class="toolbar"><input id="morphPatternSearch" placeholder="جست‌وجو در الگو، کلمه نمونه یا ریشه…"><button id="searchMorphPatternsBtn" type="button">جست‌وجو</button></div>
-      <div class="tablewrap"><table><thead><tr><th>الگو</th><th>کلمه نمونه</th><th>ریشه نمونه</th><th>وضعیت</th><th>یادداشت</th><th>عملیات</th></tr></thead><tbody id="morphPatternsBody"><tr><td colspan="6" class="empty">در حال بارگذاری…</td></tr></tbody></table></div>
-    </section>
-      </div>
-    </div>
-  </main>
-  <div class="footer">یاب • پنل مدیریت • دسترسی‌ها باید با سیاست‌های RLS در Supabase محدود شوند.</div>
+<div id="loginView" class="wrap">
+  <div class="card login">
+    <div class="brand"><div class="logo"><img src="yab-logo.png" alt="لوگوی یاب" onerror="this.style.display='none';this.parentElement.textContent='ی'"></div><div><h1>پنل مدیریت یاب</h1><p>ورود امن مدیران</p></div></div>
+    <div class="notice info" style="margin-top:18px">اتصال پروژهٔ اصلی یاب به‌صورت پیش‌فرض تنظیم شده است. در صورت نیاز می‌توانید آدرس و کلید عمومی را تغییر دهید. کلید service_role را هرگز اینجا وارد نکنید.</div>
+    <div class="field"><label for="cfgUrl">آدرس پروژه Supabase</label><input id="cfgUrl" placeholder="https://your-project.supabase.co" autocomplete="url"></div>
+    <div class="field"><label for="cfgKey">کلید عمومی Supabase</label><input id="cfgKey" placeholder="sb_publishable_... یا anon key" autocomplete="off"></div>
+    <div class="actions"><button class="primary" id="saveConfig">ذخیره تنظیمات و ادامه</button><button id="demoBtn">حالت پیش‌نمایش بدون داده واقعی</button></div>
+    <hr style="border-color:var(--line);margin:20px 0">
+    <div class="field"><label for="email">ایمیل مدیر</label><input id="email" type="email" autocomplete="username" placeholder="ایمیل حساب مدیر"></div>
+    <div class="field"><label for="password">رمز عبور</label><input id="password" type="password" autocomplete="current-password" placeholder="رمز عبور Supabase Auth"></div>
+    <div class="actions"><button class="primary" id="loginBtn">ورود به پنل</button></div>
+    <div id="loginMsg" class="foot">پنل فقط برای حساب‌هایی مجاز است که شناسه آن‌ها در جدول yab_admins ثبت شده باشد. حالت پیش‌نمایش هیچ داده‌ای را به عنوان آمار واقعی نشان نمی‌دهد.</div>
+  </div>
 </div>
+<div id="appView" class="wrap hidden">
+  <header class="top">
+    <button id="menuToggle" class="menu-toggle" aria-label="باز کردن منو" aria-expanded="false">☰</button>
+    <div class="brand"><div class="logo"><img src="yab-logo.png" alt="لوگوی یاب" onerror="this.style.display='none';this.parentElement.textContent='ی'"></div><div><h1>یاب | مدیریت مرکزی</h1><p id="connectionStatus">وضعیت اتصال نامشخص</p></div></div>
+    <div class="top-actions"><span id="modePill" class="pill warn">پیش‌نمایش</span><button id="refreshBtn">↻ تازه‌سازی</button><button id="settingsBtn">تنظیمات اتصال</button><button id="logoutBtn">خروج</button></div>
+  </header>
+  <div id="globalNotice" class="notice hidden"></div>
+  <div id="drawerScrim" class="drawer-scrim"></div>
+  <div class="layout">
+    <nav class="sidebar" aria-label="بخش‌های پنل">
+      <button class="navbtn active" data-page="overview"><span class="navicon">▦</span>نمای کلی</button>
+      <button class="navbtn" data-page="devices"><span class="navicon">▣</span>دستگاه‌ها و بازدیدها</button>
+      <button class="navbtn" data-page="searches"><span class="navicon">⌕</span>تمام جست‌وجوها</button>
+      <button class="navbtn" data-page="users"><span class="navicon">♙</span>دستگاه‌های فعال دیروز</button>
+      <button class="navbtn" data-page="errors"><span class="navicon">⚑</span>گزارش خطاها</button>
+      <button class="navbtn" data-page="words"><span class="navicon">📚</span>اصلاحات واژگان</button>
+      <button class="navbtn" data-page="patterns"><span class="navicon">⌘</span>الگوهای صرفی</button>
+      <button class="navbtn" data-page="releases"><span class="navicon">⬆</span>نسخه‌ها</button>
+      <button class="navbtn" data-page="banners"><span class="navicon">▤</span>بنرهای تبلیغاتی</button>
+      <button class="navbtn" data-page="messages"><span class="navicon">✉</span>پیام کاربران</button>
+      <button class="navbtn" data-page="maintenance"><span class="navicon">⚙</span>حالت تعمیر</button>
+      <button class="navbtn" data-page="lab"><span class="navicon">⚗</span>آزمایشگاه ریشه‌یابی</button>
+      <button class="navbtn" data-page="backup"><span class="navicon">◷</span>پشتیبان و تاریخچه</button>
+    </nav>
+    <main id="main" class="main" aria-live="polite"></main>
+  </div>
+  <p class="foot">حریم خصوصی: ثبت دستگاه به User-Agent و اطلاعات عمومی مرورگر محدود است. مرورگر معمولاً مدل دقیق گوشی را در اختیار سایت نمی‌گذارد؛ مدل گوشی ممکن است نامشخص یا تقریبی باشد. آدرس IP و موقعیت مکانی دقیق در این پنل جمع‌آوری نمی‌شود. پیش از فعال‌سازی در سایت عمومی، اطلاعیه حریم خصوصی را منتشر کنید.</p>
+</div>
+<div id="toast" class="toast hidden" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (() => {
-  'use strict';
-  const SUPABASE_URL = 'https://jtzvidnofailzguumruf.supabase.co';
-  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_KjZvFj9Fp5UgzXRly-C6hg_WQXntByW';
-  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
-  });
-  const $ = id => document.getElementById(id);
-  let currentUser = null, events = [], reports = [], corrections = [], morphPatterns = [], dailyVisits = [], eventFilter = "all", reportFilter = "all";
-  const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const dateText = value => value ? new Date(value).toLocaleString('fa-IR') : '—';
-  const showMessage = (id, message, kind='') => {
-    const el = $(id); el.textContent = message; el.className = 'notice' + (kind ? ' '+kind : '');
-    el.classList.remove('hidden');
-  };
-  const hideMessage = id => $(id).classList.add('hidden');
-  const errorText = error => error?.message || 'خطای نامشخص؛ ساختار جدول و سیاست‌های دسترسی را بررسی کنید.';
-  async function ensureAdmin(user) {
-    const { data, error } = await client.from('yab_admins').select('user_id').eq('user_id', user.id).maybeSingle();
-    if (error) throw new Error('بررسی دسترسی مدیر ناموفق بود: ' + error.message);
-    if (!data) throw new Error('این حساب در جدول yab_admins مجاز نشده است.');
-    return true;
+  "use strict";
+  const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
+  const DEFAULT_CONFIG = {url:"https://jtzvidnofailzguumruf.supabase.co",key:"sb_publishable_KjZvFj9Fp5UgzXRly-C6hg_WQXntByW"};
+  const state = {client:null,session:null,mode:"preview",page:"overview",data:{events:[],reports:[],corrections:[],patterns:[]},config:{...DEFAULT_CONFIG},busy:false};
+  const names = {overview:"نمای کلی",devices:"دستگاه‌ها و بازدیدها",searches:"تمام جست‌وجوها",users:"دستگاه‌های فعال دیروز",errors:"گزارش خطاها",words:"اصلاحات واژگان",patterns:"الگوهای صرفی",releases:"نسخه‌ها",banners:"بنرهای تبلیغاتی",messages:"پیام کاربران",maintenance:"حالت تعمیر",lab:"آزمایشگاه ریشه‌یابی",backup:"پشتیبان و تاریخچه"};
+  function toast(s){const el=$("#toast");el.textContent=s;el.classList.remove("hidden");setTimeout(()=>el.classList.add("hidden"),4200)}
+  function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+  function fmtDate(v){if(!v)return "—";try{return new Date(v).toLocaleString("fa-IR")}catch{return String(v)}}
+  function getDeviceInfo(){
+    const ua=navigator.userAgent||"", platform=navigator.userAgentData?.platform||navigator.platform||"نامشخص";
+    let os="نامشخص";
+    if(/Android/i.test(ua))os="Android";else if(/iPhone|iPad|iPod/i.test(ua))os="iOS";else if(/Windows/i.test(ua))os="Windows";else if(/Mac OS|Macintosh/i.test(ua))os="macOS";else if(/Linux/i.test(ua))os="Linux";
+    let device="دستگاه نامشخص";
+    if(/iPhone/i.test(ua))device="گوشی iPhone (مدل دقیق در دسترس نیست)";
+    else if(/iPad/i.test(ua))device="تبلت iPad";
+    else if(/Android/i.test(ua)&&/Mobile/i.test(ua))device="گوشی Android (مدل ممکن است نامشخص باشد)";
+    else if(/Android/i.test(ua))device="تبلت/دستگاه Android";
+    else if(/Windows|Macintosh|Linux/i.test(ua))device="رایانه";
+    const browser=/Edg\//i.test(ua)?"Edge":/OPR\//i.test(ua)?"Opera":/Firefox\//i.test(ua)?"Firefox":/CriOS\//i.test(ua)?"Chrome iOS":/Chrome\//i.test(ua)?"Chrome":/Safari\//i.test(ua)?"Safari":"مرورگر نامشخص";
+    return {device_type:device,platform:os,browser,device_model:(navigator.userAgentData?.model||"نامشخص/ارائه‌نشده"),user_agent:ua.slice(0,500),language:(navigator.language||"").slice(0,20),screen_size:screen.width+"x"+screen.height};
   }
-  async function showApp(user) {
-    currentUser = user;
-    try {
-      await ensureAdmin(user);
-      $('loginPanel').classList.add('hidden'); $('dashboard').classList.remove('hidden'); $('headerActions').classList.remove('hidden');
-      $('who').textContent = user.email || user.id;
-      await loadAll();
-    } catch (e) {
-      await client.auth.signOut();
-      $('dashboard').classList.add('hidden'); $('headerActions').classList.add('hidden'); $('loginPanel').classList.remove('hidden');
-      showMessage('loginMessage', errorText(e), 'error');
-    }
+  function configRead(){try{const saved=JSON.parse(localStorage.getItem("yab_admin_config")||"{}");state.config={url:saved.url||DEFAULT_CONFIG.url,key:saved.key||DEFAULT_CONFIG.key};}catch{state.config={...DEFAULT_CONFIG}}$("#cfgUrl").value=state.config.url||DEFAULT_CONFIG.url;$("#cfgKey").value=state.config.key||DEFAULT_CONFIG.key}
+  function configSave(){const url=$("#cfgUrl").value.trim().replace(/\/+$/,""),key=$("#cfgKey").value.trim();if(!/^https:\/\/[a-z0-9.-]+\.supabase\.co$/i.test(url)){toast("آدرس Supabase معتبر نیست.");return false}if(!key){toast("کلید عمومی Supabase را وارد کنید.");return false}state.config={url,key};localStorage.setItem("yab_admin_config",JSON.stringify(state.config));return true}
+  async function connect(){if(!window.supabase?.createClient)throw Error("کتابخانه Supabase بارگذاری نشد. اتصال اینترنت و CDN را بررسی کنید.");if(!state.config.url||!state.config.key)throw Error("ابتدا آدرس و کلید عمومی Supabase را در تنظیمات وارد کنید.");state.client=window.supabase.createClient(state.config.url,state.config.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}})}
+  function setLoginMsg(s){$("#loginMsg").textContent=s}
+  async function login(){
+    if(!configSave())return;
+    try{await connect();const {data,error}=await state.client.auth.signInWithPassword({email:$("#email").value.trim(),password:$("#password").value});if(error)throw error;
+      const {data:admin,error:ae}=await state.client.from("yab_admins").select("user_id").eq("user_id",data.user.id).maybeSingle();
+      if(ae)throw ae;if(!admin){await state.client.auth.signOut();throw Error("این حساب در جدول yab_admins مدیر مجاز نیست.")}
+      state.session=data.session;state.mode="live";$("#loginView").classList.add("hidden");$("#appView").classList.remove("hidden");$("#modePill").textContent="اتصال واقعی";$("#modePill").className="pill ok";$("#connectionStatus").textContent="متصل به Supabase · "+data.user.email;toast("ورود موفق بود.");await loadData();render();
+    }catch(e){setLoginMsg("خطا: "+(e.message||String(e)));toast("ورود انجام نشد؛ تنظیمات و دسترسی مدیر را بررسی کنید.")}
   }
-  async function loadAll() {
-    hideMessage('globalMessage');
-    const [ev, rp, co, vi, mp] = await Promise.all([
-      client.from('yab_events').select('id,event_type,word,root,error_type,created_at').order('created_at',{ascending:false}).limit(2000),
-      client.from('yab_error_reports').select('id,word,reported_root,details,created_at,is_read,category,counts_as_error').order('created_at',{ascending:false}).limit(500),
-      client.from('yab_corrections').select('id,word,corrected_root,correction_type,counts_as_error,note,created_by,created_at,updated_at').order('updated_at',{ascending:false}).limit(2000),
-      client.from('yab_daily_visits').select('visit_date,visit_count,updated_at').order('visit_date',{ascending:false}).limit(30),
-      client.from('yab_morph_patterns').select('id,pattern,normalized_pattern,source_word,source_root,note,enabled,created_by,created_at,updated_at').order('updated_at',{ascending:false}).limit(1000)
-    ]);
-    const failures = [];
-    if (ev.error) failures.push('رویدادها: '+ev.error.message); else events = ev.data || [];
-    if (rp.error) failures.push('گزارش‌ها: '+rp.error.message); else reports = rp.data || [];
-    if (co.error) failures.push('اصلاح‌ها: '+co.error.message); else corrections = co.data || [];
-    if (vi.error) failures.push('بازدیدها: '+vi.error.message); else dailyVisits = vi.data || [];
-    if (mp.error) failures.push('الگوهای صرفی: '+mp.error.message); else morphPatterns = mp.data || [];
-    const nonErrorWords = new Set([...reports.filter(x=>x.counts_as_error===false || ['proper_noun','not_error','noun'].includes(x.category)).map(x=>adminNormalize(x.word)), ...corrections.filter(x=>x.counts_as_error===false || ['proper_noun','noun'].includes(x.correction_type)).map(x=>adminNormalize(x.word))]);
-    $('totalEvents').textContent = ev.error ? '—' : events.length.toLocaleString('fa-IR');
-    $('successEvents').textContent = ev.error ? '—' : events.filter(x=>x.event_type==='analysis_success').length.toLocaleString('fa-IR');
-    $('errorEvents').textContent = ev.error ? '—' : events.filter(x=>x.event_type==='analysis_error' && !nonErrorWords.has(adminNormalize(x.word))).length.toLocaleString('fa-IR');
-    $('reportsCount').textContent = rp.error ? '—' : reports.filter(x=>x.counts_as_error!==false && !['proper_noun','not_error','noun'].includes(x.category) && !nonErrorWords.has(adminNormalize(x.word))).length.toLocaleString('fa-IR');
-    const todayKey = new Date().toISOString().slice(0,10);
-    $('todayVisits').textContent = (dailyVisits.find(v=>String(v.visit_date).slice(0,10)===todayKey)?.visit_count ?? 0).toLocaleString('fa-IR');
-    renderEvents(); renderReports(); renderCorrections(); renderMorphPatterns(); renderUnreported(); renderVisits();
-    if (failures.length) showMessage('globalMessage','برخی اطلاعات بارگذاری نشدند. '+failures.join(' | '),'error');
-    else showMessage('globalMessage','اطلاعات با موفقیت بارگذاری شد.','ok');
+  function preview(){
+    state.mode="preview";state.client=null;state.session=null;state.data={events:[],reports:[],corrections:[],patterns:[]};
+    $("#loginView").classList.add("hidden");$("#appView").classList.remove("hidden");$("#modePill").textContent="پیش‌نمایش بدون داده";$("#modePill").className="pill warn";$("#connectionStatus").textContent="حالت محلی · بدون اتصال به داده‌های واقعی";
+    $("#globalNotice").textContent="حالت پیش‌نمایش فعال است. هیچ رکورد واقعی نمایش داده نمی‌شود و عملیات ذخیره‌سازی در بک‌اند غیرفعال است.";$("#globalNotice").className="notice info";$("#globalNotice").classList.remove("hidden");render();
   }
-  function renderEvents() {
-    const q = $('eventSearch').value.trim().toLocaleLowerCase('fa');
-    const list = events.filter(x => (eventFilter==='all' || (eventFilter==='success' && x.event_type==='analysis_success') || (eventFilter==='error' && x.event_type==='analysis_error')) && [x.word,x.root,x.event_type,x.error_type].some(v=>String(v??'').toLocaleLowerCase('fa').includes(q)));
-    $('eventsBody').innerHTML = list.length ? list.map(x=>`<tr class="message-row" data-bug-word="${escapeHtml(x.word||'')}" data-bug-root="${escapeHtml(x.root||'')}" data-bug-type="${escapeHtml(x.error_type||'single_root')}"><td>${escapeHtml(dateText(x.created_at))}</td><td>${escapeHtml(x.event_type)}</td><td>${escapeHtml(x.word)}</td><td>${escapeHtml(x.root)}</td></tr>`).join('') : '<tr><td colspan="4" class="empty">موردی پیدا نشد.</td></tr>';
+  async function logout(){if(state.client&&state.mode==="live")await state.client.auth.signOut();state.client=null;state.session=null;state.mode="preview";$("#appView").classList.add("hidden");$("#loginView").classList.remove("hidden");setLoginMsg("برای ورود دوباره، اطلاعات حساب مدیر را وارد کنید.")}
+  async function loadTable(table,order="created_at",limit=100){const {data,error}=await state.client.from(table).select("*").order(order,{ascending:false}).limit(limit);if(error)throw error;return data||[]}
+  async function loadAllEvents(){const all=[],chunk=1000,max=20000;for(let from=0;from<max;from+=chunk){const {data,error}=await state.client.from("yab_events").select("*").order("created_at",{ascending:false}).range(from,from+chunk-1);if(error)throw error;const rows=data||[];all.push(...rows);if(rows.length<chunk)break;}return all}
+  async function loadData(){
+    if(state.mode!=="live")return;
+    const tasks=[
+      ["events",()=>loadAllEvents()],
+      ["reports",()=>loadTable("yab_error_reports","created_at",300)],
+      ["corrections",()=>loadTable("yab_corrections","updated_at",300)],
+      ["patterns",()=>loadTable("yab_morph_patterns","updated_at",300)]
+    ];
+    const errors=[];
+    for(const [k,fn] of tasks){try{state.data[k]=await fn()}catch(e){state.data[k]=[];errors.push(k+": "+e.message)}}
+    if(errors.length){$("#globalNotice").textContent="بعضی بخش‌ها بارگذاری نشدند: "+errors.join(" | ")+". سیاست RLS یا نام جدول/ستون‌ها را بررسی کنید.";$("#globalNotice").className="notice error";$("#globalNotice").classList.remove("hidden")}else{$("#globalNotice").classList.add("hidden")}
   }
-  const adminNormalize = value => String(value ?? '').normalize('NFKC').replace(/[ًٌٍَُِّْٰـ\u200c]/g,'').replace(/[أإآٱ]/g,'ا').replace(/[يى]/g,'ی').replace(/ؤ/g,'و').replace(/ئ/g,'ی').trim();
-  const reportCategories = [['unclassified','بررسی‌نشده'],['root_not_found','ریشه پیدا نشد'],['root_length','ساختار ریشه نامعتبر'],['unsupported_word','واژه غیرقابل تحلیل'],['wrong_root','ریشه اشتباه'],['multi_root','چندریشه‌ای'],['proper_noun','اسم خاص'],['noun','اسم دارای ریشه'],['not_error','خطا نیست'],['other','سایر']];
-  function renderReports() {
-    const q = $('reportSearch').value.trim().toLocaleLowerCase('fa');
-    const list = reports.filter(x=>(reportFilter==='all' || (reportFilter==='wrong_root' && x.category==='wrong_root')) && [x.word,x.reported_root,x.details,x.category].some(v=>String(v??'').toLocaleLowerCase('fa').includes(q)));
-    $('reportSummary').textContent = 'خوانده‌نشده: '+reports.filter(x=>!x.is_read).length.toLocaleString('fa-IR')+' | کل: '+reports.length.toLocaleString('fa-IR');
-    $('reportsBody').innerHTML = list.length ? list.map(x=>{
-      const cat=x.category||'unclassified';
-      const options=reportCategories.map(([v,label])=>`<option value="${v}" ${cat===v?'selected':''}>${label}</option>`).join('');
-      return `<tr class="${x.is_read?'report-read':'report-unread'} message-row" data-bug-word="${escapeHtml(x.word||'')}" data-bug-root="" data-bug-type="${escapeHtml(cat)}"><td>${escapeHtml(dateText(x.created_at))}</td><td>${escapeHtml(x.word)}</td><td>${escapeHtml(x.reported_root)}</td><td>${escapeHtml(x.details)}</td><td><select data-report-category="${escapeHtml(x.id)}">${options}</select></td><td>${x.is_read?'خوانده‌شده':'<strong>خوانده‌نشده</strong>'}</td><td><input type="checkbox" data-report-error="${escapeHtml(x.id)}" ${x.counts_as_error!==false&&!['proper_noun','not_error','noun'].includes(cat)?'checked':''}></td><td><button data-report-read="${escapeHtml(x.id)}">${x.is_read?'خوانده‌نشده کن':'خوانده شد'}</button><button class="primary" data-report-save="${escapeHtml(x.id)}">ذخیره</button></td></tr>`;
-    }).join('') : '<tr><td colspan="8" class="empty">موردی پیدا نشد.</td></tr>';
-  }
-  async function saveReport(id,patch) {
-    const current=reports.find(x=>String(x.id)===String(id));
-    const nextCategory=patch.category ?? current?.category ?? 'unclassified';
-    if(['proper_noun','not_error','noun'].includes(nextCategory)) patch={...patch,counts_as_error:false};
-    const {error}=await client.from('yab_error_reports').update(patch).eq('id',id);
-    if(error){showMessage('globalMessage','به‌روزرسانی گزارش انجام نشد: '+error.message,'error');return;}
-    const r=current;if(r)Object.assign(r,patch);
-    renderReports();
-    const nonErrorWords=new Set([...reports.filter(x=>x.counts_as_error===false||['proper_noun','not_error','noun'].includes(x.category)).map(x=>adminNormalize(x.word)),...corrections.filter(x=>x.counts_as_error===false||['proper_noun','noun'].includes(x.correction_type)).map(x=>adminNormalize(x.word))]);
-    $('reportsCount').textContent=reports.filter(x=>x.counts_as_error!==false&&!['proper_noun','not_error','noun'].includes(x.category)&&!nonErrorWords.has(adminNormalize(x.word))).length.toLocaleString('fa-IR');
-    $('errorEvents').textContent=events.filter(x=>x.event_type==='analysis_error'&&!nonErrorWords.has(adminNormalize(x.word))).length.toLocaleString('fa-IR');
-    showMessage('globalMessage','گزارش به‌روزرسانی شد.','ok');
-  }
-  function renderCorrections() {
-    const q = $('correctionSearch').value.trim().toLocaleLowerCase('fa');
-    const list = corrections.filter(x=>[x.word,x.corrected_root,x.note].some(v=>String(v??'').toLocaleLowerCase('fa').includes(q)));
-    $('correctionsBody').innerHTML = list.length ? list.map(x=>`<tr><td>${escapeHtml(x.word)}</td><td>${escapeHtml(x.corrected_root)}</td><td>${escapeHtml(({single_root:'ریشه واحد',multi_root:'چندریشه‌ای',noun:'اسم دارای ریشه',proper_noun:'اسم خاص'})[x.correction_type]||'ریشه واحد')}</td><td>${escapeHtml(x.note)}</td><td>${escapeHtml(dateText(x.updated_at||x.created_at))}</td><td><div class="rowactions"><button data-edit="${escapeHtml(x.id)}">ویرایش</button><button class="danger" data-delete="${escapeHtml(x.id)}">حذف</button></div></td></tr>`).join('') : '<tr><td colspan="6" class="empty">موردی پیدا نشد.</td></tr>';
-  }
+  function stat(label,value,sub="بر اساس داده‌های بارگذاری‌شده"){return `<div class="card"><div class="metric-label">${esc(label)}</div><div class="metric">${esc(value)}</div><div class="small muted">${esc(sub)}</div></div>`}
+  function table(headers,rows,empty="هنوز داده‌ای برای نمایش وجود ندارد."){return `<div class="tablewrap"><table><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${rows.length?rows.join(""):`<tr><td colspan="${headers.length}"><div class="empty">${esc(empty)}</div></td></tr>`}</tbody></table></div>`}
+  function tr(vals){return `<tr>${vals.map(v=>`<td>${v}</td>`).join("")}</tr>`}
+  function liveOnly(feature){if(state.mode!=="live"){toast("این قابلیت در پیش‌نمایش غیرفعال است؛ برای عملیات واقعی وارد پنل متصل شوید.");return false}return true}
+  function pageHead(title,desc,extra=""){return `<div class="pagehead"><div><h2>${esc(title)}</h2><p>${esc(desc)}</p></div>${extra}</div>`}
+  function isSearchEvent(x){return /analysis_success|analysis_error|search|analy[sz]/i.test(String(x.event_type||""))}
+  function dateKey(v){if(!v)return "";const d=new Date(v);if(Number.isNaN(d.getTime()))return "";return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+  function dailySeries(rows,days=7,uniqueDevices=false){const out=[],now=new Date();for(let i=days-1;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-i);const k=dateKey(d.toISOString()),dayRows=rows.filter(x=>dateKey(x.created_at)===k);out.push({key:k,label:d.toLocaleDateString("fa-IR",{day:"numeric",month:"short"}),value:uniqueDevices?new Set(dayRows.map(x=>x.device_id).filter(Boolean)).size:dayRows.length})}return out}
+  function chart(rows){const w=720,h=220,pad=28,max=Math.max(1,...rows.map(x=>x.value)),step=(w-pad*2)/Math.max(1,rows.length-1);const pts=rows.map((x,i)=>[pad+i*step,h-pad-(x.value/max)*(h-pad*2)]);const line=pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");const area=line+` L ${pts[pts.length-1][0]} ${h-pad} L ${pts[0][0]} ${h-pad} Z`;return `<div class="chart-wrap"><svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="نمودار تعداد جست‌وجوها در هفت روز اخیر"><line class="chart-grid" x1="${pad}" y1="${pad}" x2="${w-pad}" y2="${pad}"/><line class="chart-grid" x1="${pad}" y1="${h/2}" x2="${w-pad}" y2="${h/2}"/><line class="chart-grid" x1="${pad}" y1="${h-pad}" x2="${w-pad}" y2="${h-pad}"/><path class="chart-area" d="${area}"/><path class="chart-line" d="${line}"/>${pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="3.5" fill="#00e5ff"><title>${esc(rows[i].label)}: ${rows[i].value}</title></circle><text class="chart-label" x="${p[0]}" y="${h-7}" text-anchor="middle">${esc(rows[i].label)}</text>`).join("")}</svg></div>`}
+  function overview(){const all=state.data.events,e=all.filter(isSearchEvent),r=state.data.reports,c=state.data.corrections,p=state.data.patterns;const series=dailySeries(all.filter(x=>x.device_id),7,true),today=dateKey(new Date().toISOString()),yesterday=dateKey(new Date(Date.now()-86400000).toISOString()),todayCount=e.filter(x=>dateKey(x.created_at)===today).length,yesterdayCount=e.filter(x=>dateKey(x.created_at)===yesterday).length,yesterdayDevices=new Set(all.filter(x=>dateKey(x.created_at)===yesterday).map(x=>x.device_id).filter(Boolean)).size;return pageHead("نمای کلی","آمار جست‌وجوهای ثبت‌شده در یاب؛ نمودار بر اساس دستگاه‌های ناشناس ثبت‌شده در رویدادهای موجود است.")+`<div class="grid">${stat("کل جست‌وجوهای بارگذاری‌شده",state.mode==="live"?e.length:"—",state.mode==="live"?"موفق و ناموفق":"در حالت پیش‌نمایش داده واقعی نمایش داده نمی‌شود")}${stat("جست‌وجوهای امروز",state.mode==="live"?todayCount:"—","بر اساس زمان ثبت رویداد")}${stat("جست‌وجوهای دیروز",state.mode==="live"?yesterdayCount:"—","جایگزین شمارش کاربر یکتا نیست")}${stat("دستگاه‌های فعال دیروز",state.mode==="live"?(yesterdayDevices||"۰") :"—","تخمین ناشناس؛ فقط برای رویدادهای دارای شناسه")}</div><div class="cols"><section class="card"><h3 class="section-title">رشد کاربران/دستگاه‌های فعال · ۷ روز اخیر</h3>${state.mode==="live"?chart(series):'<div class="empty">برای نمایش نمودار واقعی وارد پنل شوید.</div>'}<p class="small muted">این نمودار تعداد دستگاه‌های ناشناسِ فعال در هر روز را نشان می‌دهد؛ یک نفر با چند مرورگر/دستگاه چند بار شمرده می‌شود. رویدادهای قدیمی که شناسه دستگاه ندارند در نمودار کاربران شمرده نمی‌شوند. فهرست تمام جست‌وجوها جداگانه در بخش «تمام جست‌وجوها» است.</p><div class="actions"><button data-goto="searches" class="primary">مشاهده تمام جست‌وجوها</button></div></section><section class="card"><h3 class="section-title">آخرین گزارش‌های خطا</h3>${table(["کلمه","ریشه گزارش‌شده","زمان","وضعیت"],r.slice(0,7).map(x=>tr([esc(x.word),esc(x.reported_root||"—"),esc(fmtDate(x.created_at)),x.is_read?'<span class="pill ok">بررسی‌شده</span>':'<span class="pill warn">جدید</span>'])))}<div class="actions"><button data-goto="errors">همه گزارش‌ها</button><button data-goto="devices">بازدیدها و دستگاه‌ها</button></div></section></div><div class="grid" style="margin-top:12px">${stat("اصلاحات واژگان",state.mode==="live"?c.length:"—")}${stat("الگوهای صرفی",state.mode==="live"?p.length:"—")}${stat("جست‌وجوی موفق",state.mode==="live"?e.filter(x=>/success/i.test(x.event_type||"")).length:"—")}${stat("جست‌وجوی ناموفق",state.mode==="live"?e.filter(x=>/error/i.test(x.event_type||"")).length:"—")}</div>`}
+  function searches(){const rows=state.data.events.filter(isSearchEvent);return pageHead("تمام جست‌وجوها","فهرست رویدادهای تحلیل موفق و ناموفق که در yab_events ذخیره شده‌اند.")+`<div class="notice info">این صفحه تمام رکوردهایی را نشان می‌دهد که دسترسی خواندن آن‌ها از Supabase مجاز باشد (در بارگذاری فعلی حداکثر ۲۰٬۰۰۰ رویداد اخیر). اگر یک جست‌وجو در زمان انجام ثبت نشده باشد، از گذشته قابل بازیابی نیست.</div><div class="toolbar"><input id="searchesFilter" placeholder="جست‌وجوی کلمه، ریشه یا نوع رویداد"><select id="searchType"><option value="all">همه جست‌وجوها</option><option value="analysis_success">موفق</option><option value="analysis_error">ناموفق</option></select><button id="exportSearches">خروجی CSV</button></div><div class="small muted" id="searchCount">${rows.length} رکورد</div><div id="searchTable" style="margin-top:10px">${searchTable(rows)}</div>`}
+  function users(){const yesterday=dateKey(new Date(Date.now()-86400000).toISOString()),rows=state.data.events.filter(x=>dateKey(x.created_at)===yesterday&&x.device_id),map=new Map();for(const x of rows){const id=String(x.device_id);if(!map.has(id))map.set(id,{device_id:id,last:x.created_at,events:0,searches:0,words:[]});const u=map.get(id);u.events++;if(!u.last||new Date(x.created_at)>new Date(u.last))u.last=x.created_at;if(isSearchEvent(x)){u.searches++;if(x.word&&!u.words.includes(x.word))u.words.push(x.word)}}const list=[...map.values()].sort((a,b)=>new Date(b.last)-new Date(a.last));return pageHead("دستگاه‌های فعال دیروز","فهرست ناشناس دستگاه‌هایی که دیروز در رویدادهای ثبت‌شده دیده شده‌اند.")+`<div class="notice info">این‌ها شناسه‌های ناشناس مرورگر/دستگاه هستند، نه نام یا حساب کاربری واقعی. فقط رویدادهای جدیدی که ستون device_id در آن‌ها ذخیره شده باشد قابل شمارش‌اند؛ داده‌های قدیمی ممکن است این شناسه را نداشته باشند.</div><div class="grid">${stat("دستگاه‌های یکتای ثبت‌شده دیروز",state.mode==="live"?list.length:"—")}${stat("رویدادهای دیروز",state.mode==="live"?rows.length:"—")}${stat("جست‌وجوهای دیروز",state.mode==="live"?rows.filter(isSearchEvent).length:"—")}</div><div class="toolbar"><input id="usersFilter" placeholder="جست‌وجو با شناسه یا کلمه جست‌وجوشده"><button id="exportUsers">خروجی CSV</button></div><div id="usersTable">${table(["شناسه ناشناس دستگاه","آخرین فعالیت","تعداد رویدادها","تعداد جست‌وجوها","کلمات جست‌وجوشده"],list.map(u=>tr([`<code>${esc(u.device_id)}</code>`,esc(fmtDate(u.last)),u.events,u.searches,esc(u.words.slice(0,8).join("، ")||"—")])),"برای دیروز داده‌ای با شناسه دستگاه در دسترس نیست.")}</div>`}
+  function searchTable(rows){return table(["زمان","کلمه جست‌وجوشده","ریشه نتیجه","وضعیت","نوع خطا"],rows.map(x=>tr([esc(fmtDate(x.created_at)),esc(x.word||"—"),esc(x.root||"—"),/success/i.test(x.event_type||"")?'<span class="pill ok">موفق</span>': /error/i.test(x.event_type||"")?'<span class="pill bad">ناموفق</span>':esc(x.event_type||"—"),esc(x.error_type||"—")])),"جست‌وجویی برای نمایش پیدا نشد.")}
 
-  function renderMorphPatterns(){
-    const q=($('morphPatternSearch')?.value||'').trim().toLocaleLowerCase('fa');
-    const list=morphPatterns.filter(x=>[x.pattern,x.source_word,x.source_root,x.note].some(v=>String(v??'').toLocaleLowerCase('fa').includes(q)));
-    $('morphPatternsBody').innerHTML=list.length?list.map(x=>`<tr><td><strong>${escapeHtml(x.pattern)}</strong><div class="small">${escapeHtml(x.normalized_pattern)}</div></td><td>${escapeHtml(x.source_word||'—')}</td><td>${escapeHtml(x.source_root||'—')}</td><td><label><input type="checkbox" data-pattern-toggle="${escapeHtml(x.id)}" ${x.enabled?'checked':''} style="width:18px;height:18px;accent-color:var(--green)"> ${x.enabled?'فعال':'غیرفعال'}</label></td><td>${escapeHtml(x.note||'—')}</td><td><div class="rowactions"><button data-pattern-edit="${escapeHtml(x.id)}">ویرایش</button><button class="danger" data-pattern-delete="${escapeHtml(x.id)}">حذف</button></div></td></tr>`).join(''):'<tr><td colspan="6" class="empty">الگویی پیدا نشد.</td></tr>';
-  }
-  function normalizePatternAdmin(value){return adminNormalize(String(value||'').replace(/ّ/g,''));}
-  function derivePatternFromWordRoot(word,root){
-    const w=adminNormalize(word),r=adminNormalize(root);
-    if(!w||r.length!==3)return null;
-    const positions=[];let cursor=0;
-    for(const ch of r){const at=w.indexOf(ch,cursor);if(at<0)return null;positions.push(at);cursor=at+1;}
-    const marks=new Map(positions.map((pos,i)=>[pos,['ف','ع','ل'][i]]));
-    return [...w].map((ch,i)=>marks.get(i)||ch).join('');
-  }
-  function validMorphPattern(value){const p=normalizePatternAdmin(value);return p.length>=3&&p.length<=80&&p.includes('ف')&&p.includes('ع')&&p.includes('ل');}
-  function resetPatternForm(){ $('patternId').value='';$('patternSourceWord').value='';$('patternSourceRoot').value='';$('patternText').value='';$('patternNote').value='';$('patternEnabled').checked=true; }
-  async function saveMorphPattern({id=null,pattern,source_word=null,source_root=null,note=null,enabled=true}){
-    const normalized_pattern=normalizePatternAdmin(pattern);
-    if(!validMorphPattern(normalized_pattern)){showMessage('globalMessage','الگو باید حداقل یک «ف»، یک «ع» و یک «ل» داشته باشد. مثال: فعال یا مفعول.','error');return false;}
-    const payload={pattern:String(pattern).trim(),normalized_pattern,source_word:source_word||null,source_root:source_root?adminNormalize(source_root):null,note:note||null,enabled:!!enabled,created_by:currentUser.id,updated_at:new Date().toISOString()};
-    let result;
-    if(id) result=await client.from('yab_morph_patterns').update({...payload,created_by:undefined}).eq('id',id);
-    else {
-      const existing=morphPatterns.find(x=>x.normalized_pattern===normalized_pattern);
-      result=existing?await client.from('yab_morph_patterns').update({pattern:payload.pattern,source_word:payload.source_word||existing.source_word,source_root:payload.source_root||existing.source_root,note:payload.note,enabled:payload.enabled,updated_at:payload.updated_at}).eq('id',existing.id):await client.from('yab_morph_patterns').insert(payload);
+  function devices(){const e=state.data.events;const counts={};for(const x of e){const k=(x.platform||"نامشخص")+" · "+(x.device_model||"مدل نامشخص");counts[k]=(counts[k]||0)+1}const rows=e.slice(0,100).map(x=>tr([esc(fmtDate(x.created_at)),esc(x.platform||"نامشخص"),esc(x.device_model||"نامشخص"),esc(x.device_type||"از قبل ثبت نشده"),esc(x.browser||"از قبل ثبت نشده"),esc(x.app_version||"—"),esc(x.event_type)]));return pageHead("دستگاه‌ها و بازدیدها","نمایش فقط فیلدهایی که واقعاً در رویدادهای موجود ذخیره شده‌اند.")+`<div class="notice info">محدودیت فنی: مرورگرها اغلب مدل دقیق گوشی را ارائه نمی‌کنند. داده‌های قدیمی جدول yab_events ستون‌های device_type و browser ندارند؛ برای رویدادهای جدید، ثبت سازگار باید به کد سایت اضافه شود. هیچ IP یا مکان دقیقی در این پنل جمع‌آوری نمی‌شود.</div><div class="device-grid">${stat("رویدادهای قابل مشاهده",state.mode==="live"?e.length:"—")}${stat("شناسه‌های دستگاه",state.mode==="live"?new Set(e.map(x=>x.device_id).filter(Boolean)).size:"—","در رویدادهای اخیر")}${stat("نوع‌های سیستم‌عامل",state.mode==="live"?new Set(e.map(x=>x.platform).filter(Boolean)).size:"—","مقادیر ثبت‌شده، نه حدس جدید")}</div><div class="card" style="margin-top:12px"><h3 class="section-title">آخرین رویدادها</h3>${table(["زمان ورود/رویداد","سیستم‌عامل","مدل ثبت‌شده","نوع دستگاه","مرورگر","نسخه","نوع رویداد"],rows,"در جدول yab_events هنوز رویدادی ثبت نشده یا دسترسی خواندن وجود ندارد.")}</div>`}
+  function errors(){const r=state.data.reports;return pageHead("مرکز گزارش خطاها","گزارش‌هایی که کاربران در جدول yab_error_reports ثبت کرده‌اند.")+`<div class="toolbar"><input id="errorSearch" placeholder="جست‌وجوی کلمه یا ریشه"><button id="exportErrors">خروجی CSV</button></div><div id="errorTable">${errorTable(r)}</div>`}
+  function errorTable(rows){return table(["کلمه","ریشه پیشنهادی","دسته","توضیحات","زمان","وضعیت","عملیات"],rows.map(x=>tr([esc(x.word),esc(x.reported_root||"—"),esc(x.category||"—"),esc(x.details||"—"),esc(fmtDate(x.created_at)),x.is_read?'<span class="pill ok">بررسی‌شده</span>':'<span class="pill warn">جدید</span>',`<button data-read="${esc(x.id)}" ${state.mode!=="live"?"disabled":""}>${x.is_read?"علامت‌گذاری مجدد":"ثبت بررسی"}</button>`])), "گزارش واقعی موجود نیست.")}
+  function words(){const c=state.data.corrections;return pageHead("مدیریت اصلاحات واژگان","جدول فعلی yab_corrections اصلاحات ثبت‌شده را نگه می‌دارد؛ این الزاماً کل فرهنگ واژگان آفلاین نیست.",'<button class="primary" id="addWord">افزودن اصلاح</button>')+`<div class="toolbar"><input id="wordSearch" placeholder="جست‌وجوی واژه یا ریشه"><button id="exportWords">خروجی CSV</button><button id="importWords">ورود CSV</button><input id="csvFile" type="file" accept=".csv,text/csv" class="hidden"></div><div id="wordTable">${wordTable(c)}</div><div class="card" id="wordFormCard" style="margin-top:12px"><h3 class="section-title">افزودن اصلاح واژه</h3><div class="formgrid"><div class="field"><label>واژه</label><input id="wWord" placeholder="مثلاً تعمیر"></div><div class="field"><label>ریشه صحیح</label><input id="wRoot" placeholder="مثلاً عمر"></div><div class="field"><label>نوع اصلاح</label><select id="wType"><option value="single_root">تک‌ریشه‌ای</option><option value="multi_root">دو ریشه‌ای</option><option value="proper_noun">اسم خاص (بدون ریشه)</option><option value="noun">اسم/ریشه سه‌حرفی</option></select></div><div class="field"><label>یادداشت</label><input id="wNote" placeholder="توضیح اختیاری"></div></div><div class="actions"><button class="primary" id="saveWord">ذخیره اصلاح</button><button id="cancelWord">پاک‌کردن فرم</button></div><p class="small muted">برای واژه دو‌ریشه‌ای، هر دو ریشه را در قالب مشخص و مورد توافق منطق فعلی وارد کنید؛ این فرم تا زمان توسعه ساختار دو ریشه، ریشه دوم جداگانه ندارد.</p></div>`}
+  function wordTable(rows){return table(["واژه","ریشه","نوع","یادداشت","آخرین تغییر","عملیات"],rows.map(x=>tr([esc(x.word),esc(x.corrected_root),esc(x.correction_type),esc(x.note||"—"),esc(fmtDate(x.updated_at)),`<button class="danger" data-delword="${esc(x.id)}" ${state.mode!=="live"?"disabled":""}>حذف</button>`])), "اصلاحی ثبت نشده یا داده‌ها قابل دسترسی نیستند.")}
+  function patterns(){const p=state.data.patterns;return pageHead("مدیریت الگوهای صرفی","ویرایش جدول yab_morph_patterns؛ ابتدا الگو را با آزمایشگاه بررسی کنید.",'<button class="primary" id="addPattern">افزودن الگو</button>')+`<div class="toolbar"><input id="patternSearch" placeholder="جست‌وجوی الگو، واژه یا ریشه"><button id="exportPatterns">خروجی CSV</button></div><div id="patternTable">${patternTable(p)}</div><div class="card" style="margin-top:12px"><h3 class="section-title">افزودن الگوی صرفی</h3><div class="formgrid"><div class="field"><label>الگو</label><input id="pPattern" placeholder="الگوی صرفی"></div><div class="field"><label>قالب قابل‌تحلیل (با حروف ف، ع، ل)</label><input id="pNorm" placeholder="مثلاً تفعیل یا مستفعل"><small class="muted">این قالب در الگوریتم ریشه‌یابی سایت استفاده می‌شود؛ حروف ف، ع، ل جایگاه‌های ریشه‌اند.</small></div><div class="field"><label>واژه نمونه</label><input id="pWord" placeholder="واژه مبنا"></div><div class="field"><label>ریشه نمونه سه‌حرفی</label><input id="pRoot" placeholder="ریشه"></div><div class="field full"><label>یادداشت</label><input id="pNote"></div></div><div class="actions"><button class="primary" id="savePattern">ذخیره الگو</button></div></div>`}
+  function patternTable(rows){return table(["الگو","کلید نرمال","واژه نمونه","ریشه","فعال","عملیات"],rows.map(x=>tr([esc(x.pattern),esc(x.normalized_pattern),esc(x.source_word||"—"),esc(x.source_root||"—"),x.enabled?'<span class="pill ok">فعال</span>':'<span class="pill warn">غیرفعال</span>',`<button data-togglepattern="${esc(x.id)}" ${state.mode!=="live"?"disabled":""}>${x.enabled?"غیرفعال‌کردن":"فعال‌کردن"}</button>`])), "الگویی ثبت نشده یا داده‌ها قابل دسترسی نیستند.")}
+  function releases(){return pageHead("مدیریت هوشمند نسخه‌ها","این بخش در نسخه فعلی فقط پیش‌نمایش محلی است و به جدول یا انتشار واقعی متصل نیست.")+`<div class="notice info">این بخش هنوز به جدول انتشار وصل نشده است؛ ارسال فرم فقط پیش‌نمایش می‌دهد و نسخه‌ای منتشر نمی‌کند.</div><div class="card"><h3 class="section-title">تعریف نسخه جدید</h3><div class="formgrid"><div class="field"><label>شماره نسخه</label><input id="relVersion" placeholder="مثلاً 2.0.0"></div><div class="field"><label>لینک نصب مستقیم</label><input id="relUrl" placeholder="https://..."></div><div class="field full"><label>عنوان اطلاعیه</label><input id="relTitle" placeholder="نسخه جدید یاب منتشر شد"></div><div class="field full"><label>توضیحات تغییرات</label><textarea id="relNotes" rows="3"></textarea></div><div class="field"><label>حداقل نسخه پشتیبانی‌شده</label><input id="relMin" placeholder="مثلاً 1.0.0"></div><div class="field"><label>وضعیت</label><select id="relStatus"><option>پیش‌نویس</option><option>آماده انتشار</option><option>منتشرشده</option></select></div></div><div class="actions"><button id="previewRelease" class="primary">پیش‌نمایش نسخه</button></div><div id="releasePreview" class="empty">پیش‌نمایش هنوز ساخته نشده است.</div></div>`}
+  function banners(){return pageHead("تبلیغات و بنرهای زمان‌بندی‌شده","بنرها فعلاً پیش‌نمایش محلی‌اند؛ تا ساخت جدول امن و اضافه‌شدن خواندن بنر به سایت، چیزی منتشر نمی‌شود.")+`<div class="notice info">فعلاً این فرم پیش‌نمایش محلی می‌سازد. تا اتصال جدول و پیاده‌سازی خواندن تنظیمات در سایت/اپ، بنر برای کاربران نمایش داده نمی‌شود.</div><div class="card"><h3 class="section-title">ساخت بنر</h3><div class="formgrid"><div class="field"><label>عنوان</label><input id="bTitle" placeholder="نسخه جدید یاب منتشر شد!"></div><div class="field"><label>متن کوتاه</label><input id="bText" placeholder="امکانات تازه را تجربه کن."></div><div class="field"><label>متن دکمه</label><input id="bButton" value="دریافت نسخه جدید"></div><div class="field"><label>لینک مقصد</label><input id="bUrl" placeholder="https://..."></div><div class="field"><label>محل نمایش</label><select id="bPlacement"><option value="both">سایت و اپلیکیشن</option><option value="site">فقط سایت</option><option value="app">فقط اپلیکیشن</option></select></div><div class="field"><label>وضعیت</label><select id="bStatus"><option value="draft">پیش‌نویس</option><option value="active">فعال</option><option value="paused">متوقف</option></select></div><div class="field"><label>شروع نمایش</label><input id="bStart" type="datetime-local"></div><div class="field"><label>پایان نمایش</label><input id="bEnd" type="datetime-local"></div></div><div class="actions"><button id="previewBanner" class="primary">پیش‌نمایش بنر</button></div><div id="bannerPreview" class="empty">پیش‌نمایش بنر اینجا نمایش داده می‌شود.</div></div>`}
+  function messages(){return pageHead("مرکز پیام کاربران","این بخش فعلاً فقط پیش‌نمایش است؛ دریافت/ذخیره پیام تا تعریف جدول و سیاست‌های امنیتی فعال نیست.")+`<div class="notice info">این ماژول هنوز به جدول پیام‌ها متصل نیست؛ هیچ پیام ساختگی نمایش داده نمی‌شود.</div><div class="card"><h3 class="section-title">پیام آزمایشی برای بررسی فرم</h3><div class="formgrid"><div class="field"><label>موضوع</label><input id="mSubject" placeholder="پیشنهاد یا گزارش مشکل"></div><div class="field"><label>دسته‌بندی</label><select id="mCategory"><option>پیشنهاد</option><option>مشکل فنی</option><option>پرسش</option><option>سایر</option></select></div><div class="field full"><label>متن پیام</label><textarea id="mBody" rows="4"></textarea></div></div><div class="actions"><button id="previewMessage">پیش‌نمایش فرم</button></div><div id="messagePreview" class="muted small"></div></div>`}
+  function maintenance(){return pageHead("حالت تعمیر و اطلاعیه فوری","این بخش فعلاً فقط پیش‌نمایش است و حالت تعمیر واقعی سایت را تغییر نمی‌دهد.")+`<div class="notice info">وضعیت تعمیر فعلی هنوز در بک‌اند ذخیره نشده است. دکمه زیر فقط پیش‌نمایش می‌سازد و سرویس را خاموش نمی‌کند.</div><div class="card"><div class="formgrid"><div class="field"><label>وضعیت</label><select id="mtStatus"><option value="off">خاموش</option><option value="notice">فقط اطلاعیه</option><option value="maintenance">حالت تعمیر</option></select></div><div class="field"><label>زمان پایان (اختیاری)</label><input id="mtEnd" type="datetime-local"></div><div class="field full"><label>پیام برای کاربران</label><textarea id="mtText" rows="3" placeholder="در حال به‌روزرسانی یاب هستیم؛ کمی بعد دوباره مراجعه کنید."></textarea></div></div><div class="actions"><button id="previewMaintenance" class="primary">پیش‌نمایش اطلاعیه</button></div><div id="maintenancePreview" class="empty">وضعیت تعمیر پیش‌نمایش نشده است.</div></div>`}
+  function lab(){return pageHead("آزمایشگاه هوشمند ریشه‌یابی","ابزار اولیه برای آزمون ورودی و مقایسه با ریشه مورد انتظار؛ الگوریتم کامل فعلی یاب هنوز از این فایل فراخوانی نمی‌شود.")+`<div class="notice info">این ابزار فعلاً فقط قالب آزمون و اعتبارسنجی ساده ورودی را فراهم می‌کند؛ ادعای اجرای الگوریتم اصلی یا دقت ریشه‌یابی ندارد.</div><div class="card"><div class="formgrid"><div class="field"><label>کلمه</label><input id="labWord" placeholder="مثلاً تعمیر"></div><div class="field"><label>ریشه مورد انتظار</label><input id="labExpected" placeholder="مثلاً عمر"></div><div class="field"><label>روش آزمون</label><select id="labMethod"><option value="single">تک‌کلمه‌ای</option><option value="pattern">افزودن به الگو</option><option value="two">دو ریشه‌ای</option></select></div><div class="field"><label>ریشه پیشنهادی الگوریتم</label><input id="labActual" placeholder="نتیجه الگوریتم را وارد کنید"></div></div><div class="actions"><button id="runLab" class="primary">مقایسه نتیجه</button></div><div id="labResult" class="empty">نتیجه آزمون هنوز ثبت نشده است.</div></div>`}
+  function backup(){return pageHead("پشتیبان‌گیری و تاریخچه","خروجی JSON از جدول‌های قابل خواندن؛ این خروجی پشتیبان کامل Supabase یا فایل ذخیره‌شده سمت سرور نیست.")+`<div class="notice">پیش از بازیابی داده‌ها باید پشتیبان در محیط امن نگهداری شود. این نسخه فقط خروجی داده‌های قابل خواندن را می‌سازد و قابلیت بازیابی تراکنشی ندارد.</div><div class="card"><h3 class="section-title">خروجی داده‌های قابل دسترسی</h3><p class="muted small">شامل جدول‌های yab_corrections، yab_morph_patterns، yab_error_reports و yab_events در محدوده رکوردهای بارگذاری‌شده. اطلاعات ورود یا کلیدها در خروجی قرار نمی‌گیرند.</p><div class="actions"><button id="exportBackup" class="primary">ساخت فایل JSON</button><button id="downloadSchema">دانلود راهنمای اتصال</button></div><div id="backupStatus" class="small muted" style="margin-top:10px"></div></div>`}
+  const pages={overview,devices,searches,users,errors,words,patterns,releases,banners,messages,maintenance,lab,backup};
+  function render(){const f=pages[state.page]||overview;$("#main").innerHTML=f();$$(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.page===state.page));bindPage()}
+  function download(name,content,type="text/plain;charset=utf-8"){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+  function csv(rows){if(!rows.length)return "";const cols=[...new Set(rows.flatMap(x=>Object.keys(x)))];return "\ufeff"+[cols.join(","),...rows.map(r=>cols.map(c=>'"'+String(r[c]??"").replace(/"/g,'""')+'"').join(","))].join("\r\n")}
+  async function updateRow(tableName,id,patch){if(!liveOnly("ویرایش"))return;const {error}=await state.client.from(tableName).update(patch).eq("id",id);if(error)throw error;await loadData();render();toast("تغییر ذخیره شد.")}
+  function bindPage(){
+    const on=(id,fn)=>{const el=$("#"+id);if(el)el.addEventListener("click",fn)};
+    $$("[data-goto]").forEach(b=>b.onclick=()=>{state.page=b.dataset.goto;render()});
+    if(state.page==="searches"){
+      const filterSearches=()=>{const q=( $("#searchesFilter")?.value||"").trim().toLowerCase(),type=$("#searchType")?.value||"all";const rows=state.data.events.filter(isSearchEvent).filter(x=>(type==="all"||String(x.event_type||"")===type)&&[x.word,x.root,x.event_type,x.error_type].some(v=>String(v||"").toLowerCase().includes(q)));$("#searchCount").textContent=rows.length+" رکورد";$("#searchTable").innerHTML=searchTable(rows)};
+      $("#searchesFilter")?.addEventListener("input",filterSearches);$("#searchType")?.addEventListener("change",filterSearches);on("exportSearches",()=>download("yab-all-searches.csv",csv(state.data.events.filter(isSearchEvent)),"text/csv;charset=utf-8"));
     }
-    if(result.error){showMessage('globalMessage','ذخیره الگو انجام نشد: '+result.error.message,'error');return false;}
-    await loadAll();showMessage('globalMessage','الگوی صرفی ذخیره شد. اگر فعال باشد، سایت پس از تازه‌شدن فهرست الگوها از آن استفاده می‌کند.','ok');return true;
-  }
-  function updateDerivedPatternPreview(){
-    const pattern=derivePatternFromWordRoot($('learnWord').value,$('learnRoot').value);
-    $('derivedPatternPreview').textContent=pattern?'الگوی پیشنهادی: '+pattern+'  |  نرمال‌شده: '+normalizePatternAdmin(pattern):'کلمه و ریشه را طوری وارد کن که سه حرف ریشه به ترتیب در کلمه وجود داشته باشند.';
-  }
-  $('learnWord').addEventListener('input',updateDerivedPatternPreview);$('learnRoot').addEventListener('input',updateDerivedPatternPreview);
-  $('directPatternForm').addEventListener('submit',async e=>{
-    e.preventDefault();
-    const pattern=$('patternText').value.trim();
-    if(!validMorphPattern(pattern)){showMessage('globalMessage','الگو باید شامل جایگاه‌های «ف»، «ع» و «ل» باشد؛ مثلاً فعال یا مفعول.','error');return;}
-    const ok=await saveMorphPattern({id:$('patternId').value||null,pattern,source_word:$('patternSourceWord').value||null,source_root:$('patternSourceRoot').value||null,note:$('patternNote').value.trim()||null,enabled:$('patternEnabled').checked});
-    if(ok)resetPatternForm();
-  });
-  $('learnPatternForm').addEventListener('submit',async e=>{
-    e.preventDefault();
-    const word=$('learnWord').value.trim(),root=adminNormalize($('learnRoot').value),pattern=derivePatternFromWordRoot(word,root);
-    if(root.length!==3){showMessage('globalMessage','ریشه باید دقیقاً سه حرف داشته باشد.','error');return;}
-    if(!pattern||!validMorphPattern(pattern)){showMessage('globalMessage','از این کلمه و ریشه نتوانستم الگوی معتبر بسازم؛ ترتیب حروف ریشه را بررسی کن.','error');return;}
-    const note=$('learnNote').value.trim()||null;
-    const ok=await saveMorphPattern({pattern,source_word:word,source_root:root,note,enabled:$('learnPatternEnabled').checked});
-    if(ok){
-      // نمونه آموزشی خودش هم به‌عنوان اصلاح دقیق کلمه ثبت شود.
-      const existing=corrections.find(x=>adminNormalize(x.word)===adminNormalize(word));
-      const correctionPayload={word,corrected_root:root,correction_type:'single_root',counts_as_error:true,note:note||('نمونه آموزشی الگوی '+pattern),created_by:currentUser.id,updated_at:new Date().toISOString()};
-      const correctionResult=existing?await client.from('yab_corrections').update({word,corrected_root:root,correction_type:'single_root',counts_as_error:true,note:correctionPayload.note,updated_at:correctionPayload.updated_at}).eq('id',existing.id):await client.from('yab_corrections').insert(correctionPayload);
-      if(correctionResult.error)showMessage('globalMessage','الگو ذخیره شد، اما اصلاح دقیق کلمه ذخیره نشد: '+correctionResult.error.message,'error');
-      else {await loadAll();showMessage('globalMessage','الگو ذخیره شد و خود کلمهٔ نمونه هم به‌عنوان اصلاح مستقیم ثبت شد.','ok');}
-      $('learnWord').value='';$('learnRoot').value='';$('learnNote').value='';updateDerivedPatternPreview();
+    if(state.page==="users"){
+      const filterUsers=()=>{const q=( $("#usersFilter")?.value||"").trim().toLowerCase(),yesterday=dateKey(new Date(Date.now()-86400000).toISOString()),rows=state.data.events.filter(x=>dateKey(x.created_at)===yesterday&&x.device_id),map=new Map();for(const x of rows){const id=String(x.device_id);if(!map.has(id))map.set(id,{device_id:id,last:x.created_at,events:0,searches:0,words:[]});const u=map.get(id);u.events++;if(new Date(x.created_at)>new Date(u.last))u.last=x.created_at;if(isSearchEvent(x)){u.searches++;if(x.word&&!u.words.includes(x.word))u.words.push(x.word)}}const list=[...map.values()].filter(u=>[u.device_id,...u.words].some(v=>String(v).toLowerCase().includes(q))).sort((a,b)=>new Date(b.last)-new Date(a.last));$("#usersTable").innerHTML=table(["شناسه ناشناس دستگاه","آخرین فعالیت","تعداد رویدادها","تعداد جست‌وجوها","کلمات جست‌وجوشده"],list.map(u=>tr([`<code>${esc(u.device_id)}</code>`,esc(fmtDate(u.last)),u.events,u.searches,esc(u.words.slice(0,8).join("، ")||"—")])),"داده‌ای برای نمایش نیست.")};
+      $("#usersFilter")?.addEventListener("input",filterUsers);on("exportUsers",()=>{const yesterday=dateKey(new Date(Date.now()-86400000).toISOString());download("yab-active-devices-yesterday.csv",csv(state.data.events.filter(x=>dateKey(x.created_at)===yesterday&&x.device_id)),"text/csv;charset=utf-8")});
     }
-  });
-  $('cancelPatternEditBtn').addEventListener('click',resetPatternForm);
-  $('searchMorphPatternsBtn').addEventListener('click',renderMorphPatterns);$('morphPatternSearch').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();renderMorphPatterns();}});
-  $('morphPatternsBody').addEventListener('change',async e=>{
-    const toggle=e.target.closest('[data-pattern-toggle]');if(!toggle)return;
-    const row=morphPatterns.find(x=>String(x.id)===String(toggle.dataset.patternToggle));if(!row)return;
-    const {error}=await client.from('yab_morph_patterns').update({enabled:toggle.checked,updated_at:new Date().toISOString()}).eq('id',row.id);
-    if(error){showMessage('globalMessage','تغییر وضعیت الگو انجام نشد: '+error.message,'error');toggle.checked=!!row.enabled;return;}
-    await loadAll();showMessage('globalMessage',toggle.checked?'الگو فعال شد.':'الگو غیرفعال شد.','ok');
-  });
-  $('morphPatternsBody').addEventListener('click',async e=>{
-    const edit=e.target.closest('[data-pattern-edit]'),del=e.target.closest('[data-pattern-delete]');
-    if(edit){const x=morphPatterns.find(z=>String(z.id)===String(edit.dataset.patternEdit));if(!x)return;$('patternId').value=x.id;$('patternSourceWord').value=x.source_word||'';$('patternSourceRoot').value=x.source_root||'';$('patternText').value=x.pattern||'';$('patternNote').value=x.note||'';$('patternEnabled').checked=!!x.enabled;$('patternText').focus();$('directPatternForm').scrollIntoView({behavior:'smooth',block:'start'});return;}
-    if(del){const x=morphPatterns.find(z=>String(z.id)===String(del.dataset.patternDelete));if(!x||!confirm(`الگوی «${x.pattern}» حذف شود؟`))return;const {error}=await client.from('yab_morph_patterns').delete().eq('id',x.id);if(error){showMessage('globalMessage','حذف الگو انجام نشد: '+error.message,'error');return;}await loadAll();showMessage('globalMessage','الگو حذف شد.','ok');}
-  });
-
-  function renderUnreported(){
-    const reported=new Set(reports.map(x=>adminNormalize(x.word)));
-    const q=($('unreportedSearch')?.value||'').trim().toLocaleLowerCase('fa');
-    const list=events.filter(x=>x.event_type==='analysis_error'&&!reported.has(adminNormalize(x.word))&&[x.word,x.error_type,x.root].some(v=>String(v??'').toLocaleLowerCase('fa').includes(q)));
-    $('unreportedCount').textContent=list.length.toLocaleString('fa-IR');
-    $('unreportedBody').innerHTML=list.length?list.map(x=>`<tr class="message-row" data-bug-word="${escapeHtml(x.word||'')}" data-bug-root="${escapeHtml(x.root||'')}" data-bug-type="${escapeHtml(x.error_type||'root_not_found')}"><td>${escapeHtml(dateText(x.created_at))}</td><td>${escapeHtml(x.word)}</td><td>${escapeHtml(x.error_type||'نوع نامشخص')}</td><td>${escapeHtml(x.root||'—')}</td><td><button class="primary" type="button">بازکردن اصلاح</button></td></tr>`).join(''):'<tr><td colspan="5" class="empty">خطای گزارش‌نشده‌ای وجود ندارد.</td></tr>';
-  }
-  function renderVisits(){
-    const rows=[...dailyVisits].sort((a,b)=>String(b.visit_date).localeCompare(String(a.visit_date)));
-    $('visitsBody').innerHTML=rows.length?rows.map(x=>`<tr><td>${escapeHtml(x.visit_date)}</td><td>${Number(x.visit_count||0).toLocaleString('fa-IR')}</td><td>${escapeHtml(dateText(x.updated_at))}</td></tr>`).join(''):'<tr><td colspan="3" class="empty">هنوز بازدیدی ثبت نشده است.</td></tr>';
-    const max=Math.max(1,...rows.map(x=>Number(x.visit_count||0)));
-    $('visitBars').innerHTML=rows.length?rows.slice(0,14).reverse().map(x=>`<div class="visit-bar"><span class="bar-value">${Number(x.visit_count||0).toLocaleString('fa-IR')}</span><div class="bar" style="height:${Math.max(3,Math.round(Number(x.visit_count||0)/max*112))}px"></div><span class="bar-label">${escapeHtml(String(x.visit_date).slice(5))}</span></div>`).join(''):'<div class="empty">هنوز داده‌ای برای نمایش نیست.</div>';
-  }
-  function showSection(section){
-    ['events','reports','corrections','unreported','visits','morph-patterns'].forEach(t=>{const el=$('tab-'+t);if(el)el.classList.toggle('hidden',t!==section);});
-    document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===section));
-    document.querySelectorAll('[data-category]').forEach(b=>b.classList.toggle('active',b.dataset.category===section || (section==='events'&&b.dataset.category==='events')));
-  }
-  document.querySelectorAll('[data-category]').forEach(btn=>btn.addEventListener('click',()=>{
-    const cat=btn.dataset.category;
-    if(cat==='events'){eventFilter='all';showSection('events');renderEvents();}
-    else if(cat==='searches'){eventFilter='success';showSection('events');renderEvents();}
-    else if(cat==='wrong-root'){reportFilter='wrong_root';showSection('reports');renderReports();}
-    else if(cat==='reports'){reportFilter='all';showSection('reports');renderReports();}
-    else if(cat==='unreported'){showSection('unreported');renderUnreported();}
-    else if(cat==='visits'){showSection('visits');renderVisits();}
-    else if(cat==='corrections'){showSection('corrections');renderCorrections();}
-    else if(cat==='morph-patterns'){showSection('morph-patterns');renderMorphPatterns();}
-  }));
-  function openCorrectionFromRow(row){
-    if(!row)return;
-    const word=row.dataset.bugWord||'', root=row.dataset.bugRoot||'';
-    if(!word)return;
-    $('correctionId').value='';
-    $('word').value=word;
-    $('correctedRoot').value=root;
-    $('correctionType').value='single_root';
-    $('note').value='اصلاح از پیام/خطای ثبت‌شده در پنل';
-    showSection('corrections');
-    $('word').focus();
-    $('correctionForm').scrollIntoView({behavior:'smooth',block:'start'});
-  }
-  ['eventsBody','reportsBody','unreportedBody'].forEach(id=>$(id).addEventListener('click',e=>{
-    const row=e.target.closest('tr[data-bug-word]');
-    if(!row)return;
-    if(e.target.closest('button,select,input') && id!=='unreportedBody')return;
-    openCorrectionFromRow(row);
-  }));
-  $('searchUnreportedBtn').addEventListener('click',renderUnreported);
-  $('unreportedSearch').addEventListener('keydown',e=>{if(e.key==='Enter')renderUnreported();});
-  $('deleteAllSearchesBtn').addEventListener('click',async()=>{
-    if(!confirm('همه رکوردهای جست‌وجو و خطای تحلیل حذف شوند؟ آمار بازدیدهای روزانه باقی می‌ماند. این کار قابل بازگشت نیست.'))return;
-    const {error}=await client.from('yab_events').delete().neq('id',0);
-    if(error){showMessage('globalMessage','حذف رویدادها انجام نشد: '+error.message,'error');return;}
-    await loadAll();showMessage('globalMessage','همه رکوردهای جست‌وجو و خطا حذف شدند؛ آمار بازدید باقی ماند.','ok');
-  });
-  $('deleteAllReportsBtn')?.addEventListener('click',async()=>{
-    if(!confirm('تمام گزارش‌های کاربران حذف شوند؟ این کار قابل بازگشت نیست.'))return;
-    const {error}=await client.from('yab_error_reports').delete().neq('id',0);
-    if(error){showMessage('globalMessage','حذف گزارش‌ها انجام نشد: '+error.message,'error');return;}
-    await loadAll();showMessage('globalMessage','همه گزارش‌های کاربران حذف شدند.','ok');
-  });
-
-  $('loginForm').addEventListener('submit', async e=>{
-    e.preventDefault(); hideMessage('loginMessage');
-    const button = e.submitter; if(button) button.disabled=true;
-    const {data,error} = await client.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});
-    if(button) button.disabled=false;
-    if(error){showMessage('loginMessage','ورود ناموفق بود: '+error.message,'error');return;}
-    await showApp(data.user);
-  });
-  $('logoutBtn').addEventListener('click', async()=>{await client.auth.signOut();currentUser=null;$('dashboard').classList.add('hidden');$('headerActions').classList.add('hidden');$('loginPanel').classList.remove('hidden');hideMessage('loginMessage');});
-  $('refreshBtn').addEventListener('click',loadAll);
-  $('searchEventsBtn').addEventListener('click',renderEvents); $('eventSearch').addEventListener('keydown',e=>{if(e.key==='Enter')renderEvents()});
-  $('searchReportsBtn').addEventListener('click',renderReports); $('reportSearch').addEventListener('keydown',e=>{if(e.key==='Enter')renderReports()});
-  $('deleteReadReportsBtn').addEventListener('click', async()=>{
-    const readReports = reports.filter(x=>x.is_read===true);
-    if(!readReports.length){showMessage('globalMessage','در گزارش‌های بارگذاری‌شده پیام خوانده‌شده‌ای برای حذف وجود ندارد.','ok');return;}
-    if(!confirm(`گزارش‌های خوانده‌شده حذف شوند؟ این کار قابل بازگشت نیست.`))return;
-    // شرط روی سرور باعث می‌شود گزارش‌های خوانده‌شده‌ای که بیرون از ۵۰۰ مورد اخیرند هم حذف شوند.
-    const {data,error}=await client.from('yab_error_reports').delete().eq('is_read',true).select('id');
-    if(error){showMessage('globalMessage','حذف پیام‌های خوانده‌شده انجام نشد: '+error.message,'error');return;}
-    const deletedCount=(data||[]).length;
-    reports=reports.filter(x=>x.is_read!==true);
-    await loadAll();
-    showMessage('globalMessage',`${deletedCount || readReports.length} گزارش خوانده‌شده حذف شد.`,'ok');
-  });
-  $('searchCorrectionsBtn').addEventListener('click',renderCorrections); $('correctionSearch').addEventListener('keydown',e=>{if(e.key==='Enter')renderCorrections()}); 
-  $('reportsBody').addEventListener('change',async e=>{
-    const c=e.target.closest('[data-report-category]'), cb=e.target.closest('[data-report-error]');
-    if(c){const id=c.dataset.reportCategory,cat=c.value;await saveReport(id,{category:cat,counts_as_error:!['proper_noun','not_error','noun'].includes(cat)});}
-    else if(cb) await saveReport(cb.dataset.reportError,{counts_as_error:cb.checked});
-  });
-  $('reportsBody').addEventListener('click',async e=>{
-    const r=e.target.closest('[data-report-read]'),save=e.target.closest('[data-report-save]');
-    if(r){const x=reports.find(z=>String(z.id)===String(r.dataset.reportRead));if(x)await saveReport(x.id,{is_read:!x.is_read});}
-    if(save){const id=save.dataset.reportSave,select=document.querySelector(`[data-report-category="${CSS.escape(String(id))}"]`),cb=document.querySelector(`[data-report-error="${CSS.escape(String(id))}"]`),cat=select?.value||'unclassified';await saveReport(id,{category:cat,counts_as_error:cb?cb.checked:!['proper_noun','not_error','noun'].includes(cat)});}
-  });
-
-  document.querySelectorAll('[data-tab]').forEach(btn=>btn.addEventListener('click',()=>{
-    const tab=btn.dataset.tab;
-    if(tab==='events')eventFilter='all';
-    if(tab==='reports')reportFilter='all';
-    showSection(tab);
-    if(tab==='events')renderEvents(); else if(tab==='reports')renderReports(); else if(tab==='corrections')renderCorrections(); else if(tab==='morph-patterns')renderMorphPatterns();
-  }));
-  function syncCorrectionFields(){
-    const type=$('correctionType').value, multi=type==='multi_root', proper=type==='proper_noun';
-    $('singleRootFields').classList.toggle('hidden',multi||proper);
-    $('multiRootFields').classList.toggle('hidden',!multi);
-    $('correctedRoot').required=!multi&&!proper;
-    $('correctedRoot1').required=multi;$('correctedRoot2').required=multi;
-    $('correctionMethod').disabled=multi||proper;
-    if(multi||proper)$('correctionMethod').value='word_only';
-    updateCorrectionPatternPreview();
-  }
-  function updateCorrectionPatternPreview(){
-    const type=$('correctionType').value, word=$('word').value.trim(), root=adminNormalize($('correctedRoot').value);
-    const pattern=(!['multi_root','proper_noun'].includes(type)&&root.length===3)?derivePatternFromWordRoot(word,root):null;
-    $('derivedCorrectionPattern').textContent=pattern||'برای این ورودی الگوی خودکار قابل ساخت نیست';
-    $('derivedCorrectionPatternBox').classList.toggle('hidden',$('correctionMethod').value!=='add_pattern');
-  }
-  function resetCorrectionForm(){
-    $('correctionId').value='';$('word').value='';$('correctedRoot').value='';$('correctedRoot1').value='';$('correctedRoot2').value='';$('correctionType').value='single_root';$('correctionMethod').value='word_only';$('note').value='';syncCorrectionFields();
-  }
-  $('correctionType').addEventListener('change',syncCorrectionFields);
-  $('correctionMethod').addEventListener('change',updateCorrectionPatternPreview);
-  $('word').addEventListener('input',updateCorrectionPatternPreview);$('correctedRoot').addEventListener('input',updateCorrectionPatternPreview);
-  syncCorrectionFields();
-  $('cancelEditBtn').addEventListener('click',resetCorrectionForm);
-  $('correctionForm').addEventListener('submit',async e=>{
-    e.preventDefault();
-    const id=$('correctionId').value, correctionType=$('correctionType').value;
-    const root1=adminNormalize($('correctedRoot1').value),root2=adminNormalize($('correctedRoot2').value);
-    const rootInput=correctionType==='multi_root'?[root1,root2].filter(Boolean).join('، '):$('correctedRoot').value.trim();
-    const payload={word:$('word').value.trim(),corrected_root:correctionType==='proper_noun'?(rootInput||'—'):rootInput,correction_type:correctionType,counts_as_error:!['proper_noun','noun'].includes(correctionType),note:$('note').value.trim()||null,created_by:currentUser.id,updated_at:new Date().toISOString()};
-    if(!payload.word||(correctionType!=='proper_noun'&&!payload.corrected_root)){showMessage('globalMessage','کلمه و ریشه را کامل کن؛ برای اسم خاص ریشه لازم نیست.','error');return;}
-    if(correctionType==='multi_root'&&(!root1||!root2||root1.length!==3||root2.length!==3)){showMessage('globalMessage','برای دو ریشه‌ای، هر دو باکس را جداگانه با یک ریشهٔ سه‌حرفی پر کن.','error');return;}
-    if(['single_root','noun'].includes(correctionType)&&adminNormalize(payload.corrected_root).replace(/[\s،,؛;|/]/g,'').length!==3){showMessage('globalMessage','ریشه واحد باید سه حرف داشته باشد.','error');return;}
-    const method=$('correctionMethod').value;
-    const suggestedPattern=(!['multi_root','proper_noun'].includes(correctionType)&&adminNormalize(payload.corrected_root).length===3)?derivePatternFromWordRoot(payload.word,payload.corrected_root):null;
-    if(method==='add_pattern'&&!suggestedPattern){showMessage('globalMessage','برای افزودن الگو، یک ریشهٔ سه‌حرفی وارد کن که حروفش به همان ترتیب در کلمه وجود داشته باشند. برای دو ریشه‌ای‌ها فعلاً فقط اصلاح همان کلمه ثبت می‌شود.','error');return;}
-    let result;
-    const fields={word:payload.word,corrected_root:payload.corrected_root,correction_type:payload.correction_type,counts_as_error:payload.counts_as_error,note:payload.note,updated_at:payload.updated_at};
-    if(id) result=await client.from('yab_corrections').update(fields).eq('id',id);
-    else {
-      const existing=corrections.find(x=>adminNormalize(x.word)===adminNormalize(payload.word));
-      result=existing?await client.from('yab_corrections').update(fields).eq('id',existing.id):await client.from('yab_corrections').insert(payload);
+    if(state.page==="errors"){
+      $("#errorSearch")?.addEventListener("input",e=>{const q=e.target.value.trim().toLowerCase();$("#errorTable").innerHTML=errorTable(state.data.reports.filter(x=>[x.word,x.reported_root,x.details,x.category].some(v=>String(v||"").toLowerCase().includes(q))))});
+      on("exportErrors",()=>download("yab-error-reports.csv",csv(state.data.reports),"text/csv;charset=utf-8"));
+      $$("[data-read]").forEach(b=>b.onclick=async()=>{try{await updateRow("yab_error_reports",b.dataset.read,{is_read:true})}catch(e){toast("خطا: "+e.message)}});
     }
-    if(result.error){showMessage('globalMessage','ذخیره انجام نشد: '+result.error.message,'error');return;}
-    if(method==='add_pattern'){
-      const ok=await saveMorphPattern({pattern:suggestedPattern,source_word:payload.word,source_root:payload.corrected_root,note:payload.note||('الگو از نمونهٔ '+payload.word),enabled:true});
-      if(!ok){await loadAll();showMessage('globalMessage','اصلاح همین کلمه ذخیره شد، اما افزودن الگو ناموفق بود.','error');return;}
+    if(state.page==="words"){
+      $("#wordSearch")?.addEventListener("input",e=>{const q=e.target.value.toLowerCase();$("#wordTable").innerHTML=wordTable(state.data.corrections.filter(x=>[x.word,x.corrected_root,x.note].some(v=>String(v||"").toLowerCase().includes(q))))});
+      on("exportWords",()=>download("yab-corrections.csv",csv(state.data.corrections),"text/csv;charset=utf-8"));
+      on("importWords",()=>$("#csvFile").click());
+      $("#csvFile")?.addEventListener("change",async e=>{const file=e.target.files?.[0];if(!file)return;const text=await file.text();const lines=text.replace(/^\uFEFF/,"").split(/\r?\n/).filter(Boolean);if(lines.length<2){toast("فایل CSV داده‌ای ندارد.");return}const heads=lines[0].split(",").map(s=>s.trim().replace(/^"|"$/g,""));const items=lines.slice(1).map(line=>{const vals=line.match(/("([^"]|"")*"|[^,]*)(,|$)/g)||[];const cells=vals.map(v=>v.replace(/,$/,"").replace(/^"|"$/g,"").replace(/""/g,'"'));return Object.fromEntries(heads.map((h,i)=>[h,cells[i]||""]))});if(!liveOnly("ورود فایل"))return;const allowed=items.map(x=>({word:x.word,corrected_root:x.corrected_root,note:x.note||"",correction_type:x.correction_type||"single_root",counts_as_error:x.counts_as_error!=="false"})).filter(x=>x.word&&x.corrected_root);if(!allowed.length){toast("ستون‌های word و corrected_root لازم‌اند.");return}if(!confirm("تعداد "+allowed.length+" اصلاح معتبر برای درج آماده است. ادامه می‌دهید؟"))return;try{const {error}=await state.client.from("yab_corrections").upsert(allowed,{onConflict:"word"});if(error)throw error;await loadData();render();toast("ورود گروهی انجام شد.")}catch(err){toast("ورود ناموفق: "+err.message)}});
+      on("addWord",()=>$("#wWord").focus());on("cancelWord",()=>["wWord","wRoot","wNote"].forEach(id=>$("#"+id).value=""));
+      on("saveWord",async()=>{if(!liveOnly("ذخیره"))return;const word=$("#wWord").value.trim(),root=$("#wRoot").value.trim(),correctionType=$("#wType").value;if(!word||(correctionType!=="proper_noun"&&!root)){toast("واژه لازم است؛ برای نوع ریشه‌ای، ریشه را هم وارد کنید.");return}try{const {error}=await state.client.from("yab_corrections").upsert({word,corrected_root:correctionType==="proper_noun"?"":root,note:$("#wNote").value.trim(),correction_type:correctionType,counts_as_error:correctionType!=="proper_noun"},{onConflict:"word"});if(error)throw error;await loadData();render();toast("اصلاح واژه ذخیره شد.")}catch(e){toast("خطا در ذخیره: "+e.message)}});
+      $$("[data-delword]").forEach(b=>b.onclick=async()=>{if(!liveOnly("حذف"))return;if(!confirm("این اصلاح حذف شود؟"))return;try{const {error}=await state.client.from("yab_corrections").delete().eq("id",b.dataset.delword);if(error)throw error;await loadData();render();toast("حذف شد.")}catch(e){toast("حذف انجام نشد: "+e.message)}});
     }
-    resetCorrectionForm();await loadAll();showMessage('globalMessage',method==='add_pattern'?'اصلاح کلمه ذخیره شد و الگوی صرفی هم به‌صورت عمومی اضافه شد.':'فقط همین کلمه اصلاح شد؛ هیچ الگوی عمومی تغییر نکرد.','ok');
-  });
-  $('correctionsBody').addEventListener('click',async e=>{
-    const edit=e.target.closest('[data-edit]'), del=e.target.closest('[data-delete]');
-    if(edit){const x=corrections.find(c=>String(c.id)===edit.dataset.edit);if(!x)return;$('correctionId').value=x.id;$('word').value=x.word||'';$('correctionType').value=x.correction_type||'single_root';const savedRoots=String(x.corrected_root||'').split(/[,،؛;|\/\s]+/).map(v=>adminNormalize(v)).filter(Boolean);$('correctedRoot').value=x.correction_type==='multi_root'?'':(x.corrected_root||'');$('correctedRoot1').value=x.correction_type==='multi_root'?(savedRoots[0]||''):'';$('correctedRoot2').value=x.correction_type==='multi_root'?(savedRoots[1]||''):'';$('correctionMethod').value='word_only';$('note').value=x.note||'';syncCorrectionFields();$('word').focus();return;}
-    if(del){const x=corrections.find(c=>String(c.id)===del.dataset.delete);if(!x)return;if(!confirm(`«${x.word}» حذف شود؟ این کار قابل بازگشت نیست.`))return;const {error}=await client.from('yab_corrections').delete().eq('id',x.id);if(error){showMessage('globalMessage','حذف انجام نشد: '+error.message,'error');return;}await loadAll();showMessage('globalMessage','رکورد حذف شد.','ok');}
-  });
-  client.auth.getSession().then(async({data,error})=>{if(error){showMessage('loginMessage',error.message,'error');return;}if(data.session)await showApp(data.session.user);});
-  client.auth.onAuthStateChange((_event,session)=>{if(!session){$('dashboard').classList.add('hidden');$('headerActions').classList.add('hidden');$('loginPanel').classList.remove('hidden');}});
+    if(state.page==="patterns"){
+      $("#patternSearch")?.addEventListener("input",e=>{const q=e.target.value.toLowerCase();$("#patternTable").innerHTML=patternTable(state.data.patterns.filter(x=>[x.pattern,x.normalized_pattern,x.source_word,x.source_root].some(v=>String(v||"").toLowerCase().includes(q))))});
+      on("exportPatterns",()=>download("yab-morph-patterns.csv",csv(state.data.patterns),"text/csv;charset=utf-8"));on("addPattern",()=>$("#pPattern").focus());
+      on("savePattern",async()=>{if(!liveOnly("ذخیره"))return;const pattern=$("#pPattern").value.trim(),normalized_pattern=$("#pNorm").value.trim(),source_root=$("#pRoot").value.trim();if(!pattern||normalized_pattern.length<3){toast("الگو و کلید نرمال‌شده حداقل سه‌حرفی لازم است.");return}if(source_root&&source_root.length!==3){toast("ریشه نمونه باید سه حرف باشد یا خالی بماند.");return}try{const {error}=await state.client.from("yab_morph_patterns").insert({pattern,normalized_pattern,source_word:$("#pWord").value.trim()||null,source_root:source_root||null,note:$("#pNote").value.trim()||null,enabled:true});if(error)throw error;await loadData();render();toast("الگو ذخیره شد.")}catch(e){toast("خطا در ذخیره الگو: "+e.message)}});
+      $$("[data-togglepattern]").forEach(b=>b.onclick=async()=>{const p=state.data.patterns.find(x=>String(x.id)===b.dataset.togglepattern);if(!p||!liveOnly("تغییر وضعیت"))return;try{await updateRow("yab_morph_patterns",p.id,{enabled:!p.enabled})}catch(e){toast("خطا: "+e.message)}});
+    }
+    if(state.page==="releases")on("previewRelease",()=>{$("#releasePreview").innerHTML=`<div class="notice info"><b>${esc($("#relTitle").value||"نسخه جدید یاب")}</b><br>نسخه ${esc($("#relVersion").value||"—")}<br>${esc($("#relNotes").value||"بدون توضیحات")}<br><a href="${esc($("#relUrl").value||"#")}" target="_blank" rel="noopener">لینک نصب (پیش‌نمایش)</a></div><span class="pill warn">ذخیره/انتشار نشده</span>`});
+    if(state.page==="banners")on("previewBanner",()=>{$("#bannerPreview").innerHTML=`<div style="background:#172554;border-radius:15px;padding:18px;color:white;max-width:620px"><h3 style="margin:0 0 8px">${esc($("#bTitle").value||"نسخه جدید یاب منتشر شد!")}</h3><p>${esc($("#bText").value||"امکانات تازه را تجربه کن.")}</p><a href="${esc($("#bUrl").value||"#")}" style="display:inline-block;background:#e8bd68;color:#172033;padding:10px 15px;border-radius:9px;text-decoration:none">${esc($("#bButton").value||"دریافت نسخه جدید")}</a><p class="small">محل: ${esc($("#bPlacement").selectedOptions[0].text)} · وضعیت: ${esc($("#bStatus").selectedOptions[0].text)}</p></div><p class="small muted">این پیش‌نمایش محلی است؛ بنر منتشر نشده.</p>`});
+    if(state.page==="messages")on("previewMessage",()=>{$("#messagePreview").textContent="پیش‌نمایش فرم: "+($("#mSubject").value||"بدون موضوع")+" · "+$("#mCategory").value+" · پیام ذخیره نشده است."});
+    if(state.page==="maintenance")on("previewMaintenance",()=>{$("#maintenancePreview").innerHTML=`<div class="notice ${$("#mtStatus").value==="maintenance"?"error":"info"}">${esc($("#mtText").value||"اطلاعیه‌ای وارد نشده است")}<br><small>وضعیت انتخاب‌شده: ${esc($("#mtStatus").selectedOptions[0].text)} · فقط پیش‌نمایش</small></div>`});
+    if(state.page==="lab")on("runLab",()=>{const expected=$("#labExpected").value.trim(),actual=$("#labActual").value.trim();if(!$("#labWord").value.trim()||!expected||!actual){toast("کلمه، ریشه مورد انتظار و نتیجه پیشنهادی را وارد کنید.");return}const ok=expected===actual;$("#labResult").innerHTML=`<div class="notice ${ok?"success":"error"}">کلمه: ${esc($("#labWord").value)}<br>روش: ${esc($("#labMethod").selectedOptions[0].text)}<br>ریشه مورد انتظار: ${esc(expected)}<br>نتیجه واردشده: ${esc(actual)}<br><b>${ok?"مطابقت دارند":"مغایرت دارند"}</b></div><p class="small muted">مقایسه رشته‌ای ساده انجام شد؛ الگوریتم اصلی یاب در این فایل اجرا نشده است.</p>`});
+    if(state.page==="backup"){
+      on("exportBackup",()=>{if(!liveOnly("خروجی"))return;const out={generated_at:new Date().toISOString(),warning:"خروجی محدود از رکوردهای بارگذاری‌شده است؛ پشتیبان کامل یا قابل‌بازیابی خودکار نیست.",tables:state.data};download("yab-admin-export-"+new Date().toISOString().slice(0,10)+".json",JSON.stringify(out,null,2),"application/json;charset=utf-8");$("#backupStatus").textContent="فایل خروجی مرورگر ساخته شد. آن را در محل امن نگه دارید."});
+      on("downloadSchema",()=>download("yab-admin-setup.txt",`راهنمای اتصال پنل یاب\n1) آدرس و کلید عمومی Supabase را در صفحه ورود وارد کنید.\n2) حساب مدیر باید در public.yab_admins ثبت شده باشد.\n3) کلید service_role را هرگز در مرورگر قرار ندهید.\n4) جدول‌های نسخه، بنر، پیام، تعمیر، لاگ عملیات و snapshot هنوز باید با migration امن ساخته شوند.\n5) برای آمار دستگاه، سایت و اپ باید رویدادها را با رعایت حریم خصوصی ثبت کنند.\n6) مدل دقیق گوشی همیشه از مرورگر قابل دریافت نیست.\n`))};
+  }
+  function closeDrawer(){$(".sidebar")?.classList.remove("open");$("#drawerScrim")?.classList.remove("show");$("#menuToggle")?.setAttribute("aria-expanded","false");$("#menuToggle").textContent="☰"}
+  $("#menuToggle")?.addEventListener("click",()=>{const open=!$(".sidebar").classList.contains("open");$(".sidebar").classList.toggle("open",open);$("#drawerScrim").classList.toggle("show",open);$("#menuToggle").setAttribute("aria-expanded",String(open));$("#menuToggle").textContent=open?"×":"☰"});
+  $("#drawerScrim")?.addEventListener("click",closeDrawer);
+  $$(".navbtn").forEach(b=>b.addEventListener("click",()=>{state.page=b.dataset.page;render();closeDrawer()}));
+  $("#saveConfig").addEventListener("click",()=>{if(configSave())toast("تنظیمات در همین مرورگر ذخیره شد.")});
+  $("#loginBtn").addEventListener("click",login);$("#demoBtn").addEventListener("click",preview);$("#logoutBtn").addEventListener("click",logout);
+  $("#refreshBtn").addEventListener("click",async()=>{if(state.mode==="live"){try{await loadData();render();toast("تازه‌سازی انجام شد.")}catch(e){toast("تازه‌سازی ناموفق: "+(e.message||String(e)))}}else render()});
+  $("#settingsBtn").addEventListener("click",()=>{configRead();$("#loginView").classList.remove("hidden");$("#appView").classList.add("hidden");setLoginMsg("تنظیمات را اصلاح کنید و دوباره وارد شوید.")});
+  configRead();
 })();
 </script>
 </body>
