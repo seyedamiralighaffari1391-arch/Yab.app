@@ -111,7 +111,17 @@
       box-shadow: 0 5px 22px rgba(0,0,0,.16);
       position: relative; z-index: 5;
     }
+    .header-logo { width:36px; height:36px; object-fit:contain; flex:0 0 36px; filter:drop-shadow(0 0 8px rgba(var(--gold-rgb),.18)); }
     .header > span { transition: transform .18s ease; user-select: none; }
+    .yab-remote-notice { display:flex; flex-direction:column; gap:8px; padding:10px 12px; margin:10px 12px 0; border:1px solid rgba(var(--gold-rgb),.25); border-radius:15px; background:rgba(var(--gold-rgb),.07); color:var(--text); font-size:.86em; line-height:1.8; }
+    .yab-remote-notice[hidden], .yab-maintenance-cover[hidden] { display:none !important; }
+    .yab-remote-item h3 { color:var(--gold); font-size:1em; margin-bottom:3px; }
+    .yab-remote-item p { color:var(--muted); }
+    .yab-remote-item a { display:inline-block; margin-top:5px; padding:6px 10px; border-radius:10px; background:var(--gold); color:#08121d; text-decoration:none; font-weight:700; }
+    .yab-maintenance-cover { position:absolute; inset:68px 0 0; z-index:1200; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(10,6,24,.97); text-align:center; }
+    .yab-maintenance-card { width:100%; max-width:340px; padding:24px; border:1px solid rgba(var(--gold-rgb),.3); border-radius:22px; background:var(--card); }
+    .yab-maintenance-card h2 { color:var(--gold); margin-bottom:12px; }
+    .yab-maintenance-card p { color:var(--muted); line-height:1.9; margin-bottom:16px; }
     .header > span:active { transform: scale(.9); }
 
     /* منوی کشویی کنار */
@@ -556,6 +566,8 @@
     id="openDrawerBtn"
   >☰</span>
 
+  <img class="header-logo" src="./yab-logo.png" alt="لوگوی یاب" onerror="this.style.display='none'">
+
   <a
     href="https://github.com/seyedamiralighaffari1391-arch/Yab.app/releases/download/v1.0.0/yab.10.apk"
     class="download-apk"
@@ -571,6 +583,10 @@
     id="helpBtn"
   >❓</span>
 </header>
+<div id="yabRemoteNotice" class="yab-remote-notice" hidden aria-live="polite"></div>
+<div id="yabMaintenanceCover" class="yab-maintenance-cover" hidden>
+  <div class="yab-maintenance-card"><h2>یاب موقتاً در دست تعمیر است</h2><p id="yabMaintenanceMessage">در حال به‌روزرسانی هستیم. کمی بعد دوباره مراجعه کن.</p><button class="btn" id="yabMaintenanceReload">تلاش دوباره</button></div>
+</div>
 
 <nav class="drawer" id="drawer">
     <h2 style="color:var(--gold)" data-i18n="menuTitle">📚 منوی اصلی</h2>
@@ -579,6 +595,7 @@
     <div class="drawer-item" data-action="fav"><span data-i18n="menuFav">⭐ علاقه‌مندی‌ها</span> <span class="badge" id="favBadge">۰</span></div>
     <div class="drawer-item" data-action="set"><span data-i18n="menuSet">⚙️ تنظیمات</span></div>
     <div class="drawer-item" data-action="invite"><span data-i18n="menuInvite">👥 دعوت دوستان</span></div>
+    <div class="drawer-item" data-action="message"><span>✉️ پیام به سازنده</span></div>
     <div class="drawer-item" data-action="about"><span data-i18n="menuAbout">ℹ️ درباره</span></div>
     <div class="drawer-item" data-action="clear" style="color:salmon;"><span data-i18n="menuClear">🗑️ حذف حافظه</span></div>
     <button class="btn" id="closeDrawerBtn" style="margin-top:20px;" data-i18n="closeMenu">بستن منو</button>
@@ -748,6 +765,23 @@
     <div class="top-roots-list" id="topRootsList"></div>
     <button class="btn modal-close" style="margin-top:18px;" data-i18n="close">بستن</button>
   </div>
+  <div id="modal-message" class="modal">
+    <h3 style="color:var(--gold);">✉️ پیام به سازنده</h3>
+    <p style="color:var(--muted);font-size:.9em;line-height:1.8;margin:8px 0 14px;">پیشنهاد یا مشکل یاب را بفرست؛ پیام در پنل مدیریت ثبت می‌شود.</p>
+    <form id="yabMessageForm">
+      <label for="yabMessageSubject" style="display:block;margin:8px 0;">موضوع</label>
+      <input id="yabMessageSubject" maxlength="200" placeholder="موضوع پیام" style="width:100%;margin-bottom:10px;">
+      <label for="yabMessageCategory" style="display:block;margin:8px 0;">دسته‌بندی</label>
+      <select id="yabMessageCategory" style="width:100%;margin-bottom:10px;"><option value="suggestion">پیشنهاد</option><option value="bug">مشکل فنی</option><option value="question">پرسش</option><option value="other">سایر</option></select>
+      <label for="yabMessageEmail" style="display:block;margin:8px 0;">ایمیل برای پاسخ (اختیاری)</label>
+      <input id="yabMessageEmail" type="email" maxlength="254" placeholder="name@example.com" style="width:100%;margin-bottom:10px;">
+      <label for="yabMessageBody" style="display:block;margin:8px 0;">متن پیام</label>
+      <textarea id="yabMessageBody" maxlength="5000" rows="4" placeholder="پیامت را بنویس..." style="width:100%;margin-bottom:10px;"></textarea>
+      <p id="yabMessageStatus" style="font-size:.85em;line-height:1.8;color:var(--muted);margin:8px 0;"></p>
+      <button type="submit" class="btn" id="yabMessageSend" style="width:100%;">ارسال پیام</button>
+    </form>
+    <button class="btn modal-close" style="margin-top:10px;" data-i18n="close">بستن</button>
+  </div>
   <div id="modal-about" class="modal"><h3 style="color:var(--gold);" data-i18n="aboutTitle">ℹ️ دربارهٔ یاب</h3><p data-i18n="aboutBody"><b>یاب | v1.0</b> – ریشه‌یاب هوشمند عربی</p><p data-i18n="aboutAuthor">طراحی و توسعه: سیدامیرعلی غفاری<br>با ایدهٔ استاد سینا بشیری</p><button class="btn modal-close" data-i18n="close">بستن</button></div>
   <div id="modal-conj" class="modal">
     <h3 style="color:var(--gold);" id="conjTitle">📜 جدول صرف</h3>
@@ -800,19 +834,97 @@
       yabDeviceId=(typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():('yab-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,14));
       localStorage.setItem('yab_anon_device_id',yabDeviceId);
     }
-  } catch(e) { yabDeviceId=''; }
+  } catch(e) { try { yabDeviceId=sessionStorage.getItem('yab_anon_device_id')||('yab-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,14)); sessionStorage.setItem('yab_anon_device_id',yabDeviceId); } catch(e2) { yabDeviceId=''; } }
+  let yabDeviceInfoPromise=null;
+  async function getYabDeviceInfo(){
+    if(yabDeviceInfoPromise)return yabDeviceInfoPromise;
+    yabDeviceInfoPromise=(async()=>{
+      const ua=navigator.userAgent||"", ch=navigator.userAgentData||{};
+      let model=String(ch.model||"").trim();
+      if(!model){
+        const mm=ua.match(/\b(SM-[A-Z0-9]+|GT-[A-Z0-9]+|Pixel\s?[A-Za-z0-9 ]{0,18}|Mi\s?[A-Za-z0-9-]{2,18}|Redmi\s?[A-Za-z0-9 -]{1,18})\b/i);
+        if(mm)model=mm[0].trim();
+      }
+      try{if(ch.getHighEntropyValues){const hi=await ch.getHighEntropyValues(["model","platformVersion"]);if(hi.model)model=hi.model;}}catch(e){}
+      const modelMap={"SM-A235F":"Samsung Galaxy A23","SM-A236B":"Samsung Galaxy A23 5G","SM-A235M":"Samsung Galaxy A23","SM-A145F":"Samsung Galaxy A14","SM-A225F":"Samsung Galaxy A22","SM-A245F":"Samsung Galaxy A24"};
+      model=modelMap[model.toUpperCase()]||model;
+      let platform="نامشخص";
+      if(/Android/i.test(ua)||/Android/i.test(ch.platform||""))platform="Android";
+      else if(/iPhone|iPad|iPod/i.test(ua))platform="iOS";
+      else if(/Windows/i.test(ua)||/Windows/i.test(ch.platform||""))platform="Windows";
+      else if(/Mac OS|Macintosh/i.test(ua)||/macOS/i.test(ch.platform||""))platform="macOS";
+      else if(/Linux/i.test(ua)||/Linux/i.test(ch.platform||""))platform="Linux";
+      let deviceType="رایانه";
+      if(/iPad|Tablet/i.test(ua))deviceType="تبلت";
+      else if(/iPhone|iPod/i.test(ua))deviceType="گوشی iPhone";
+      else if(platform==="Android")deviceType=/Mobile/i.test(ua)?"گوشی Android":"دستگاه Android";
+      else if(platform==="iOS")deviceType="دستگاه iOS";
+      let browser=/Edg\//i.test(ua)?"Edge":/OPR\//i.test(ua)?"Opera":/Firefox\//i.test(ua)?"Firefox":/CriOS\//i.test(ua)?"Chrome iOS":/Chrome\//i.test(ua)?"Chrome":/Safari\//i.test(ua)?"Safari":"مرورگر نامشخص";
+      if(!model&&platform==="Android")model=/;\s*K\)/i.test(ua)?"Android (مدل توسط مرورگر مخفی شده)":"Android (مدل ارائه نشده)";
+      if(!model&&/iPhone/i.test(ua))model="iPhone (مدل دقیق در دسترس نیست)";
+      let sessionId="";
+      try{sessionId=sessionStorage.getItem("yab_session_id")||"";if(!sessionId){sessionId=(crypto.randomUUID?crypto.randomUUID():"ys-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,10));sessionStorage.setItem("yab_session_id",sessionId)}}catch(e){}
+      return {device_id:yabDeviceId||null,session_id:sessionId||null,device_model:String(model||"نامشخص").slice(0,120),platform:platform.slice(0,40),device_type:deviceType.slice(0,80),browser:browser.slice(0,80),language:String(navigator.language||"").slice(0,20),screen_size:(screen.width+"x"+screen.height).slice(0,20),app_version:"1.0.0",user_agent:ua.slice(0,500)};
+    })();
+    return yabDeviceInfoPromise;
+  }
   window.yabLogEvent=async function(event_type,word,root,error_type){
     try {
-      const payload={event_type,word:String(word||'').slice(0,160)||null,root:root==null?null:String(root).slice(0,160),error_type:error_type||null};
-      if(yabDeviceId)payload.device_id=yabDeviceId;
-      let result=await db.from('yab_events').insert(payload);
-      // سازگاری با جدول‌های قدیمی که ستون device_id ندارند؛ ثبت خود جست‌وجو همچنان ادامه پیدا کند.
-      if(result.error&&yabDeviceId&&/device_id|column/i.test(result.error.message||'')){
-        delete payload.device_id; result=await db.from('yab_events').insert(payload);
+      const device=await getYabDeviceInfo();
+      const payload={event_type,word:String(word||"").slice(0,100)||null,root:root==null?null:String(root).slice(0,50),error_type:error_type||null,...device};
+      let {error}=await db.from("yab_events").insert(payload);
+      if(error && /column|schema cache/i.test(error.message||"")){
+        const fallback={event_type,word:String(word||"").slice(0,100)||null,root:root==null?null:String(root).slice(0,50),error_type:error_type||null};
+        if(yabDeviceId)fallback.device_id=yabDeviceId;
+        const retry=await db.from("yab_events").insert(fallback); error=retry.error;
       }
-      if(result.error)console.debug('Yab event not stored:',result.error.message);
-    } catch(e){console.debug('Yab event logging unavailable.');}
+      if(error)console.debug("Yab event not stored:",error.message);
+    } catch(e){console.debug("Yab event logging unavailable.");}
   };
+  window.yabSendMessage=async function(subject,category,body,email){
+    try{
+      if(!String(body||"").trim())return {ok:false,message:"متن پیام را وارد کن."};
+      const {error}=await db.from("yab_messages").insert({subject:String(subject||"").trim().slice(0,200),category:String(category||"other").slice(0,40),body:String(body).trim().slice(0,5000),sender_email:String(email||"").trim().slice(0,254)||null});
+      if(error)throw error;
+      return {ok:true,message:"پیام ثبت شد؛ ممنون از بازخوردت."};
+    }catch(e){return {ok:false,message:"ارسال پیام انجام نشد. اتصال اینترنت را بررسی کن و دوباره تلاش کن."};}
+  };
+  window.yabRefreshSiteControls=async function(){
+    const notice=document.getElementById("yabRemoteNotice"),cover=document.getElementById("yabMaintenanceCover"),msg=document.getElementById("yabMaintenanceMessage");
+    if(!notice||!cover)return;
+    try{
+      const [settingsRes,bannersRes,releasesRes]=await Promise.all([
+        db.from("yab_site_settings").select("maintenance_mode,maintenance_message,maintenance_until").eq("setting_key","main").maybeSingle(),
+        db.from("yab_banners").select("id,title,body,button_text,target_url,placement,status,starts_at,ends_at,created_at").eq("status","active").order("created_at",{ascending:false}).limit(5),
+        db.from("yab_releases").select("version,title,notes,download_url,status,created_at").eq("status","published").order("created_at",{ascending:false}).limit(1)
+      ]);
+      const settings=settingsRes.data||{},until=settings.maintenance_until?new Date(settings.maintenance_until):null;
+      const maintenanceLive=settings.maintenance_mode==="maintenance"&&(!until||until>new Date());
+      cover.hidden=!maintenanceLive;
+      if(maintenanceLive&&msg)msg.textContent=settings.maintenance_message||"در حال به‌روزرسانی یاب هستیم. کمی بعد دوباره مراجعه کن.";
+      if(!maintenanceLive&&settings.maintenance_mode==="maintenance"&&until&&until<=new Date()){
+        try{await db.from("yab_site_settings").update({maintenance_mode:"off",updated_at:new Date().toISOString()}).eq("setting_key","main")}catch(e){}
+      }
+      notice.replaceChildren();
+      if(settings.maintenance_mode==="notice"&&(!until||until>new Date())){
+        const n=document.createElement("div");n.className="yab-remote-item";const h=document.createElement("h3");h.textContent="اطلاعیه یاب";const p=document.createElement("p");p.textContent=settings.maintenance_message||"اطلاعیه جدید";n.append(h,p);notice.append(n);
+      }
+      const uaNow=navigator.userAgent||"",isAppShell=/\bwv\b|;\s*wv\)|WebView/i.test(uaNow)||!!window.Android||!!window.webkit?.messageHandlers;
+      for(const b of (bannersRes.data||[])){
+        if(b.placement==="app"&&!isAppShell)continue;
+        if(b.placement==="site"&&isAppShell)continue;
+        const item=document.createElement("div");item.className="yab-remote-item";
+        const h=document.createElement("h3");h.textContent=b.title||"اطلاعیه";item.append(h);
+        const p=document.createElement("p");p.textContent=b.body||"";item.append(p);
+        if(b.target_url&&/^https?:\/\//i.test(b.target_url)){const link=document.createElement("a");link.href=b.target_url;link.target="_blank";link.rel="noopener noreferrer";link.textContent=b.button_text||"بیشتر بدانید";item.append(link)}
+        notice.append(item);
+      }
+      const rel=(releasesRes.data||[])[0];
+      if(rel){const item=document.createElement("div");item.className="yab-remote-item";const h=document.createElement("h3");h.textContent=rel.title||("نسخه جدید یاب · "+rel.version);const p=document.createElement("p");p.textContent=(rel.notes||"نسخه جدید منتشر شده است")+" · نسخه "+rel.version;item.append(h,p);if(rel.download_url&&/^https?:\/\//i.test(rel.download_url)){const link=document.createElement("a");link.href=rel.download_url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="دریافت نسخه";item.append(link)}notice.append(item)}
+      notice.hidden=notice.childElementCount===0;
+    }catch(e){console.debug("Yab site controls unavailable:",e.message||e)}
+  };
+  document.getElementById("yabMaintenanceReload")?.addEventListener("click",()=>location.reload());
   window.yabReportError=async function(word,reported_root,details,category){
     try { const {error}=await db.from('yab_error_reports').insert({word:String(word||'').slice(0,160)||null,reported_root:reported_root==null?null:String(reported_root).slice(0,160),details:details==null?null:String(details).slice(0,1000),is_read:false,category:category||'unclassified',counts_as_error:!['proper_noun','not_error','noun'].includes(category)}); if(error)throw error; return true; }
     catch(e){console.warn('ثبت گزارش ممکن نشد:',e.message||e);return false;}
@@ -820,10 +932,14 @@
   // هر بار بازشدن صفحه در آمار روزانه ثبت می‌شود؛ به جست‌وجو وابسته نیست.
   try { db.rpc('yab_record_visit').then(({error})=>{if(error)console.debug('Yab visit counter unavailable:',error.message);}); } catch(e) {}
   // این رویداد از نسخه جدید به بعد دستگاه فعال را به‌صورت ناشناس ثبت می‌کند.
-  window.yabLogEvent('page_view', null, null, null);
+  if(!new URLSearchParams(location.search).has("adminlab")) window.yabLogEvent('page_view', null, null, null);
+  window.yabRefreshSiteControls();
   try { db.channel('yab-live-updates')
     .on('postgres_changes',{event:'*',schema:'public',table:'yab_corrections'},()=>{window.yabCorrectionsReady=window.yabRefreshCorrections();})
     .on('postgres_changes',{event:'*',schema:'public',table:'yab_morph_patterns'},()=>{window.yabPatternsReady=window.yabRefreshPatterns();})
+    .on('postgres_changes',{event:'*',schema:'public',table:'yab_site_settings'},()=>window.yabRefreshSiteControls())
+    .on('postgres_changes',{event:'*',schema:'public',table:'yab_banners'},()=>window.yabRefreshSiteControls())
+    .on('postgres_changes',{event:'*',schema:'public',table:'yab_releases'},()=>window.yabRefreshSiteControls())
     .subscribe(); } catch(e) {}
 })();
 </script>
@@ -1504,6 +1620,20 @@
     if (r && r.length===3) { if (VALID_ROOTS.has(r)) { customDB[n] = r; localStorage.setItem('yab_morph_custom_v2', JSON.stringify(customDB)); } return r; }
     return null;
   }
+  // رابط آزمایشگاه پنل: همان الگوریتم واقعی سایت را اجرا می‌کند، بدون ثبت رویداد بازدید.
+  window.yabAnalyzeForAdmin=async function(word,method="single"){
+    try{if(window.yabRefreshCorrections)await window.yabRefreshCorrections();if(window.yabPatternsReady)await window.yabPatternsReady}catch(e){}
+    const n=normalize(word), correction=getOnlineCorrection(n);
+    if(method==="two"){
+      const multi=findMultiRoots(n);
+      return multi&&multi.length>1?{type:"multi_root",root:null,roots:multi}:{type:"no_multi_root",root:null,roots:[]};
+    }
+    if(correction&&correction.correction_type==="proper_noun")return {type:"proper_noun",root:null,roots:[]};
+    const roots=findMultiRoots(n);
+    if(roots&&roots.length>1)return {type:"multi_root",root:null,roots};
+    const root=findRoot(word);
+    return {type:method==="pattern"?"pattern_analysis":(root?"single_root":"not_found"),root:root||null,roots:root?[root]:[]};
+  };
 
   function findMultiRoots(word) {
     const n = normalize(word);
@@ -3214,7 +3344,8 @@ ${tagOpen}${tagClose}
 
   document.querySelectorAll('.drawer-item[data-action]').forEach(item=>item.addEventListener('click',function(){
     let a=this.dataset.action;
-    if(a==='stats') showModal('stats');
+    if(a==='message') showModal('message');
+    else if(a==='stats') showModal('stats');
     else if(a==='hist') showModal('hist');
     else if(a==='fav') showModal('fav');
     else if(a==='set') showModal('set');
@@ -3222,6 +3353,21 @@ ${tagOpen}${tagClose}
     else if(a==='about') showModal('about');
     else if(a==='clear') clearData();
   }));
+
+  const yabMessageForm=document.getElementById("yabMessageForm");
+  if(yabMessageForm)yabMessageForm.addEventListener("submit",async function(e){
+    e.preventDefault();
+    const status=document.getElementById("yabMessageStatus"),btn=document.getElementById("yabMessageSend");
+    btn.disabled=true;status.textContent="در حال ارسال…";
+    const result=window.yabSendMessage?await window.yabSendMessage(
+      document.getElementById("yabMessageSubject").value,
+      document.getElementById("yabMessageCategory").value,
+      document.getElementById("yabMessageBody").value,
+      document.getElementById("yabMessageEmail").value
+    ):{ok:false,message:"اتصال پیام در دسترس نیست."};
+    btn.disabled=false;status.textContent=result.message;
+    if(result.ok)yabMessageForm.reset();
+  });
 
   // راه‌اندازی اولیه
   renderThemeGallery();
